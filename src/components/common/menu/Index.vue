@@ -1,5 +1,17 @@
 <template>
-  <div class="menu"></div>
+  <div class="menu">
+    <h2>发现音乐</h2>
+    <p>推荐</p>
+    <p>排行榜</p>
+    <p>歌单</p>
+    <p>歌手</p>
+    <p>视频</p>
+    <h2>我的音乐</h2>
+    <p>我的歌手</p>
+    <p>我的视频</p>
+    <p>创建的歌单</p>
+    <p>收藏的歌单</p>
+  </div>
 </template>
 
 <script>
