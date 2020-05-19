@@ -1,19 +1,14 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import Vue from 'vue'
+import Router from 'vue-router'
+import { routes } from './routes'
 
-Vue.use(VueRouter);
+Vue.use(Router)
 
-const routes = [
-  {
-    path: "/",
-    name: "Home",
-    component: Home
+const router = new Router({
+  routes,
+  scrollBehavior() {
+    return { x: 0, y: 0 }
   }
-];
+})
 
-const router = new VueRouter({
-  routes
-});
-
-export default router;
+export default router
