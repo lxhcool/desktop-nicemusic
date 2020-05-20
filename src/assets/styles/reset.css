@@ -141,6 +141,11 @@ input,
 select,
 textarea {
   font-size: 100%;
+  outline: none;
+}
+
+input:focus {
+  outline: none;
 }
 
 table {
@@ -183,4 +188,26 @@ hr {
 
 .fr {
   float: right;
+}
+
+/*—滚动条默认显示样式–*/
+::-webkit-scrollbar-thumb {
+  background-color: #fcc85f;
+  height: 20px;
+  outline-offset: -2px;
+  outline: 2px solid #fff;
+  -webkit-border-radius: 2em;
+  -moz-border-radius: 2em;
+  border-radius: 2em
+}
+
+/*—滚动条大小–*/
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/*—滚动框背景样式–*/
+::-webkit-scrollbar-track-piece {
+  -webkit-border-radius: 0;
 }

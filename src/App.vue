@@ -4,4 +4,6 @@
   </div>
 </template>
 
-<style lang="stylus"></style>
+<style lang="stylus">
+@import './assets/styles/iconfont.css'
+</style>
