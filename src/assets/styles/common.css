@@ -50,3 +50,9 @@
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
+
+/* shadow */
+.shadow {
+  box-shadow: 0 3px 8px -1px rgba(140, 160, 255, 0.36),
+    0 22px 20px -27px rgba(151, 168, 251, 0.19);
+}

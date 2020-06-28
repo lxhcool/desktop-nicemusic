@@ -112,10 +112,6 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  text-decoration: underline;
-}
-
 abbr[title],
 acronym[title] {
   border-bottom: 1px dotted;
@@ -134,6 +130,12 @@ legend {
 fieldset,
 img {
   border: none;
+}
+
+img {
+  height: auto;
+  max-width: 100%;
+  border-style: none;
 }
 
 button,
@@ -191,23 +193,17 @@ hr {
 }
 
 /*—滚动条默认显示样式–*/
-::-webkit-scrollbar-thumb {
-  background-color: #fcc85f;
-  height: 20px;
-  outline-offset: -2px;
-  outline: 2px solid #fff;
-  -webkit-border-radius: 2em;
-  -moz-border-radius: 2em;
-  border-radius: 2em
-}
 
-/*—滚动条大小–*/
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
-/*—滚动框背景样式–*/
-::-webkit-scrollbar-track-piece {
-  -webkit-border-radius: 0;
+::-webkit-scrollbar-thumb {
+  background: rgba(228, 228, 228, 0.8);
+  /* background: #fcc85f; */
+  border: 10px #ffffff solid;
+  border-right: 0;
+  border-left: 0;
+  border-radius: 4px;
 }

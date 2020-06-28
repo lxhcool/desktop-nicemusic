@@ -1,7 +1,7 @@
 <template>
-  <div class="header flex-center">
+  <div class="header shadow flex-center">
     <div class="search">
-      <i class="iconfont nicesearch"></i>
+      <i class="iconfont nicesearch-o"></i>
       <input type="text" class="search-input" placeholder="Search" />
     </div>
     <div class="userbox">
@@ -48,23 +48,20 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .header {
-  width: calc(100% - 180px);
+  // padding: 0 20px;
+  width: 100%;
   height: 60px;
   background: #ffffff;
-  position: fixed;
-  top: 0;
-  left: 180px;
-  box-shadow: 0px 0px 5px rgba(0,0,0,.1);
-  padding: 0 20px;
+  border-radius: 3px;
   .search {
     height: 100%;
     display: flex;
     align-items: center;
     flex: 1;
     i {
-      font-size: 20px;
+      font-size: 28px;
       color: #666666;
-      margin-right: 10px;
+      padding: 0 15px;
     }
     .search-input {
       width: 100%;
@@ -72,7 +69,7 @@ export default {
       flex: 1;
       border: 0;
       background: none;
-      font-size: 16px;
+      font-size: 14px;
       color: #333333;
     }
   }
@@ -80,6 +77,7 @@ export default {
     display: flex;
     align-items: center;
     cursor: pointer;
+    padding-right: 15px;
     .avatar {
       margin-right: 15px;
     }

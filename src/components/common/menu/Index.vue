@@ -1,24 +1,42 @@
 <template>
-  <div class="menu">
+  <div class="menu shadow">
     <div class="logo">
-      <img src="../../../assets/images/logo.png" alt="" />
+      <a href="index.html">
+        <!-- 奈斯导航 - 三亩鱼塘<i>Nicenav.cn</i> -->
+      </a>
     </div>
     <div class="nav">
-      <div class="item" v-for="item of menus" :key="item.id">
-        <h2 :class="currentParentIndex == item.id ? 'active' : ''">
-          <i class="iconfont" :class="item.icon"></i>{{ item.title }}
-        </h2>
-        <p
-          :class="currentIndex == subItem.id ? 'active' : ''"
-          v-for="subItem of item.list"
-          :key="subItem.id"
-          @click="tab(subItem.id)"
-        >
-          <i class="iconfont nicecaidan"></i>
-          <span>{{ subItem.title }}</span>
-          <i class="dot"></i>
-        </p>
+      <div class="item">
+        <a href="###">
+          <i class="iconfont niceSound-wave"></i>
+          <span class="title">发现音乐</span>
+          <i class="iconfont nice-dot"></i>
+        </a>
       </div>
+      <ul class="sub-item">
+        <li><a href="/Tag/设计平台/">设计平台</a></li>
+        <li><a href="/Tag/灵感创意/">灵感创意</a></li>
+        <li><a href="/Tag/发现/">发现</a></li>
+        <li><a href="/Tag/素材资源/">素材资源</a></li>
+        <li class="sub"><a href="/Tag/图标/">图标</a></li>
+        <li class="sub"><a href="/Tag/图库/">图库</a></li>
+        <li class="sub"><a href="/Tag/字体/">字体</a></li>
+        <li class="sub"><a href="/Tag/Sketch资源/">Sketch资源</a></li>
+        <li><a href="/Tag/设计软件/">设计软件</a></li>
+        <li><a href="/Tag/在线工具/">在线工具</a></li>
+        <li><a href="/Tag/教程文章/">教程文章</a></li>
+        <li><a href="/Tag/社区交流/">社区交流</a></li>
+        <li><a href="/Tag/绘画/">绘画</a></li>
+        <li><a href="/Tag/前端开发/">前端开发</a></li>
+        <li><a href="/Tag/设计团队/">设计团队</a></li>
+        <li><a href="/Tag/设计师/">设计师</a></li>
+        <li><a href="/Tag/媒体与公众号/">媒体与公众号</a></li>
+      </ul>
+    </div>
+    <div class="ad">
+      <a href="/goto/?url=https://portal.shadowsocks.la/aff.php?aff=6144" target="_blank">
+        <img src="../../../assets/images/ad.jpg">
+      </a>
     </div>
   </div>
 </template>
@@ -54,40 +72,6 @@ export default {
               id: 105
             }
           ]
-        },
-        {
-          id: 2,
-          title: '我的音乐',
-          icon: 'niceicon-',
-          list: [
-            {
-              title: '我的歌手',
-              id: 201
-            },
-            {
-              title: '我的视频',
-              id: 202
-            },
-            {
-              title: '创建的歌单',
-              id: 203
-            },
-            {
-              title: '收藏的歌单',
-              id: 204
-            }
-          ]
-        },
-        {
-          id: 3,
-          title: '写点什么',
-          icon: 'niceicon-8',
-          list: [
-            {
-              title: '乐评',
-              id: 301
-            }
-          ]
         }
       ],
       currentParentIndex: 1,
@@ -114,72 +98,109 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .menu {
-  width: 180px;
+  width: 208px;
   height: 100%;
-  background: #0d122f;
   position: fixed;
-  overflow: auto;
-  z-index: 9999;
+  // overflow: auto;
+  background: #ffffff;
+  z-index: 999;
+  top: 0px;
   padding: 0 20px;
-  color: #fff;
+  display: flex;
+  flex-direction: column;
   .logo {
     width: 100%;
-    height: 60px;
+    padding: 8px 0;
     display: flex;
+    border-bottom: 1px solid #f8f8f8;
     align-items: center;
+    a {
+      width: 100%;
+      display: block;
+      height: 64px;
+      line-height: 18px;
+      background-position: 0px center;
+      background-repeat: no-repeat;
+      background-size: 146px 26px;
+      background-image: url(../../../assets/images/logo_black.png);
+      color: #da5621;
+      padding: 16px 0 0px 55px;
+    }
     img {
       width: 130px;
     }
   }
   .nav {
-    color: #fff;
-    line-height: 2;
-    h2 {
-      height: 50px;
-      line-height: 50px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      &.active {
-        color: #fcc85f;
+    overflow: auto;
+    flex: 1;
+    .item {
+      width: 100%;
+      height: 48px;
+      border-bottom: 1px solid #f8f8f8;
+      a {
+        width: 100%;
+        height: 100%;
+        font-weight: normal;
+        display: flex;
+        align-items: center;
+        color: #6b7386;
       }
-    }
-    p {
-      height: 50px;
-      line-height: 50px;
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.8);
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.4s;
-      span {
+      i {
+        margin-right: 7px;
+        float: left;
+        font-size: 18px;
+        font-weight: bold;
+      }
+      .title {
+        color: #6b7386;
+        display: block;
+        float: left;
+        width: 100%;
         flex: 1;
       }
-      .dot {
-        display: block;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: #fcc85f;
-        opacity: 0;
-      }
-      &.active {
-        color: #fcc85f;
-        .dot {
-          opacity: 1;
+    }
+    .sub-item {
+      padding: 8px 0;
+      border-top: 1px rgba(255, 255, 255, .04) solid;
+      border-bottom: 1px rgba(255, 255, 255, .04) solid;
+      li {
+        height: 32px;
+        line-height: 32px;
+        a {
+          display: block;
+          padding-left: 10px;
+          color: #6B7386;
+          &:before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            display: inline-block;
+            background-color: #DCE8EC;
+            border: 2px solid #f3f4fb;
+            border-radius: 50%;
+            margin-right: 8px;
+          }
         }
-      }
-      &:hover {
-        color: #fcc85f;
-        margin-left: 8px;
-        .dot {
-          opacity: 1;
+        &.sub {
+          a {
+            padding-left: 40px;
+          }
         }
       }
     }
-    .iconfont {
-      margin-right: 8px;
+  }
+  .ad {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    border-radius: 2px;
+    img {
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    &:hover {
+      img {
+        box-shadow: 0 3px 8px -1px rgba(140, 160, 255, 0.36), 0 22px 20px -27px rgba(151, 168, 251, 0.19);
+      }
     }
   }
 }

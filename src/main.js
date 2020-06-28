@@ -4,6 +4,8 @@ import router from '@/router'
 import store from '@/store'
 import getApi from '@/api/index'
 import utils from '@/utils/utils'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
 import '@/assets/styles/reset.css'
 import '@/assets/styles/common.css'
 import '@/assets/styles/element-#FCC85F/index.css'
@@ -36,10 +38,10 @@ Vue.use(Input)
   .use(Carousel)
   .use(CarouselItem)
 Vue.config.productionTip = false
-
 Vue.prototype.$api = getApi
 Vue.prototype.utils = utils
 Vue.use(Loading.directive)
+Vue.use(VueAwesomeSwiper)
 
 Vue.prototype.$loading = Loading.service
 Vue.prototype.$msgbox = MessageBox
