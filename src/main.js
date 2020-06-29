@@ -6,7 +6,7 @@ import getApi from '@/api/index'
 import utils from '@/utils/utils'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
-import '@/assets/styles/reset.css'
+import '@/assets/styles/reset.styl'
 import '@/assets/styles/common.css'
 import '@/assets/styles/element-#FCC85F/index.css'
 import {

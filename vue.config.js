@@ -30,6 +30,13 @@ module.exports = {
       .add('.vue')
       .add('.stylus')
   },
+  css: {
+    loaderOptions: {
+      stylus: {
+        import: '~@/assets/styles/variable.styl'
+      }
+    }
+  },
   devServer: {
     port: 8088,
     open: true,
