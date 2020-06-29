@@ -4,17 +4,18 @@
     <div class="recommend-songs">
       <h2 class="title">推荐歌单</h2>
       <div class="list">
-        <div class="item">
+        <div class="item" v-for="item of personalizeds" :key="item.id">
           <div class="wrapper">
             <a>
               <div class="cover">
                 <div class="image">
-                  <img
-                    src="//pic.xiami.net/xiamiWeb/0957829a6a477f1eaa6425313da324aa/f6fa411349f031437a6d83b20883126a-480x480.gif?x-oss-process=image/resize,limit_0,m_fill,s_330/quality,q_80"
-                    loading="lazy"
-                  />
+                  <img :src="item.picUrl" />
+                  <!-- //pic.xiami.net/xiamiWeb/0957829a6a477f1eaa6425313da324aa/f6fa411349f031437a6d83b20883126a-480x480.gif?x-oss-process=image/resize,limit_0,m_fill,s_330/quality,q_80 -->
                 </div>
-                <div class="count"><i class="iconfont"></i>17.2万</div>
+                <div class="count">
+                  <i class="arrow"></i>
+                  <span>{{ utils.tranNumber(item.playCount, 0) }}</span>
+                </div>
                 <!-- <div class="action">
                   <button class="play" title="播放">
                     <i class="iconfont"></i>
@@ -25,7 +26,7 @@
           </div>
           <div class="info">
             <h2 class="name ellipsis-two">
-              夏之艳阳｜阳光都灿烂了 你也该笑着放下了
+              {{ item.name }}
             </h2>
           </div>
         </div>
@@ -39,13 +40,28 @@ import Banner from 'components/home/banner/Index'
 export default {
   name: 'Home',
   data() {
-    return {}
+    return {
+      limit: 80,
+      personalizeds: []
+    }
   },
   components: {
     Banner
   },
-  methods: {},
-  mounted() {}
+  methods: {
+    async getPersonalized() {
+      try {
+        let res = await this.$api.getPersonalized(this.limit)
+        console.log(res)
+        this.personalizeds = res.result
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  },
+  mounted() {
+    this.getPersonalized()
+  }
 }
 </script>
 
@@ -73,10 +89,11 @@ export default {
           background-color: #d9d9d9;
           position: absolute;
           top: 0;
+          transition: all 0.4s;
         }
         &:before {
           border: .5px solid #d6d6d6;
-          right: 4px;
+          right: 6px;
           transform: scale(.85);
           transform-origin: 100% 50%;
           z-index: 2;
@@ -84,7 +101,7 @@ export default {
         }
         &:after {
           border: .5px solid #c4c4c4;
-          right: 0;
+          right: 4px;
           transform: scale(.73);
           transform-origin: 100% 50%;
           z-index: 1;
@@ -104,7 +121,7 @@ export default {
             overflow: hidden;
             width: 100%;
             height: 100%;
-            border-radius: 2px;
+            border-radius: 4px;
             &:after {
               content: "";
               position: absolute;
@@ -136,8 +153,17 @@ export default {
             font-size: 12px;
             font-weight: 700;
             line-height: 24px;
-            i {
-              font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .arrow {
+              display: block;
+              width: 0;
+              height: 0;
+              border-style: solid;
+              border-width: 4px 0 4px 6px;
+              border-color: transparent transparent transparent #ffffff;
+              margin-right: 5px;
             }
             &:after {
               content: "";
@@ -156,6 +182,19 @@ export default {
         margin-top: 15px;
         .name {
           font-size: 14px;
+        }
+      }
+      &:hover {
+        .wrapper {
+          &:before, &:after {
+            background: rgba(250, 40, 0, 0.1);
+          }
+          &:before {
+            right: 4px;
+          }
+          &:after {
+            right: 0px;
+          }
         }
       }
     }
