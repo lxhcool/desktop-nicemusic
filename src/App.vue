@@ -2,14 +2,17 @@
   <div id="app">
     <nice-menu></nice-menu>
     <router-view />
+    <player-bar></player-bar>
   </div>
 </template>
 
 <script>
 import NiceMenu from 'components/common/menu/Index'
+import PlayerBar from 'components/common/playerBar/Index'
 export default {
   components: {
-    NiceMenu
+    NiceMenu,
+    PlayerBar
   }
 }
 </script>

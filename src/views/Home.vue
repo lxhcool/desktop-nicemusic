@@ -48,18 +48,20 @@
               </div>
             </div>
             <div class="info">
-              <p class="name">{{ item.name }}</p>
-              <p
-                class="author"
-                v-for="artist of item.song.artists"
-                :key="artist.id"
-              >
-                {{ artist.name }}
+              <p class="name ellipsis">{{ item.name }}</p>
+              <p class="flex-row ellipsis">
+                <span
+                  class="author"
+                  v-for="artist of item.song.artists"
+                  :key="artist.id"
+                >
+                  {{ artist.name }}
+                </span>
               </p>
             </div>
-            <p class="album">{{ item.song.album.name }}</p>
-            <p class="duration">03:49</p>
-            <div class="tools">
+            <p class="album">《{{ item.song.album.name }}》</p>
+            <p class="duration transition">03:49</p>
+            <div class="tools transition">
               <i class="iconfont niceOutlined_Play"></i>
               <i class="iconfont niceadd"></i>
               <i class="iconfont niceicon-heart"></i>
@@ -284,6 +286,7 @@ export default {
           margin: -32px 0 0 0;
           opacity: 0.08;
           filter: blur(10px);
+          z-index: -1;
         }
         .number {
           font-size: 15px;
@@ -318,6 +321,7 @@ export default {
           }
         }
         .info {
+          width: 15%;
           .name {
             font-size: 14px;
             color: #333333;
@@ -328,6 +332,15 @@ export default {
             font-size: 12px;
             color: #666666;
             font-weight: bold;
+            &:after{
+              content:'/';
+              margin:0 3px;
+            }
+            &:last-child {
+              &:after{
+               content:'';
+              }
+            }
           }
         }
         .album {
@@ -342,7 +355,6 @@ export default {
           color: #333333;
           font-weight: bold;
           margin-left: 80px;
-          transition: all 0.4s;
         }
         .tools {
           width: 25%;
@@ -352,7 +364,6 @@ export default {
           align-items: center;
           justify-content: space-between;
           opacity: 0;
-          transition: all 0.4s;
           position: absolute;
           right: 4%;
           top: 0;
