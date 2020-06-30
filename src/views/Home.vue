@@ -10,7 +10,6 @@
               <div class="cover">
                 <div class="image">
                   <img :src="item.picUrl" />
-                  <!-- //pic.xiami.net/xiamiWeb/0957829a6a477f1eaa6425313da324aa/f6fa411349f031437a6d83b20883126a-480x480.gif?x-oss-process=image/resize,limit_0,m_fill,s_330/quality,q_80 -->
                 </div>
                 <div class="count">
                   <i class="arrow"></i>
@@ -32,6 +31,44 @@
         </div>
       </div>
     </div>
+    <div class="recommend-music">
+      <h2 class="title">推荐新歌曲</h2>
+      <div class="list">
+        <div class="item" v-for="(item, index) of songs" :key="item.id">
+          <div class="wrapper flex-center shadow">
+            <div
+              class="bg"
+              :style="{ backgroundImage: 'url(' + item.picUrl + ')' }"
+            ></div>
+            <h2 class="number">{{ utils.formatZero(index + 1, 2) }}</h2>
+            <div class="avatar">
+              <img :src="item.picUrl" />
+              <div class="layer flex-center">
+                <i class="iconfont niceicon-9"></i>
+              </div>
+            </div>
+            <div class="info">
+              <p class="name">{{ item.name }}</p>
+              <p
+                class="author"
+                v-for="artist of item.song.artists"
+                :key="artist.id"
+              >
+                {{ artist.name }}
+              </p>
+            </div>
+            <p class="album">{{ item.song.album.name }}</p>
+            <p class="duration">03:49</p>
+            <div class="tools">
+              <i class="iconfont niceOutlined_Play"></i>
+              <i class="iconfont niceadd"></i>
+              <i class="iconfont niceicon-heart"></i>
+              <i class="iconfont nicexiazai"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -41,14 +78,16 @@ export default {
   name: 'Home',
   data() {
     return {
-      limit: 80,
-      personalizeds: []
+      limit: 16,
+      personalizeds: [],
+      songs: []
     }
   },
   components: {
     Banner
   },
   methods: {
+    // 获取推荐歌单
     async getPersonalized() {
       try {
         let res = await this.$api.getPersonalized(this.limit)
@@ -57,10 +96,22 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+
+    // 获取推荐新音乐
+    async getNewSongs() {
+      try {
+        let res = await this.$api.getNewSongs()
+        console.log(res)
+        this.songs = res.result
+      } catch (error) {
+        console.log(error)
+      }
     }
   },
   mounted() {
     this.getPersonalized()
+    this.getNewSongs()
   }
 }
 </script>
@@ -194,6 +245,130 @@ export default {
           }
           &:after {
             right: 0px;
+          }
+        }
+      }
+    }
+  }
+}
+.recommend-music {
+  .title {
+    margin: 0 0 15px 0;
+  }
+  .list {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+    .item {
+      flex: 0 0 50%;
+      max-width: 50%;
+      margin-bottom: 20px;
+      height: 80px;
+      padding: 0 15px 30px;
+      .wrapper {
+        width: 100%;
+        height: 80px;
+        background-color: #ffffff;
+        justify-content: start;
+        padding: 0 4%;
+        border-radius: 5px;
+        position: relative;
+        .bg {
+          width: 100%;
+          height: 80%
+          position: absolute;
+          background-repeat: no-repeat;
+          background-size: cover;
+          top: 50%;
+          left: 0;
+          margin: -32px 0 0 0;
+          opacity: 0.08;
+          filter: blur(10px);
+        }
+        .number {
+          font-size: 15px;
+          color: #000000;
+          margin-right: 30px;
+        }
+        .avatar {
+          width: 55px;
+          height: 55px;
+          border-radius: 5px;
+          position: relative;
+          margin-right: 30px;
+          img {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+          }
+          .layer {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 5px;
+            opacity: 0;
+            i {
+              color: #ffffff;
+              font-size: 26px;
+              font-weight: 100;
+            }
+          }
+        }
+        .info {
+          .name {
+            font-size: 14px;
+            color: #333333;
+            font-weight: bold;
+            margin-bottom: 10px;
+          }
+          .author {
+            font-size: 12px;
+            color: #666666;
+            font-weight: bold;
+          }
+        }
+        .album {
+          font-size: 14px;
+          color: #333333;
+          font-weight: bold;
+          margin-left: 80px;
+          flex: 1;
+        }
+        .duration {
+          font-size: 14px;
+          color: #333333;
+          font-weight: bold;
+          margin-left: 80px;
+          transition: all 0.4s;
+        }
+        .tools {
+          width: 25%;
+          height: 100%;
+          padding-left: 4.28%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          opacity: 0;
+          transition: all 0.4s;
+          position: absolute;
+          right: 4%;
+          top: 0;
+          i {
+            font-size: 20px;
+            cursor: pointer;
+            display: block;
+            color: #666666;
+          }
+        }
+        &:hover {
+          .duration {
+            opacity: 0;
+          }
+          .tools {
+            opacity: 1;
           }
         }
       }

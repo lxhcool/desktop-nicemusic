@@ -6,6 +6,12 @@ export const getBanner = () => api.get('/banner', {})
 
 /**
  * @method 获取推荐歌单
+ * @params {number} limit 取出数量默认为 30
  */
 export const getPersonalized = limit =>
   api.get(`/personalized?limit=${limit}`, {})
+
+/**
+ * @method 获取推荐歌单
+ */
+export const getNewSongs = () => api.get(`/personalized/newsong`, {})

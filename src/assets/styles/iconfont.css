@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'iconfont';  /* project id 1076628 */
-  src: url('//at.alicdn.com/t/font_1076628_gi1noij4e9b.eot');
-  src: url('//at.alicdn.com/t/font_1076628_gi1noij4e9b.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_1076628_gi1noij4e9b.woff2') format('woff2'),
-  url('//at.alicdn.com/t/font_1076628_gi1noij4e9b.woff') format('woff'),
-  url('//at.alicdn.com/t/font_1076628_gi1noij4e9b.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_1076628_gi1noij4e9b.svg#niceicon') format('svg');
+  src: url('//at.alicdn.com/t/font_1076628_3yv9cyhg7p3.eot');
+  src: url('//at.alicdn.com/t/font_1076628_3yv9cyhg7p3.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_1076628_3yv9cyhg7p3.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_1076628_3yv9cyhg7p3.woff') format('woff'),
+  url('//at.alicdn.com/t/font_1076628_3yv9cyhg7p3.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_1076628_3yv9cyhg7p3.svg#niceicon') format('svg');
 }
 
 .iconfont {
@@ -14,6 +14,146 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.niceicon-heart:before {
+  content: "\e676";
+}
+
+.niceicondownload:before {
+  content: "\e683";
+}
+
+.niceOutlined_Play:before {
+  content: "\e677";
+}
+
+.niceadd:before {
+  content: "\e678";
+}
+
+.niceicon_download:before {
+  content: "\e67a";
+}
+
+.nicexiazai:before {
+  content: "\e63e";
+}
+
+.nicekuaijin:before {
+  content: "\e63f";
+}
+
+.niceluzhi:before {
+  content: "\e641";
+}
+
+.niceshangyishou:before {
+  content: "\e64a";
+}
+
+.nicekuaitui:before {
+  content: "\e650";
+}
+
+.nicebofang2:before {
+  content: "\e651";
+}
+
+.nicetingzhi:before {
+  content: "\e652";
+}
+
+.nicesuiji:before {
+  content: "\e653";
+}
+
+.nicexiayishou:before {
+  content: "\e654";
+}
+
+.nicesuiji1:before {
+  content: "\e655";
+}
+
+.nicexihuan:before {
+  content: "\e65d";
+}
+
+.nicexunhuan:before {
+  content: "\e65e";
+}
+
+.nicefenxiang1:before {
+  content: "\e65f";
+}
+
+.nicesuiji2:before {
+  content: "\e660";
+}
+
+.nicexunhuan1:before {
+  content: "\e661";
+}
+
+.nicexunhuan2:before {
+  content: "\e662";
+}
+
+.niceyinfu:before {
+  content: "\e663";
+}
+
+.nicexihuan2:before {
+  content: "\e664";
+}
+
+.nicexunhuan3:before {
+  content: "\e665";
+}
+
+.niceyinpinliebiao:before {
+  content: "\e667";
+}
+
+.nicesuiji3:before {
+  content: "\e668";
+}
+
+.nicezanting1:before {
+  content: "\e669";
+}
+
+.nicexunhuan4:before {
+  content: "\e66a";
+}
+
+.nicesuiji4:before {
+  content: "\e66b";
+}
+
+.nicexunhuan5:before {
+  content: "\e66c";
+}
+
+.niceyinfu1:before {
+  content: "\e66d";
+}
+
+.nicexunhuan6:before {
+  content: "\e671";
+}
+
+.niceyinfu2:before {
+  content: "\e672";
+}
+
+.nicexunhuan7:before {
+  content: "\e674";
+}
+
+.niceyinfu3:before {
+  content: "\e675";
 }
 
 .nicetag:before {
