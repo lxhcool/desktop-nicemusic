@@ -22,6 +22,23 @@
       </div>
       <p class="duration-time">04:30</p>
     </div>
+    <div class="volume-wrap">
+      <i class="iconfont volume-icon niceshengyin1"></i>
+      <div class="progress-bar">
+        <div class="bar-inner">
+          <div class="progress"></div>
+          <div class="progress-btn"></div>
+        </div>
+      </div>
+    </div>
+    <div class="tool">
+      <i class="iconfont icon-like nice1_music89"></i>
+      <i class="iconfont icon-download nicexinbaniconshangchuan-"></i>
+      <i class="iconfont nicevoice"></i>
+      <i class="iconfont nicexunhuan4"></i>
+      <!-- <i class="iconfont nicexunhuan5"></i> -->
+      <!-- <i class="iconfont nicesuiji4"></i> -->
+    </div>
   </div>
 </template>
 
@@ -53,12 +70,14 @@ export default {
   right: 0;
   left: 0;
   z-index: 8000;
-  padding: 0 20px;
+  padding: 0 10px 0 232px;
+  justify-content: space-between;
   .avatar {
     width: 70px;
     height: 70px;
     border-radius: 5px;
     margin-right: 30px
+    flex-shrink: 0;
     img {
       width: 70px;
       height: 70px;
@@ -67,6 +86,7 @@ export default {
   }
   .info {
     margin-right: 55px;
+    flex-shrink: 0;
     h2 {
       font-size: 14px;
       color: #333;
@@ -126,7 +146,7 @@ export default {
           right: -4px;
           width: 12px;
           height: 12px;
-          top: -4px;
+          top: -4.5px;
           background: $color-theme;
           box-shadow: 0 0 15px 0 rgba(0,0,0,.15);
           border-radius: 50%;
@@ -143,6 +163,74 @@ export default {
             border-radius: 50%;
           }
         }
+      }
+    }
+  }
+  .volume-wrap {
+    width: 150px;
+    margin-left: 40px;
+    display: flex;
+    align-items: center;
+    margin-right: 80px;
+    .volume-icon {
+      font-size: 26px;
+      font-weight: bold;
+    }
+    .progress-bar {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      height: 2px;
+      background: rgba(0,0,0,.05);
+      border-radius: 2px;
+      cursor: pointer;
+      margin-left: 10px;
+      .bar-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        .progress {
+          width: 50px;
+          background: $color-theme;
+          height: 2px;
+          border-radius: 2px;
+        }
+        .progress-btn {
+          position: absolute;
+          z-index: 100;
+          right: -4px;
+          width: 10px;
+          height: 10px;
+          top: -4.5px;
+          background: $color-theme;
+          box-shadow: 0 0 15px 0 rgba(0,0,0,.15);
+          border-radius: 50%;
+          &::after {
+            position: absolute;
+            content: " ";
+            top: 50%;
+            left: 50%;
+            margin: -3px 0 0 -3px;
+            width: 6px;
+            height: 6px;
+            background: #ffffff;
+            border-radius: 50%;
+          }
+        }
+      }
+    }
+  }
+  .tool {
+    .iconfont {
+      font-size: 26px;
+      margin: 0 15px;
+      &.icon-like {
+        font-size: 24px;
+      }
+      &.icon-download {
+        font-size: 24px;
       }
     }
   }

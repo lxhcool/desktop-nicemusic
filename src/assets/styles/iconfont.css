@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'iconfont';  /* project id 1076628 */
-  src: url('https://at.alicdn.com/t/font_1076628_3yv9cyhg7p3.eot');
-  src: url('https://at.alicdn.com/t/font_1076628_3yv9cyhg7p3.eot?#iefix') format('embedded-opentype'),
-  url('https://at.alicdn.com/t/font_1076628_3yv9cyhg7p3.woff2') format('woff2'),
-  url('https://at.alicdn.com/t/font_1076628_3yv9cyhg7p3.woff') format('woff'),
-  url('https://at.alicdn.com/t/font_1076628_3yv9cyhg7p3.ttf') format('truetype'),
-  url('https://at.alicdn.com/t/font_1076628_3yv9cyhg7p3.svg#niceicon') format('svg');
+  src: url('https://at.alicdn.com/t/font_1076628_trjbho5btu.eot');
+  src: url('https://at.alicdn.com/t/font_1076628_trjbho5btu.eot?#iefix') format('embedded-opentype'),
+  url('https://at.alicdn.com/t/font_1076628_trjbho5btu.woff2') format('woff2'),
+  url('https://at.alicdn.com/t/font_1076628_trjbho5btu.woff') format('woff'),
+  url('https://at.alicdn.com/t/font_1076628_trjbho5btu.ttf') format('truetype'),
+  url('https://at.alicdn.com/t/font_1076628_trjbho5btu.svg#niceicon') format('svg');
 }
 
 .iconfont {
@@ -14,6 +14,74 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.nicexinbaniconshangchuan-:before {
+  content: "\e67d";
+}
+
+.nicejingyin1:before {
+  content: "\e67b";
+}
+
+.niceshengyin1:before {
+  content: "\e67c";
+}
+
+.nice1_music90:before {
+  content: "\e6ac";
+}
+
+.nice1_music89:before {
+  content: "\e6b0";
+}
+
+.niceIcon_girl:before {
+  content: "\e67e";
+}
+
+.niceIcon_appraise_perfect:before {
+  content: "\e67f";
+}
+
+.niceIcon_close:before {
+  content: "\e681";
+}
+
+.niceIcon_appraise_good:before {
+  content: "\e682";
+}
+
+.niceIcon_appraise_bad:before {
+  content: "\e684";
+}
+
+.niceIcon_edit:before {
+  content: "\e686";
+}
+
+.niceIcon_boy:before {
+  content: "\e687";
+}
+
+.niceIcon_add:before {
+  content: "\e688";
+}
+
+.niceIcon_cloose:before {
+  content: "\e689";
+}
+
+.niceIcon_doubt:before {
+  content: "\e68a";
+}
+
+.niceshengyinguan-jingyin:before {
+  content: "\e699";
+}
+
+.niceshengyinkai:before {
+  content: "\e69a";
 }
 
 .niceicon-heart:before {
