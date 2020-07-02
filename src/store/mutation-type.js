@@ -1,1 +1,2 @@
-export const SET_COUNT = 'SET_COUNT'
+// 获取歌手信息
+export const SET_SINGER = 'SET_SINGER'

@@ -5,51 +5,43 @@ import store from '@/store'
 import getApi from '@/api/index'
 import utils from '@/utils/utils'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
+import Loading from '@/components/common/loading/Index.vue'
 import 'swiper/css/swiper.css'
 import '@/assets/styles/reset.styl'
 import '@/assets/styles/common.css'
 import {
-  Input,
   Avatar,
-  Menu,
-  Submenu,
-  MenuItem,
-  MenuItemGroup,
   Dropdown,
   DropdownMenu,
   DropdownItem,
-  Loading,
+  Image,
+  Icon,
+  InfiniteScroll,
+  Pagination,
   MessageBox,
   Message,
-  Notification,
-  Carousel,
-  CarouselItem
+  Notification
 } from 'element-ui'
-Vue.use(Input)
-  .use(Avatar)
-  .use(Menu)
-  .use(Submenu)
-  .use(MenuItem)
-  .use(MenuItemGroup)
+Vue.use(Avatar)
+  .use(Image)
+  .use(Icon)
+  .use(Pagination)
+  .use(InfiniteScroll)
   .use(Dropdown)
   .use(DropdownMenu)
   .use(DropdownItem)
-  .use(Carousel)
-  .use(CarouselItem)
 Vue.config.productionTip = false
 Vue.prototype.$api = getApi
 Vue.prototype.utils = utils
-Vue.use(Loading.directive)
 Vue.use(VueAwesomeSwiper)
 
-Vue.prototype.$loading = Loading.service
 Vue.prototype.$msgbox = MessageBox
 Vue.prototype.$alert = MessageBox.alert
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$prompt = MessageBox.prompt
 Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
-
+Vue.component('Loading', Loading)
 // button阻止重复点击
 Vue.directive('preventReClick', {
   inserted(el, binding) {

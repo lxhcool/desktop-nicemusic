@@ -29,7 +29,7 @@ export default {
   width: auto;
   overflow-y: auto;
   margin: 0 0 0 208px;
-  padding: 24px;
+  padding: 24px 24px 84px;
   min-width: 1024px;
   .fluid {
     padding: 18px 0px;

@@ -14,8 +14,10 @@
         </a>
       </div>
       <ul class="sub-item">
-        <li><a href="/Tag/设计平台/">设计平台</a></li>
-        <li><a href="/Tag/灵感创意/">灵感创意</a></li>
+        <li>
+          <router-link :to="{ name: 'singer' }" tag="a">歌手</router-link>
+        </li>
+        <!-- <li><a href="/Tag/灵感创意/">灵感创意</a></li>
         <li><a href="/Tag/发现/">发现</a></li>
         <li><a href="/Tag/素材资源/">素材资源</a></li>
         <li class="sub"><a href="/Tag/图标/">图标</a></li>
@@ -30,12 +32,15 @@
         <li><a href="/Tag/前端开发/">前端开发</a></li>
         <li><a href="/Tag/设计团队/">设计团队</a></li>
         <li><a href="/Tag/设计师/">设计师</a></li>
-        <li><a href="/Tag/媒体与公众号/">媒体与公众号</a></li>
+        <li><a href="/Tag/媒体与公众号/">媒体与公众号</a></li> -->
       </ul>
     </div>
     <div class="ad">
-      <a href="/goto/?url=https://portal.shadowsocks.la/aff.php?aff=6144" target="_blank">
-        <img src="../../../assets/images/ad.jpg">
+      <a
+        href="/goto/?url=https://portal.shadowsocks.la/aff.php?aff=6144"
+        target="_blank"
+      >
+        <img src="../../../assets/images/ad.jpg" />
       </a>
     </div>
   </div>
@@ -170,6 +175,8 @@ export default {
           display: block;
           padding-left: 10px;
           color: #6B7386;
+          display: flex;
+          align-items: center;
           &:before {
             content: "";
             width: 8px;
@@ -179,6 +186,17 @@ export default {
             border: 2px solid #f3f4fb;
             border-radius: 50%;
             margin-right: 8px;
+            transition: all 0.4s;
+          }
+          &.router-link-active {
+            color: $color-theme;
+            &:before {
+              width: 2px;
+              height: 1em;
+              border-radius: 2px;
+              background-color: $color-theme;
+              border: 0px solid $color-theme;
+            }
           }
         }
         &.sub {
@@ -191,7 +209,7 @@ export default {
   }
   .ad {
     margin-top: 20px;
-    margin-bottom: 15px;
+    margin-bottom: 115px;
     border-radius: 2px;
     img {
       border-radius: 2px;

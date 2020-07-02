@@ -1,7 +1,10 @@
 <template>
   <div class="player-bar shadow flex-row">
     <div class="avatar">
-      <img src="//pic.xiami.net/xiamiWeb/0957829a6a477f1eaa6425313da324aa/f6fa411349f031437a6d83b20883126a-480x480.gif?x-oss-process=image/resize,limit_0,m_fill,s_330/quality,q_80" alt="">
+      <img
+        src="https://p1.music.126.net/AGiGnl2zZy74f1MZQd0aGg==/109951164715107115.jpg"
+        alt="nicemusic"
+      />
     </div>
     <div class="info">
       <h2>星航轨迹</h2>
@@ -36,8 +39,6 @@
       <i class="iconfont icon-download nicexinbaniconshangchuan-"></i>
       <i class="iconfont nicevoice"></i>
       <i class="iconfont nicexunhuan4"></i>
-      <!-- <i class="iconfont nicexunhuan5"></i> -->
-      <!-- <i class="iconfont nicesuiji4"></i> -->
     </div>
   </div>
 </template>
@@ -48,15 +49,10 @@ export default {
     return {}
   },
   components: {},
-  //监听属性 类似于data概念
   computed: {},
-  //监控data中的数据变化
   watch: {},
-  //方法集合
   methods: {},
-  //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
-  //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {}
 }
 </script>
@@ -70,7 +66,7 @@ export default {
   right: 0;
   left: 0;
   z-index: 8000;
-  padding: 0 10px 0 232px;
+  padding: 0 10px 0 20px;
   justify-content: space-between;
   .avatar {
     width: 70px;
@@ -116,6 +112,7 @@ export default {
     display: flex;
     align-items: center;
     margin-left: 80px;
+    flex: 1;
     p {
       font-size: 14px;
     }
@@ -167,7 +164,7 @@ export default {
     }
   }
   .volume-wrap {
-    width: 150px;
+    width: 180px;
     margin-left: 40px;
     display: flex;
     align-items: center;

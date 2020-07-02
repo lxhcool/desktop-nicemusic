@@ -1,5 +1,5 @@
-import * as types from './mutation-type'
+// import * as types from './mutation-type'
 
-export const setCount = function({ commit }, { num }) {
-  commit(types.SET_COUNT, num)
-}
+// export const setInfo = function({ commit }, { num }) {
+//   commit(types.SET_INFO, num)
+// }

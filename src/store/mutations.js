@@ -1,8 +1,9 @@
 import * as types from './mutation-type'
 
 const mutations = {
-  [types.SET_COUNT](state, count) {
-    state.count = count
+  // 获取歌手信息
+  [types.SET_SINGER](state, singer) {
+    state.singer = singer
   }
 }
 
