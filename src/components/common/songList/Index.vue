@@ -2,13 +2,13 @@
   <div class="list">
     <div class="item" v-for="(item, index) of songList" :key="item.id">
       <div class="wrapper flex-center shadow">
-        <div
-          class="bg"
-          :style="{ backgroundImage: 'url(' + item.picUrl + ')' }"
-        ></div>
         <h2 class="number">{{ utils.formatZero(index + 1, 2) }}</h2>
         <div class="avatar">
-          <el-image :key="item.picUrl" :src="item.picUrl" lazy>
+          <el-image
+            :key="item.picUrl + '?param=300y300'"
+            :src="item.picUrl + '?param=300y300'"
+            lazy
+          >
             <div slot="placeholder" class="image-slot flex-center flex-column">
               <i class="iconfont niceicon-3"></i>
               <p>加载中<span class="dot">...</span></p>

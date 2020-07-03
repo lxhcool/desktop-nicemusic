@@ -36,11 +36,18 @@
     <ul
       class="singer-list"
       v-infinite-scroll="getSingerList"
+      :infinite-scroll-immediate="disabledScroll"
+      infinite-scroll-disabled="disabled"
+      infinite-scroll-delay="500"
     >
-      <li v-for="item of singers" :key="item.id">
+      <li v-for="item of singers" :key="item.id" @click="toSinger(item)">
         <div class="cover">
           <div class="image">
-            <el-image :key="item.img1v1Url" :src="item.img1v1Url" lazy>
+            <el-image
+              :key="item.img1v1Url + '?param=200y200'"
+              :src="item.img1v1Url + '?param=200y200'"
+              lazy
+            >
               <div
                 slot="placeholder"
                 class="image-slot flex-center flex-column"
@@ -60,12 +67,15 @@
         </div>
       </li>
     </ul>
-    <p v-if="loading">加载中...</p>
-    <p v-if="noMore">没有更多了</p>
+    <div v-if="loadStatus" class="load-bottom">
+      <loading />
+    </div>
+    <div v-if="noMore" class="load-bottom flex-center">厉害啊, 拉完了~~</div>
   </div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   data() {
     return {
@@ -135,13 +145,15 @@ export default {
       },
       // 歌手列表
       singers: [],
-      loading: false
+      disabledScroll: false,
+      loading: false,
+      loadStatus: true
     }
   },
   components: {},
   computed: {
     noMore() {
-      return this.count >= 20
+      return !this.loadStatus
     },
     disabled() {
       return this.loading || this.noMore
@@ -180,14 +192,10 @@ export default {
         this.en = val
         this.params.initial = val
       }
+      this.params.offset = 0
+      this.loadStatus = true
+      this.singers = []
       this.getSingerList()
-    },
-    load () {
-      this.loading = true
-      setTimeout(() => {
-        this.count += 2
-        this.loading = false
-      }, 2000)
     },
     // 获取歌手列表
     async getSingerList() {
@@ -197,21 +205,29 @@ export default {
         if (res.code === 200) {
           this.singers = this.singers.concat(res.artists)
           if (res.more) {
-            // this.finishedText = '加载中...'
-            // this.isShow = true
-            // this.loadStatus = true
-            this.loading = true
-            this.offset += 30
-          } else {
-            // this.finishedText = '厉害啊, 拉完了~~'
             this.loading = false
+            this.params.offset += 30
+          } else {
+            this.loadStatus = false
           }
         }
-        this.singers = res.artists
       } catch (error) {
         console.log(error)
       }
-    }
+    },
+    // 跳转歌手页面
+    toSinger(item) {
+      this.$router.push({
+        name: 'singerDetail',
+        query: {
+          id: item.id
+        }
+      })
+      this.setSinger(item)
+    },
+    ...mapMutations({
+      setSinger: 'SET_SINGER'
+    })
   },
   created() {},
   mounted() {

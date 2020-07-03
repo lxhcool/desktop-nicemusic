@@ -5,8 +5,15 @@
         <a>
           <div class="cover">
             <div class="image">
-              <el-image :key="item.picUrl" :src="item.picUrl" lazy>
-                <div slot="placeholder" class="image-slot flex-center flex-column">
+              <el-image
+                :key="item.picUrl + '?param=300y300'"
+                :src="item.picUrl + '?param=300y300'"
+                lazy
+              >
+                <div
+                  slot="placeholder"
+                  class="image-slot flex-center flex-column"
+                >
                   <i class="iconfont niceicon-3"></i>
                   <p>加载中<span class="dot">...</span></p>
                 </div>
