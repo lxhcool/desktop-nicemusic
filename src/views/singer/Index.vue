@@ -1,5 +1,5 @@
 <template>
-  <div class="singer-wrap">
+  <div class="singer-wrap container">
     <div class="filter">
       <ul class="tag-lang">
         <li
@@ -22,7 +22,6 @@
         </li>
       </ul>
       <ul class="tag-en">
-        <!-- <li v-for="item of ens" :key="item">{{ item }}</li> -->
         <li
           v-for="item of ens"
           :key="item.value"
@@ -39,6 +38,7 @@
       :infinite-scroll-immediate="disabledScroll"
       infinite-scroll-disabled="disabled"
       infinite-scroll-delay="500"
+      style="overflow-y: auto;"
     >
       <li v-for="item of singers" :key="item.id" @click="toSinger(item)">
         <div class="cover">
@@ -238,6 +238,8 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .singer-wrap {
+  height: 100vh;
+  margin-top: -20px;
   li {
     &:hover {
       color: $color-theme;
@@ -267,6 +269,10 @@ export default {
         background: $color-theme;
         font-weight: 700;
         color: #ffffff;
+      }
+      &:hover {
+        color: $color-theme;
+        transition: all 0.4s;
       }
     }
   }

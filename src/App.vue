@@ -1,18 +1,24 @@
 <template>
   <div id="app">
-    <nice-menu></nice-menu>
+    <nice-header></nice-header>
+    <!-- <nice-menu></nice-menu> -->
     <router-view />
-    <player-bar></player-bar>
+    <!-- <player-bar></player-bar> -->
+    <back-top></back-top>
   </div>
 </template>
 
 <script>
-import NiceMenu from 'components/common/menu/Index'
-import PlayerBar from 'components/common/playerBar/Index'
+import NiceHeader from 'components/common/header/Index'
+import BackTop from 'components/common/gotop/Index'
+// import NiceMenu from 'components/common/menu/Index'
+// import PlayerBar from 'components/common/playerBar/Index'
 export default {
   components: {
-    NiceMenu,
-    PlayerBar
+    NiceHeader,
+    BackTop
+    // NiceMenu,
+    // PlayerBar
   }
 }
 </script>

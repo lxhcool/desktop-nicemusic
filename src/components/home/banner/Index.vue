@@ -76,5 +76,8 @@ export default {
 }
 .banner {
   position: relative;
+  img {
+    border-radius: 3px;
+  }
 }
 </style>

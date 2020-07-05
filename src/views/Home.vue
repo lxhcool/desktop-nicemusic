@@ -1,5 +1,5 @@
 <template>
-  <div class="home-wrap">
+  <div class="home-wrap container">
     <banner></banner>
     <recommend-songs></recommend-songs>
     <recommend-music></recommend-music>

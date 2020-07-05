@@ -1,6 +1,5 @@
 <template>
   <div class="layout">
-    <nice-header></nice-header>
     <div class="fluid">
       <router-view></router-view>
     </div>
@@ -8,31 +7,24 @@
 </template>
 
 <script>
-import NiceHeader from 'components/common/header/Index'
-
 export default {
   data() {
     return {}
   },
-  components: {
-    NiceHeader
-  }
+  components: {}
 }
 </script>
 
 <style lang="stylus" scoped>
 .layout {
   width: 100%;
-  height 100%;
-  background: #f8f9ff;
+  height: 100vh;
   z-index: 998;
   width: auto;
-  overflow-y: auto;
-  margin: 0 0 0 208px;
-  padding: 24px 24px 84px;
   min-width: 1024px;
+  padding-top: 70px;
   .fluid {
-    padding: 18px 0px;
+    padding: 20px 0;
   }
 }
 </style>
