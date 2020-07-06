@@ -1,6 +1,6 @@
 <template>
   <div class="singer-detail">
-    <div class="singer-info flex-layout">
+    <div class="singer-info">
       <div class="top">
         <div class="top-mask">
           <div class="singer-box flex-column flex-center">
@@ -41,21 +41,77 @@
         </div>
         <div class="bottom-trangle"></div>
       </div>
+      <div class="bottom container">
+        <ul class="nav flex-center">
+          <li
+            v-for="item of navList"
+            :key="item.id"
+            :class="active == item.id ? 'active' : ''"
+            @click="tabItem(item.id)"
+          >
+            {{ item.name }}
+          </li>
+        </ul>
+        <div class="content">
+          <artist-list :songs="songs" v-show="active === 1" />
+          <album-list :singerId="singerId" v-show="active === 2" />
+          <div class="mv-box">
+            MV
+          </div>
+          <!-- <div class="info-box">
+            歌手详情
+          </div>
+          <div class="simi-box">
+            相似歌手
+          </div> -->
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { createSong } from '@/model/song'
+import ArtistList from 'components/common/artistList/Index'
+import AlbumList from 'components/common/albumList/Index'
 export default {
   data() {
     return {
       singerDetail: {},
       userDetail: {},
-      songs: []
+      songs: [],
+      // 歌手id
+      singerId: '',
+      navList: [
+        {
+          name: '作品',
+          id: 1
+        },
+        {
+          name: '专辑',
+          id: 2
+        },
+        {
+          name: 'MV',
+          id: 3
+        },
+        {
+          name: '歌手详情',
+          id: 4
+        },
+        {
+          name: '相似歌手',
+          id: 5
+        }
+      ],
+      active: 3
     }
   },
-  components: {},
+  components: {
+    ArtistList,
+    AlbumList
+  },
   computed: {
     ...mapGetters(['singer']),
     detail() {
@@ -80,16 +136,20 @@ export default {
   },
   watch: {},
   methods: {
+    // 切换歌手信息
+    tabItem(id) {
+      this.active = id
+    },
     // 获取歌手基本信息和热门50首单曲
     async getArtists(id) {
       try {
         let res = await this.$api.getArtists(id)
-        // console.log(res)
         if (res.code === 200) {
           this.singerDetail = res.artist
           this.getUserDetail(res.artist.accountId)
         }
-        // this.songs = res.result
+        this.songs = this._normalizeSongs(res.hotSongs)
+        console.log(this.songs)
       } catch (error) {
         console.log(error)
       }
@@ -109,11 +169,22 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    // 处理歌曲
+    _normalizeSongs(list) {
+      let ret = []
+      list.map(item => {
+        if (item.id) {
+          ret.push(createSong(item))
+        }
+      })
+      return ret
     }
   },
   created() {
     let id = this.$route.query.id || this.singer.id
     if (id) {
+      this.singerId = id
       this.getArtists(id)
     }
   },
@@ -121,6 +192,9 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
+.avatar >>> img {
+  border-radius: 5px;
+}
 .singer-detail {
   margin-top: -20px;
   .singer-info {
@@ -248,38 +322,22 @@ export default {
         z-index: 1;
       }
     }
-    .info {
-      h2 {
-        font-size: 20px;
-        font-weight: bold;
-        margin-top: 5px;
-      }
-      .tag {
-        margin-top: 15px;
+    .bottom {
+      .nav {
+        margin: 30px 0;
         li {
-          padding: 0 15px;
-          height: 25px;
-          // border: 1px solid $color-theme;
-          // background: #fff;
-          box-shadow: 0 0 10px 0 rgba(0, 0, 0, .1);
-          border-radius: 50px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-right: 15px;
-          .icon-level {
-            font-size: 24px;
-            color: $color-theme;
-            margin-left: 3px;
-          }
-          &.birst {
-            i {
-              font-size: 18px;
-              color: $color-theme;
-              margin-right: 5px;
-            }
+          margin: 0 20px;
+          font-size: 14px;
+          font-weight: bold;
+          cursor: pointer;
+          &.active {
             color: $color-theme;
           }
+        }
+      }
+      .content {
+        .mv-box {
+
         }
       }
     }

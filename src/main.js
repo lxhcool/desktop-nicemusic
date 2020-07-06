@@ -20,7 +20,9 @@ import {
   Pagination,
   MessageBox,
   Message,
-  Notification
+  Notification,
+  Table,
+  TableColumn
 } from 'element-ui'
 Vue.use(Avatar)
   .use(Image)
@@ -30,6 +32,8 @@ Vue.use(Avatar)
   .use(Dropdown)
   .use(DropdownMenu)
   .use(DropdownItem)
+  .use(Table)
+  .use(TableColumn)
 Vue.config.productionTip = false
 Vue.prototype.$api = getApi
 Vue.prototype.utils = utils

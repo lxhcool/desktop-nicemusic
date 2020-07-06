@@ -34,7 +34,9 @@
           </p>
         </div>
         <p class="album">《{{ item.song.album.name }}》</p>
-        <p class="duration transition">03:49</p>
+        <p class="duration transition">
+          {{ utils.formatTime(item.song.duration) }}
+        </p>
         <div class="tools transition">
           <i class="iconfont niceOutlined_Play"></i>
           <i class="iconfont niceadd"></i>

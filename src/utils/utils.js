@@ -76,5 +76,27 @@ export default {
       )
       return parseFloat(parseInt(num / 10000) + '.' + decimal) + '万'
     }
+  },
+  // 格式化时间毫秒转分秒
+  formatTime(time) {
+    // 取整
+    time = ~~time
+    var formatTime
+    if (time < 10) {
+      formatTime = '00:0' + time
+    } else if (time < 60) {
+      formatTime = '00:' + time
+    } else {
+      var m = ~~parseInt((time % (1000 * 60 * 60)) / (1000 * 60))
+      if (m < 10) {
+        m = '0' + m
+      }
+      var s = ~~parseInt((time % (1000 * 60)) / 1000)
+      if (s < 10) {
+        s = '0' + s
+      }
+      formatTime = m + ':' + s
+    }
+    return formatTime
   }
 }
