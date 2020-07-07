@@ -1,5 +1,5 @@
 <template>
-  <div class="artist-box" v-show="active == 1">
+  <div class="artist-box">
     <div class="artist-head">
       <ul class="flex-row">
         <li class="head-num">序号</li>

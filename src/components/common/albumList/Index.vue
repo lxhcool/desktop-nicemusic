@@ -70,7 +70,6 @@ export default {
       try {
         let res = await this.$api.getArtistAlbum(params)
         if (res.code === 200) {
-          console.log(res)
           this.albums = res.hotAlbums
         }
       } catch (error) {

@@ -53,46 +53,13 @@
           </li>
         </ul>
         <div class="content">
-          <artist-list :songs="songs" v-show="active === 1" />
-          <album-list :singerId="singerId" v-show="active === 2" />
-          <div class="mv-box">
-            <ul class="mv-list">
-              <li v-for="item of mvs" :key="item.id">
-                <div class="cover">
-                  <div class="image">
-                    <el-image
-                      :key="item.imgurl16v9 + '?param=830y467'"
-                      :src="item.imgurl16v9 + '?param=830y467'"
-                      lazy
-                    >
-                      <div
-                        slot="placeholder"
-                        class="image-slot flex-center flex-column"
-                      >
-                        <i class="iconfont niceicon-3"></i>
-                      </div>
-                      <div slot="error" class="image-slot flex-center">
-                        <i class="el-icon-picture-outline"></i>
-                      </div>
-                    </el-image>
-                  </div>
-                  <div class="count">
-                    <i class="arrow"></i>
-                    <span>{{ utils.tranNumber(item.playCount, 0) }}</span>
-                  </div>
-                  <div class="action">
-                    <button class="play flex-center" title="播放">
-                      <i class="iconfont nicebofang1"></i>
-                    </button>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <!-- <div class="info-box">
+          <artist-list :songs="songs" v-show="active == 1" />
+          <album-list :singerId="singerId" v-show="active == 2" />
+          <mv-list :mvs="mvs" v-show="active == 3" />
+          <div class="info-box" v-show="active == 4">
             歌手详情
           </div>
-          <div class="simi-box">
+          <!-- <div class="simi-box">
             相似歌手
           </div> -->
         </div>
@@ -106,6 +73,7 @@ import { mapGetters } from 'vuex'
 import { createSong } from '@/model/song'
 import ArtistList from 'components/common/artistList/Index'
 import AlbumList from 'components/common/albumList/Index'
+import MvList from 'components/common/mvList/Index'
 export default {
   data() {
     return {
@@ -137,12 +105,13 @@ export default {
           id: 5
         }
       ],
-      active: 3
+      active: 4
     }
   },
   components: {
     ArtistList,
-    AlbumList
+    AlbumList,
+    MvList
   },
   computed: {
     ...mapGetters(['singer']),
@@ -181,7 +150,6 @@ export default {
           this.getUserDetail(res.artist.accountId)
         }
         this.songs = this._normalizeSongs(res.hotSongs)
-        console.log(this.songs)
       } catch (error) {
         console.log(error)
       }
@@ -207,8 +175,18 @@ export default {
       try {
         let res = await this.$api.getArtistMv(id)
         if (res.code === 200) {
-          console.log(res)
           this.mvs = res.mvs
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 获取歌手简介
+    async getArtistDesc(id) {
+      try {
+        let res = await this.$api.getArtistDesc(id)
+        if (res.code === 200) {
+          console.log(res)
         }
       } catch (error) {
         console.log(error)
@@ -231,6 +209,7 @@ export default {
       this.singerId = id
       this.getArtists(id)
       this.getArtistMv(id)
+      this.getArtistDesc(id)
     }
   },
   mounted() {}
@@ -381,95 +360,8 @@ export default {
         }
       }
       .content {
-        .mv-box {
-          .mv-list {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            li {
-              padding: 0 15px 30px;
-              flex: 0 0 25%;
-              max-width: 25%;
-              .cover {
-                position: relative;
-                z-index: 2;
-                padding-top: 56%;
-                border-radius: 2px;
-                background-color: #000;
-                .image {
-                  position: absolute;
-                  top: 0;
-                  left: 0;
-                  overflow: hidden;
-                  width: 100%;
-                  height: 100%;
-                  border-radius: 2px;
-                }
-                .count {
-                  position: absolute;
-                  right: 16px;
-                  top: 1px;
-                  height: 24px;
-                  padding-left: 9px;
-                  background: url(https://img.alicdn.com/tfs/TB1xEGRub9YBuNjy0FgXXcxcXXa-268-48.png) no-repeat 0;
-                  background-size: cover;
-                  color: #fff;
-                  font-size: 12px;
-                  font-weight: 700;
-                  line-height: 24px;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  .arrow {
-                    display: block;
-                    width: 0;
-                    height: 0;
-                    border-style: solid;
-                    border-width: 4px 0 4px 6px;
-                    border-color: transparent transparent transparent #ffffff;
-                    margin-right: 5px;
-                  }
-                  &:after {
-                    content: '';
-                    position: absolute;
-                    right: -14px;
-                    top: 0;
-                    width: 14px;
-                    height: 24px;
-                    background: url(https://img.alicdn.com/tfs/TB1xEGRub9YBuNjy0FgXXcxcXXa-268-48.png) no-repeat 100%;
-                    background-size: cover;
-                  }
-                }
-                .action {
-                  display: none;
-                  position: absolute;
-                  top: 50%;
-                  left: 50%;
-                  -webkit-transform: translate(-50%, -50%);
-                  -ms-transform: translate(-50%, -50%);
-                  transform: translate(-50%, -50%);
-                  .play {
-                    width: 32px;
-                    height: 32px;
-                    padding: 0;
-                    border: none;
-                    border-radius: 50%;
-                    color: #fff;
-                    cursor: pointer;
-                    background-color: $color-theme;
-                    i {
-                      font-size: 12px;
-                    }
-                  }
-                }
-                &:hover {
-                  .action {
-                    display: flex;
-                  }
-                }
-              }
-            }
-          }
+        .info-box {
+
         }
       }
     }
