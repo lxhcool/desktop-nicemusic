@@ -43,6 +43,9 @@
         </div>
       </li>
     </ul>
+    <div v-if="loadStatus" class="load-bottom">
+      <loading />
+    </div>
   </div>
 </template>
 
@@ -54,10 +57,23 @@ export default {
   props: {
     mvs: {
       type: Array
+    },
+    loadStatus: {
+      type: Boolean
+    },
+    loading: {
+      type: Boolean
     }
   },
   components: {},
-  computed: {},
+  computed: {
+    noMore() {
+      return !this.loading
+    },
+    disabled() {
+      return this.loading || this.noMore
+    }
+  },
   watch: {},
   methods: {},
   created() {},
@@ -66,6 +82,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .mv-box {
+  padding: 15px 0;
   .mv-list {
     display: flex;
     align-items: center;

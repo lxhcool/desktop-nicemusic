@@ -9,6 +9,7 @@ let instance = axios.create({
 })
 
 instance.defaults.responseType = 'json'
+instance.defaults.withCredentials = true
 instance.defaults.transformRequest = [
   data => {
     return qs.stringify(data)
@@ -50,6 +51,7 @@ ajaxMethod.forEach(method => {
           if (response.code === 200) {
             resolve(response)
           }
+          resolve(response)
         })
         .catch(error => {
           reject(error)

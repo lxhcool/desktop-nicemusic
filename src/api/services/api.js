@@ -35,7 +35,7 @@ export const getArtists = id => api.get(`/artists?id=${id}`, {})
  * @method 获取歌手mv
  * @params id 歌手 id
  */
-export const getArtistMv = id => api.get(`/artist/mv?id=${id}`, {})
+export const getArtistMv = params => api.get(`/artist/mv`, { params })
 
 /**
  * @method 获取歌手专辑

@@ -33,7 +33,7 @@
           </div>
         </div>
         <div class="info">
-          <div class="name ellipsis-two">{{ item.name }}</div>
+          <div class="name ellipsis">{{ item.name }}</div>
           <div class="author">{{ item.artist.name }}</div>
           <div class="time author">
             {{ utils.dateFormat(item.publishTime, 'YYYY-MM-DD') }}
@@ -41,51 +41,45 @@
         </div>
       </li>
     </ul>
+    <div v-if="loadStatus" class="load-bottom">
+      <loading />
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {
-      albums: []
-    }
+    return {}
   },
   props: {
-    singerId: {
-      type: String
+    albums: {
+      type: Array
+    },
+    loadStatus: {
+      type: Boolean
+    },
+    loading: {
+      type: Boolean
     }
   },
   components: {},
-  computed: {},
-  watch: {},
-  methods: {
-    // 获取歌手专辑
-    async getArtistAlbum(id) {
-      let params = {
-        id,
-        limit: 30,
-        offset: 0
-      }
-      try {
-        let res = await this.$api.getArtistAlbum(params)
-        if (res.code === 200) {
-          this.albums = res.hotAlbums
-        }
-      } catch (error) {
-        console.log(error)
-      }
+  computed: {
+    noMore() {
+      return !this.loading
+    },
+    disabled() {
+      return this.loading || this.noMore
     }
   },
-  created() {
-    this.getArtistAlbum(this.singerId)
-  },
+  watch: {},
+  methods: {},
+  created() {},
   mounted() {}
 }
 </script>
 <style lang="stylus" scoped>
 .album-box {
-  background: #fff;
   padding: 15px 0;
   .album-list {
     flex-wrap: wrap;

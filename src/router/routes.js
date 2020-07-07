@@ -24,7 +24,7 @@ export const appRouter = [
         },
         name: 'home',
         component: resolve => {
-          require(['@/views/Home'], resolve)
+          require(['@/views/home/Index'], resolve)
         }
       },
       {

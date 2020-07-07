@@ -54,14 +54,43 @@
         </ul>
         <div class="content">
           <artist-list :songs="songs" v-show="active == 1" />
-          <album-list :singerId="singerId" v-show="active == 2" />
-          <mv-list :mvs="mvs" v-show="active == 3" />
+          <load-more @scroll-state="load">
+            <album-list
+              :albums="albums"
+              :loading="loading"
+              :loadStatus="loadStatus"
+              v-show="active == 2"
+            />
+          </load-more>
+          <mv-list
+            :mvs="mvs"
+            :loading="loading"
+            :loadStatus="loadStatus"
+            v-show="active == 3"
+          />
           <div class="info-box" v-show="active == 4">
-            歌手详情
+            <h2 class="title">{{ detail.name }}简介</h2>
+            <div class="profile" v-html="singerDesc.briefDesc"></div>
+            <div class="introduction">
+              <div
+                class="item"
+                v-for="item of singerDesc.introduction"
+                :key="item.ti"
+              >
+                <h3 class="sub-title">{{ item.ti }}</h3>
+                <p v-html="item.txt"></p>
+              </div>
+            </div>
           </div>
-          <!-- <div class="simi-box">
-            相似歌手
-          </div> -->
+          <div class="simi-box" v-show="active == 5">
+            <ul class="singer-list">
+              <singer-item
+                v-for="item of singers"
+                :key="item.id"
+                :item="item"
+              />
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -74,15 +103,28 @@ import { createSong } from '@/model/song'
 import ArtistList from 'components/common/artistList/Index'
 import AlbumList from 'components/common/albumList/Index'
 import MvList from 'components/common/mvList/Index'
+import SingerItem from 'components/common/singerItem/Index'
+import loadMore from 'components/common/loadMore/Index'
 export default {
   data() {
     return {
+      // 歌手基本信息
       singerDetail: {},
+      // 歌手用户信息
       userDetail: {},
+      // 歌手简介
+      singerDesc: {},
+      // 热门单曲
       songs: [],
+      // 专辑
+      albums: [],
+      // 相似歌手
+      singers: [],
+      // 歌手MV
       mvs: [],
       // 歌手id
       singerId: '',
+      // 模块
       navList: [
         {
           name: '作品',
@@ -105,19 +147,30 @@ export default {
           id: 5
         }
       ],
-      active: 4
+      // 当前显示模块
+      active: 1,
+      // 分页显示条数
+      limit: 20,
+      // 分页偏移
+      offset: 0,
+      loading: false,
+      loadStatus: true
     }
   },
   components: {
     ArtistList,
     AlbumList,
-    MvList
+    MvList,
+    SingerItem,
+    loadMore
   },
   computed: {
     ...mapGetters(['singer']),
+    // 合并歌手详情
     detail() {
       return Object.assign(this.singerDetail, this.userDetail)
     },
+    // 设置歌手性别
     gender() {
       if (this.detail.gender > 0) {
         return this.detail.gender === 1
@@ -127,15 +180,29 @@ export default {
         return ''
       }
     },
+    // 设置歌手等级
     level() {
       if (this.detail.level > 0) {
         return 'nicelevel-' + this.detail.level
       } else {
         return ''
       }
+    },
+    noMore() {
+      return !this.loading
+    },
+    disabled() {
+      return this.loading || this.noMore
     }
   },
-  watch: {},
+  watch: {
+    $route() {
+      let id = this.$route.query.id || this.singer.id
+      if (id) {
+        this._initialize(id)
+      }
+    }
+  },
   methods: {
     // 切换歌手信息
     tabItem(id) {
@@ -167,18 +234,58 @@ export default {
           this.userDetail = detail
         }
       } catch (error) {
-        console.log(error)
+        detail.level = ''
+        detail.followeds = ''
+        detail.gender = ''
+        this.userDetail = detail
+      }
+    },
+    // 获取歌手专辑
+    async getArtistAlbum(id) {
+      let params = {
+        id: this.singerId || id,
+        limit: this.limit,
+        offset: this.offset
+      }
+      try {
+        this.loadStatus = false
+        let res = await this.$api.getArtistAlbum(params)
+        if (res.code === 200) {
+          this.albums = this.albums.concat(res.hotAlbums)
+          if (res.more) {
+            this.loadStatus = true
+            this.loading = true
+            this.offset += 20
+          } else {
+            this.loading = false
+          }
+        }
+      } catch (error) {
+        this.$message.error('error')
       }
     },
     // 获取歌手MV
     async getArtistMv(id) {
+      let params = {
+        id: this.singerId || id,
+        limit: this.limit,
+        offset: this.offset
+      }
       try {
-        let res = await this.$api.getArtistMv(id)
+        this.loadStatus = false
+        let res = await this.$api.getArtistMv(params)
         if (res.code === 200) {
-          this.mvs = res.mvs
+          this.mvs = this.mvs.concat(res.mvs)
+          if (res.hasMore) {
+            this.loadStatus = true
+            this.loading = true
+            this.offset += 20
+          } else {
+            this.loading = false
+          }
         }
       } catch (error) {
-        console.log(error)
+        this.$message.error('error')
       }
     },
     // 获取歌手简介
@@ -186,7 +293,24 @@ export default {
       try {
         let res = await this.$api.getArtistDesc(id)
         if (res.code === 200) {
-          console.log(res)
+          if (res.introduction.length > 0) {
+            res.introduction.map(item => {
+              item.txt.replace('↵', '/n')
+              item.txt = item.txt.replace(/(\r\n|\n|\r)/gm, '<br />')
+            })
+          }
+          this.singerDesc = res
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 获取相似歌手
+    async getArtistSimi(id) {
+      try {
+        let res = await this.$api.getArtistSimi(id)
+        if (res.code === 200) {
+          this.singers = res.artists
         }
       } catch (error) {
         console.log(error)
@@ -201,15 +325,36 @@ export default {
         }
       })
       return ret
+    },
+    //初始化
+    _initialize(id) {
+      this.active = 1
+      this.offset = 0
+      this.albums = []
+      this.singerId = Number(id)
+      this.getArtists(id)
+      this.getUserDetail(id)
+      this.getArtistAlbum(id)
+      this.getArtistMv(id)
+      this.getArtistDesc(id)
+      this.getArtistSimi(id)
+    },
+    load() {
+      if (this.loadStatus) {
+        setTimeout(() => {
+          if (this.active == 2) {
+            this.getArtistAlbum(this.singerId)
+          } else if (this.active == 3) {
+            // this.getArtistMv(this.singerId)
+          }
+        }, 1000)
+      }
     }
   },
   created() {
     let id = this.$route.query.id || this.singer.id
     if (id) {
-      this.singerId = id
-      this.getArtists(id)
-      this.getArtistMv(id)
-      this.getArtistDesc(id)
+      this._initialize(id)
     }
   },
   mounted() {}
@@ -220,6 +365,7 @@ export default {
   border-radius: 5px;
 }
 .singer-detail {
+  height: 100vh;
   margin-top: -20px;
   .singer-info {
     .top {
@@ -360,8 +506,49 @@ export default {
         }
       }
       .content {
+        background: #fff;
         .info-box {
-
+          padding: 15px;
+          .title {
+            text-align: center;
+            position: relative;
+            margin-bottom: 30px;
+            &::after {
+              content: '';
+              width: 40px;
+              height: 2px;
+              background: $color-theme;
+              position: absolute;
+              left: 50%;
+              bottom: -10px;
+              margin-left: -20px;
+            }
+          }
+          .profile {
+            line-height: 1.7;
+            margin-bottom: 20px;
+            text-align: center;
+          }
+          .introduction {
+            .item {
+              margin-bottom: 15px;
+              .sub-title {
+                margin-bottom: 10px;
+              }
+              p {
+                line-height: 1.7
+              }
+            }
+          }
+        }
+        .simi-box {
+          padding: 15px 15px;
+          .singer-list {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            margin: 0px -15px 0;
+          }
         }
       }
     }
