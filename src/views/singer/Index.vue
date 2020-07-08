@@ -204,7 +204,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .singer-wrap {
-  height: 100vh;
+  // height: 100vh;
   margin-top: -20px;
   li {
     &:hover {

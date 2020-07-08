@@ -182,7 +182,7 @@ export default {
           content: '';
           position: absolute;
           z-index: 1;
-          right: 0;
+          right: 3px;
           top: 50%;
           -webkit-transform: translateY(-50%);
           -ms-transform: translateY(-50%);
@@ -191,6 +191,12 @@ export default {
           padding-top: 100%;
           background-color: #000;
           border-radius: 50%;
+          transition: all 0.4s;
+        }
+        &:hover {
+          &::after {
+            right: 0px;
+          }
         }
       }
       .info {

@@ -18,7 +18,7 @@ export default {
 <style lang="stylus" scoped>
 .layout {
   width: 100%;
-  height: 100vh;
+  // height: 100vh;
   z-index: 998;
   width: auto;
   min-width: 1024px;

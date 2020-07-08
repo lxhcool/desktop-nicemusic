@@ -53,22 +53,10 @@
           </li>
         </ul>
         <div class="content">
-          <artist-list :songs="songs" v-show="active == 1" />
-          <load-more @scroll-state="load">
-            <album-list
-              :albums="albums"
-              :loading="loading"
-              :loadStatus="loadStatus"
-              v-show="active == 2"
-            />
-          </load-more>
-          <mv-list
-            :mvs="mvs"
-            :loading="loading"
-            :loadStatus="loadStatus"
-            v-show="active == 3"
-          />
-          <div class="info-box" v-show="active == 4">
+          <artist-list :songs="songs" v-if="active == 1" />
+          <album-list :albums="albums" v-if="active == 2" />
+          <mv-list :mvs="mvs" v-if="active == 3" />
+          <div class="info-box" v-if="active == 4">
             <h2 class="title">{{ detail.name }}简介</h2>
             <div class="profile" v-html="singerDesc.briefDesc"></div>
             <div class="introduction">
@@ -82,7 +70,7 @@
               </div>
             </div>
           </div>
-          <div class="simi-box" v-show="active == 5">
+          <div class="simi-box" v-if="active == 5">
             <ul class="singer-list">
               <singer-item
                 v-for="item of singers"
@@ -104,7 +92,6 @@ import ArtistList from 'components/common/artistList/Index'
 import AlbumList from 'components/common/albumList/Index'
 import MvList from 'components/common/mvList/Index'
 import SingerItem from 'components/common/singerItem/Index'
-import loadMore from 'components/common/loadMore/Index'
 export default {
   data() {
     return {
@@ -152,17 +139,14 @@ export default {
       // 分页显示条数
       limit: 20,
       // 分页偏移
-      offset: 0,
-      loading: false,
-      loadStatus: true
+      offset: 0
     }
   },
   components: {
     ArtistList,
     AlbumList,
     MvList,
-    SingerItem,
-    loadMore
+    SingerItem
   },
   computed: {
     ...mapGetters(['singer']),
@@ -187,12 +171,6 @@ export default {
       } else {
         return ''
       }
-    },
-    noMore() {
-      return !this.loading
-    },
-    disabled() {
-      return this.loading || this.noMore
     }
   },
   watch: {
@@ -217,6 +195,8 @@ export default {
           this.getUserDetail(res.artist.accountId)
         }
         this.songs = this._normalizeSongs(res.hotSongs)
+        this.getArtistAlbum(id)
+        this.getArtistMv(id)
       } catch (error) {
         console.log(error)
       }
@@ -244,21 +224,13 @@ export default {
     async getArtistAlbum(id) {
       let params = {
         id: this.singerId || id,
-        limit: this.limit,
+        limit: this.detail.albumSize,
         offset: this.offset
       }
       try {
-        this.loadStatus = false
         let res = await this.$api.getArtistAlbum(params)
         if (res.code === 200) {
-          this.albums = this.albums.concat(res.hotAlbums)
-          if (res.more) {
-            this.loadStatus = true
-            this.loading = true
-            this.offset += 20
-          } else {
-            this.loading = false
-          }
+          this.albums = res.hotAlbums
         }
       } catch (error) {
         this.$message.error('error')
@@ -268,21 +240,13 @@ export default {
     async getArtistMv(id) {
       let params = {
         id: this.singerId || id,
-        limit: this.limit,
+        limit: this.detail.mvSize,
         offset: this.offset
       }
       try {
-        this.loadStatus = false
         let res = await this.$api.getArtistMv(params)
         if (res.code === 200) {
-          this.mvs = this.mvs.concat(res.mvs)
-          if (res.hasMore) {
-            this.loadStatus = true
-            this.loading = true
-            this.offset += 20
-          } else {
-            this.loading = false
-          }
+          this.mvs = res.mvs
         }
       } catch (error) {
         this.$message.error('error')
@@ -329,26 +293,15 @@ export default {
     //初始化
     _initialize(id) {
       this.active = 1
-      this.offset = 0
+      this.albumOffset = 0
+      this.mvOffset = 0
       this.albums = []
+      this.mvs = []
       this.singerId = Number(id)
       this.getArtists(id)
       this.getUserDetail(id)
-      this.getArtistAlbum(id)
-      this.getArtistMv(id)
       this.getArtistDesc(id)
       this.getArtistSimi(id)
-    },
-    load() {
-      if (this.loadStatus) {
-        setTimeout(() => {
-          if (this.active == 2) {
-            this.getArtistAlbum(this.singerId)
-          } else if (this.active == 3) {
-            // this.getArtistMv(this.singerId)
-          }
-        }, 1000)
-      }
     }
   },
   created() {
@@ -365,7 +318,6 @@ export default {
   border-radius: 5px;
 }
 .singer-detail {
-  height: 100vh;
   margin-top: -20px;
   .singer-info {
     .top {

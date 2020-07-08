@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="header shadow">
     <div class="container flex-row">
       <div class="logo">
         <a href="index.html"></a>
@@ -149,7 +149,7 @@ export default {
   width: 100%;
   height: 70px;
   transition: all 400ms ease-in-out;
-  box-shadow: 0px 5px 60px 0px rgba(17, 58, 93, 0.1);
+  // box-shadow: 0px 5px 60px 0px rgba(17, 58, 93, 0.1);
   background-color: #fff;
   position: fixed;
   top: 0;

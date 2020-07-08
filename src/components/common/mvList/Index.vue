@@ -5,8 +5,8 @@
         <div class="cover">
           <div class="image">
             <el-image
-              :key="item.imgurl16v9 + '?param=830y467'"
-              :src="item.imgurl16v9 + '?param=830y467'"
+              :key="item.imgurl16v9 + '?param=352y197'"
+              :src="item.imgurl16v9 + '?param=325y197'"
               lazy
             >
               <div

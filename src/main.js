@@ -5,6 +5,7 @@ import store from '@/store'
 import getApi from '@/api/index'
 import utils from '@/utils/utils'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
+import infiniteScroll from 'vue-infinite-scroll'
 import Loading from '@/components/common/loading/Index.vue'
 import 'swiper/css/swiper.css'
 import '@/assets/styles/reset.styl'
@@ -38,6 +39,7 @@ Vue.config.productionTip = false
 Vue.prototype.$api = getApi
 Vue.prototype.utils = utils
 Vue.use(VueAwesomeSwiper)
+Vue.use(infiniteScroll)
 
 Vue.prototype.$msgbox = MessageBox
 Vue.prototype.$alert = MessageBox.alert

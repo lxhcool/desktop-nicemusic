@@ -3,6 +3,7 @@
     <nice-header></nice-header>
     <router-view />
     <!-- <player-bar></player-bar> -->
+    <nice-footer></nice-footer>
     <back-top></back-top>
   </div>
 </template>
@@ -11,10 +12,12 @@
 import NiceHeader from 'components/common/header/Index'
 import BackTop from 'components/common/gotop/Index'
 // import PlayerBar from 'components/common/playerBar/Index'
+import NiceFooter from 'components/common/footer/Index'
 export default {
   components: {
     NiceHeader,
-    BackTop
+    BackTop,
+    NiceFooter
     // PlayerBar
   }
 }
