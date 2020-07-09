@@ -6,8 +6,8 @@
           <div class="cover">
             <div class="image">
               <el-image
-                :key="item.picUrl + '?param=300y300'"
-                :src="item.picUrl + '?param=300y300'"
+                :key="item.picUrl || item.coverImgUrl + '?param=300y300'"
+                :src="item.picUrl || item.coverImgUrl + '?param=300y300'"
                 lazy
               >
                 <div

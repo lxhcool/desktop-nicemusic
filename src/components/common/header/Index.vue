@@ -8,8 +8,12 @@
         <li>
           <router-link :to="{ name: 'home' }" tag="a">发现音乐</router-link>
         </li>
-        <li><a href="###">排行榜</a></li>
-        <li><a href="###">歌单</a></li>
+        <li>
+          <router-link :to="{ name: 'rank' }" tag="a">排行榜</router-link>
+        </li>
+        <li>
+          <router-link :to="{ name: 'playlist' }" tag="a">歌单</router-link>
+        </li>
         <li>
           <router-link :to="{ name: 'singer' }" tag="a">歌手</router-link>
         </li>

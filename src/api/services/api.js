@@ -55,3 +55,13 @@ export const getArtistDesc = id => api.get(`/artist/desc?id=${id}`, {})
  * @params id 歌手 id
  */
 export const getArtistSimi = id => api.get(`/simi/artist?id=${id}`, {})
+
+/**
+ * @method 获取排行榜内容摘要
+ */
+export const getToplist = () => api.get(`/toplist/detail`, {})
+
+/**
+ * @method 获取歌单分类
+ */
+export const getCatList = () => api.get(`/playlist/catlist`, {})

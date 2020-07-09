@@ -48,6 +48,28 @@ export const appRouter = [
         component: resolve => {
           require(['@/views/singer/detail/Index.vue'], resolve)
         }
+      },
+      {
+        path: 'rank',
+        meta: {
+          title: '排行榜',
+          keepAlive: true
+        },
+        name: 'rank',
+        component: resolve => {
+          require(['@/views/rank/Index.vue'], resolve)
+        }
+      },
+      {
+        path: 'playlist',
+        meta: {
+          title: '歌单',
+          keepAlive: true
+        },
+        name: 'playlist',
+        component: resolve => {
+          require(['@/views/playlist/Index.vue'], resolve)
+        }
       }
     ]
   }

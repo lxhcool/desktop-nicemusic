@@ -23,7 +23,8 @@ import {
   Message,
   Notification,
   Table,
-  TableColumn
+  TableColumn,
+  Popover
 } from 'element-ui'
 Vue.use(Avatar)
   .use(Image)
@@ -35,6 +36,7 @@ Vue.use(Avatar)
   .use(DropdownItem)
   .use(Table)
   .use(TableColumn)
+  .use(Popover)
 Vue.config.productionTip = false
 Vue.prototype.$api = getApi
 Vue.prototype.utils = utils
