@@ -32,17 +32,12 @@
         </li>
       </ul>
     </div>
-    <ul
-      class="singer-list"
-      v-infinite-scroll="getSingerList"
-      :infinite-scroll-immediate="disabledScroll"
-      infinite-scroll-disabled="disabled"
-      infinite-scroll-delay="500"
-      style="overflow-y: auto;"
-    >
-      <singer-item v-for="item of singers" :key="item.id" :item="item" />
-    </ul>
-    <div v-if="loadStatus" class="load-bottom">
+    <load-more @scroll-state="load">
+      <ul class="singer-list">
+        <singer-item v-for="item of singers" :key="item.id" :item="item" />
+      </ul>
+    </load-more>
+    <div v-if="loading" class="load-bottom">
       <loading />
     </div>
   </div>
@@ -50,6 +45,7 @@
 
 <script>
 import SingerItem from 'components/common/singerItem/Index'
+import loadMore from 'components/common/loadMore/Index'
 export default {
   data() {
     return {
@@ -107,7 +103,7 @@ export default {
       // 请求参数
       params: {
         // 返回数量
-        limit: 30,
+        limit: 40,
         // 偏移数量
         offset: 0,
         // 分类
@@ -119,8 +115,6 @@ export default {
       },
       // 歌手列表
       singers: [],
-      // 是否立即加载
-      disabledScroll: false,
       // 是否显示加载动画
       loading: false,
       // 是否还有数据
@@ -128,15 +122,8 @@ export default {
     }
   },
   components: {
-    SingerItem
-  },
-  computed: {
-    noMore() {
-      return !this.loadStatus
-    },
-    disabled() {
-      return this.loading || this.noMore
-    }
+    SingerItem,
+    loadMore
   },
   watch: {},
   methods: {
@@ -179,19 +166,28 @@ export default {
     // 获取歌手列表
     async getSingerList() {
       try {
-        this.loading = true
+        this.loadStatus = false
         let res = await this.$api.getSingerList(this.params)
         if (res.code === 200) {
           this.singers = this.singers.concat(res.artists)
           if (res.more) {
-            this.loading = false
+            this.loading = true
+            this.loadStatus = true
             this.params.offset += 30
           } else {
-            this.loadStatus = false
+            this.loading = false
           }
         }
       } catch (error) {
         this.$message.error('error')
+      }
+    },
+    // 加载更多
+    load() {
+      if(this.loadStatus) {
+        setTimeout(() => {
+          this.getSingerList()
+        }, 1000)
       }
     }
   },

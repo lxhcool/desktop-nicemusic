@@ -87,6 +87,20 @@
   height: 100%;
 }
 
+/* element pagination */
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+  background-color: #fa2800;
+  color: #FFF;
+}
+
+.el-pagination.is-background .el-pager li:not(.disabled).active:hover {
+  color: #fff;
+}
+
+.el-pagination.is-background .el-pager li:not(.disabled):hover {
+  color: #fa2800;
+}
+
 .image-slot {
   position: absolute;
   top: 50%;
@@ -112,4 +126,8 @@
 
 .load-bottom {
   padding-bottom: 20px;
+}
+
+.page-wrap {
+  text-align: center;
 }

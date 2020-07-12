@@ -65,3 +65,13 @@ export const getToplist = () => api.get(`/toplist/detail`, {})
  * @method 获取歌单分类
  */
 export const getCatList = () => api.get(`/playlist/catlist`, {})
+
+/**
+ * @method 获取热门歌单分类
+ */
+export const getHotlist = () => api.get(`/playlist/hot`, {})
+
+/**
+ * @method 获取歌单
+ */
+export const getPlayList = params => api.get(`/top/playlist`, {params})
