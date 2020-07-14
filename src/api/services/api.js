@@ -74,4 +74,9 @@ export const getHotlist = () => api.get(`/playlist/hot`, {})
 /**
  * @method 获取歌单
  */
-export const getPlayList = params => api.get(`/top/playlist`, {params})
+export const getPlayList = params => api.get(`/top/playlist`, { params })
+
+/**
+ * @method 获取歌单详情
+ */
+export const getPlayListDetail = (id, s) => api.get(`/playlist/detail?id=${id}&s=${s}`, {})

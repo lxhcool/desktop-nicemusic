@@ -1,6 +1,6 @@
 <template>
   <div class="list">
-    <div class="item" v-for="item of sheetList" :key="item.id">
+    <div class="item" v-for="item of sheetList" :key="item.id" @click="toDetail(item.id)">
       <div class="wrapper">
         <a>
           <div class="cover">
@@ -52,7 +52,16 @@ export default {
   components: {},
   computed: {},
   watch: {},
-  methods: {},
+  methods: {
+    toDetail(id) {
+      this.$router.push({
+        name: 'playlistDetail',
+        query: {
+          id
+        }
+      })
+    }
+  },
   created() {},
   mounted() {}
 }
@@ -66,6 +75,7 @@ export default {
     flex: 0 0 12.5%;
     max-width: 12.5%;
     padding: 0 15px 30px;
+    cursor: pointer;
     .wrapper {
       position: relative;
       padding-right: 10px;

@@ -259,7 +259,6 @@ export default {
         if (res.code === 200) {
           if (res.introduction.length > 0) {
             res.introduction.map(item => {
-              item.txt.replace('↵', '/n')
               item.txt = item.txt.replace(/(\r\n|\n|\r)/gm, '<br />')
             })
           }

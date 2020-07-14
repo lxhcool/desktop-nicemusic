@@ -131,3 +131,7 @@
 .page-wrap {
   text-align: center;
 }
+
+.el-message-box__headerbtn:focus .el-message-box__close, .el-message-box__headerbtn:hover .el-message-box__close {
+  color: #fa2800;
+}

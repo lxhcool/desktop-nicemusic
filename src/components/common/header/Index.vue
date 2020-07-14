@@ -159,7 +159,7 @@ export default {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 2222;
+  z-index: 2000;
   .logo {
     width: 146px;
     display: flex;

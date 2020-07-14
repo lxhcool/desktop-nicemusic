@@ -70,6 +70,17 @@ export const appRouter = [
         component: resolve => {
           require(['@/views/playlist/Index.vue'], resolve)
         }
+      },
+      {
+        path: 'playlist-detail',
+        meta: {
+          title: '详情',
+          keepAlive: true
+        },
+        name: 'playlistDetail',
+        component: resolve => {
+          require(['@/views/playlist/detail/Index.vue'], resolve)
+        }
       }
     ]
   }
