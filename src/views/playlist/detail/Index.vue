@@ -85,7 +85,7 @@ export default {
 <style lang="stylus" scoped>
 .playlist-detail {
   .left {
-    width: 70%;
+    width: 980px;
     border-right: 1px solid #e7e7e7;
     padding-right: 15px;
     .top {
