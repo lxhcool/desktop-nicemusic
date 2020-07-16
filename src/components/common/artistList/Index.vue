@@ -154,15 +154,16 @@ export default {
           .song-tools {
             display: flex;
             justify-content: flex-end;
-            top: 0;
-            right: 0;
+            top: 50%;
+            margin-top: -25px;
+            right: 10px;
             position: absolute;
             display: none;
             i {
               flex-shrink: 0;
               cursor: pointer;
               margin-right: 10px;
-              font-size: 24px;
+              font-size: 20px;
             }
           }
         }
