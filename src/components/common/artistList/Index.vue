@@ -1,55 +1,66 @@
 <template>
   <div class="artist-box">
-    <div class="artist-head">
-      <ul class="flex-row">
-        <li class="head-num">序号</li>
-        <li class="head-name">歌曲</li>
-        <li class="head-album">专辑</li>
-        <li class="head-duration">时长</li>
-      </ul>
-    </div>
-    <ul class="artist-body artist-list">
-      <li class="flex-row item" v-for="(item, index) of songs" :key="item.id">
-        <div class="song-rank flex-row">
-          <div class="num">
-            <span>{{ index + 1 }}</span>
-          </div>
-          <div class="avatar">
-            <el-image
-              :key="item.image + '?param=100y100'"
-              :src="item.image + '?param=100y100'"
-              lazy
-            >
-              <div
-                slot="placeholder"
-                class="image-slot flex-center flex-column"
-              >
-                <i class="iconfont niceicon-3"></i>
+    <table class="artist-table">
+      <thead>
+        <tr>
+          <th class="th-index">序号</th>
+          <th class="th-name">歌曲</th>
+          <th class="th-artist">歌手</th>
+          <th class="th-album">专辑</th>
+          <th class="th-duration">时长</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) of songs" :key="item.id">
+          <td>
+            <div class="index-container flex-center">
+              <span class="num">{{ index + 1 }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="name-container">
+              <!-- <div class="avatar">
+                <el-image
+                  :key="item.image + '?param=100y100'"
+                  :src="item.image + '?param=100y100'"
+                  lazy
+                >
+                  <div
+                    slot="placeholder"
+                    class="image-slot flex-center flex-column"
+                  >
+                    <i class="iconfont niceicon-3"></i>
+                  </div>
+                  <div slot="error" class="image-slot flex-center">
+                    <i class="el-icon-picture-outline"></i>
+                  </div>
+                </el-image>
+              </div> -->
+              <p class="name ellipsis">{{ item.name }}</p>
+            </div>
+          </td>
+          <td>
+            <div class="artist-container">
+              <p class="author ellipsis">{{ item.singer }}</p>
+            </div>
+          </td>
+          <td>
+            <div class="album-container">
+              <p :title="item.album">{{ item.album }}</p>
+            </div>
+          </td>
+          <td>
+            <div class="duration-container">
+              <p>{{ item.duration }}</p>
+              <div class="song-tools">
+                <i class="iconfont niceicon-heart"></i>
+                <i class="iconfont nicexiazai"></i>
               </div>
-              <div slot="error" class="image-slot flex-center">
-                <i class="el-icon-picture-outline"></i>
-              </div>
-            </el-image>
-          </div>
-        </div>
-        <div class="song-name">
-          <p class="name ellipsis">{{ item.name }}</p>
-          <p class="author flex-row ellipsis">{{ item.singer }}</p>
-        </div>
-        <div class="song-album ellipsis">
-          <span :title="item.album">{{ item.album }}</span>
-        </div>
-        <div class="song-duration transition">
-          {{ item.duration }}
-        </div>
-        <div class="song-tools transition">
-          <i class="iconfont niceOutlined_Play"></i>
-          <i class="iconfont niceadd"></i>
-          <i class="iconfont niceicon-heart"></i>
-          <i class="iconfont nicexiazai"></i>
-        </div>
-      </li>
-    </ul>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -73,124 +84,97 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .artist-box {
-  .artist-head {
-    height: 46px;
-    line-height: 46px;
-    background: #fafafa;
-    color: #999;
-    ul {
-      li {
-        width: 23%;
-        font-weight: bold;
-        &.head-num {
-          width: 16.13%;
-          padding-left: 2.81%;
+  .artist-table {
+    width: 100%;
+    thead {
+      height: 50px;
+      line-height: 50px;
+      background: #fafafa;
+      color: #999;
+      th {
+        padding: 0 9px;
+        text-align: left;
+        font-weight: 300;
+        white-space: nowrap;
+        overflow: hidden;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        &.th-index {
+          width: 10%;
+          text-align: center;
         }
-        &.head-name {
-          width: 41.83%;
-          flex-shrink: 1;
+        &.th-name {
+          width: 40%;
         }
-        &.head-album {
-          width: auto;
-          flex: 1;
+        &.th-artist {
+          width: 25%;
         }
-        &.head-duration {
-          width: 6.56%;
+        &.th-album {
+          width: 15%;
+        }
+        &.th-duration {
+          width: 15%;
+          text-align: right;
+          padding-right: 40px;
         }
       }
     }
-  }
-  .artist-body {
-    background: #fff;
-    .item {
-      height: 70px;
-      line-height: 22px;
-      color: #666;
-      position: relative;
-      transition: all 0.6s;
-      &:nth-child(odd) {
-        background: #f5f5f5;
-      }
-      .song-rank {
-        position: relative;
-        padding-left: 3.18%;
-        min-width: 180px;
-        padding-right: 20px;
-        width: 16.13%;
-        .num {
-          flex-shrink: 0;
-          width: 20px;
-          height: 33px;
-          color: #333;
-          line-height: 33px;
-          text-align: center;
-          font-weight: 700;
+    tbody {
+      tr {
+        height: 50px;
+        line-height: 50px;
+        transition: background-color .2s linear;
+        &:&:nth-child(odd) {
+          background: #f5f5f5;
         }
-        .avatar {
-          flex-shrink: 0;
-          width: 54px;
-          height: 54px;
-          margin-left: 30%;
-          border-radius: 5px;
-          box-shadow: 0px 5px 60px 0px rgba(17,58,93,0.1);
-          .el-image {
-            img {
-              border-radius: 5px;
+        td {
+          padding: 0 9px;
+          white-space: nowrap;
+          overflow: hidden;
+          -o-text-overflow: ellipsis;
+          text-overflow: ellipsis;
+        }
+        .index-container {
+          .num {
+            color: #4a4a4a;
+            font-weight: 500;
+          }
+        }
+        .artist-container {
+          .author {
+          }
+        }
+        .duration-container {
+          text-align: right;
+          padding-right: 15px;
+          position: relative;
+          p {
+            padding-right: 10px;
+          }
+          .song-tools {
+            display: flex;
+            justify-content: flex-end;
+            top: 0;
+            right: 0;
+            position: absolute;
+            display: none;
+            i {
+              flex-shrink: 0;
+              cursor: pointer;
+              margin-right: 10px;
+              font-size: 24px;
             }
           }
         }
-      }
-      .song-name {
-        width: 41.83%;
-        padding-right: 2.43%;
-        color: #333;
-        .name {
-          font-size: 14px;
-          color: #333333;
-          font-weight: bold;
-          margin-bottom: 6px;
-        }
-        .author {
-          font-size: 12px;
-          color: #999999;
-        }
-      }
-      .song-album {
-        flex: 1;
-        cursor: pointer
-        span {
-          font-weight: bold;
-        }
-      }
-      .song-duration {
-        width: 6.56%;
-        padding-right: 3.93%;
-      }
-      .song-tools {
-        width: 17.7%;
-        padding-left: 4.28%;
-        display: flex;
-        justify-content: space-between;
-        height: 100%;
-        align-items: center;
-        opacity: 0;
-        position: absolute;
-        right: 4%;
-        top: 0;
-        i {
-          font-size: 20px;
-          cursor: pointer;
-          display: block;
-          color: #666666;
-        }
-      }
-      &:hover {
-        background: #f5f5f5;
-        .song-duration {
-          opacity: 0;
-        }
-        .song-tools {
-          opacity: 1;
+        &:hover {
+          .duration-container {
+            p {
+              display: none;
+            }
+            .song-tools {
+              display: flex;
+            }
+          }
         }
       }
     }

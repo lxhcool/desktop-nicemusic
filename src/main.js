@@ -10,7 +10,6 @@ import Loading from '@/components/common/loading/Index.vue'
 import 'swiper/css/swiper.css'
 import '@/assets/styles/reset.styl'
 import '@/assets/styles/common.css'
-import '@/assets/font/PingFangSCMedium.css'
 import {
   Avatar,
   Dropdown,

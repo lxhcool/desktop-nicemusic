@@ -230,7 +230,7 @@ export default {
   display: flex;
   .left {
     flex: 1;
-    width: 900px;
+    width: 950px;
     padding: 15px;
     border-radius: 8px;
     margin-right: 20px;
@@ -340,7 +340,7 @@ export default {
     }
   }
   .right {
-    width: 400px;
+    width: 350px;
     flex-shrink: 0;
     .module {
       padding: 15px;
