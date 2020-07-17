@@ -274,7 +274,7 @@ export default {
             i {
               font-size: 18px;
               margin-right: 5px;
-              margin-top: 2px;
+              margin-top: -1px;
             }
           }
           ul {

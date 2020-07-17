@@ -24,7 +24,8 @@ import {
   Notification,
   Table,
   TableColumn,
-  Popover
+  Popover,
+  Tooltip
 } from 'element-ui'
 Vue.use(Avatar)
   .use(Image)
@@ -37,6 +38,7 @@ Vue.use(Avatar)
   .use(Table)
   .use(TableColumn)
   .use(Popover)
+  .use(Tooltip)
 Vue.config.productionTip = false
 Vue.prototype.$api = getApi
 Vue.prototype.utils = utils

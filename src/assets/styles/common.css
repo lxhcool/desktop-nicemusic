@@ -135,3 +135,28 @@
 .el-message-box__headerbtn:focus .el-message-box__close, .el-message-box__headerbtn:hover .el-message-box__close {
   color: #fa2800;
 }
+
+
+/* @-webkit-keyframes play {
+	0% {
+		-webkit-transform: translateY(0);
+		transform: translateY(0)
+	}
+
+	to {
+		-webkit-transform: translateY(65%);
+		transform: translateY(65%)
+	}
+} */
+
+@keyframes play {
+	0% {
+		-webkit-transform: translateY(0);
+		transform: translateY(0)
+	}
+
+	to {
+		-webkit-transform: translateY(85%);
+		transform: translateY(85%)
+	}
+}

@@ -1,8 +1,8 @@
-/** 歌曲处理方法 */
+/** 视频处理方法 */
 
 import utils from '../utils/utils'
 
-export default class Song {
+export default class Video {
   constructor({ id, singer, name, album, duration, image, url }) {
     this.id = id
     this.singer = singer
@@ -14,15 +14,15 @@ export default class Song {
   }
 }
 
-export function createSong(musicData) {
-  return new Song({
-    id: musicData.id,
-    singer: filterSinger(musicData.ar),
-    name: musicData.name,
-    album: musicData.al.name,
-    duration: utils.formatTime(musicData.dt),
-    image: musicData.al.picUrl,
-    url: `https://music.163.com/song/media/outer/url?id=${musicData.id}.mp3`
+export function createVideo(videoData) {
+  return new Video({
+    id: videoData.id,
+    singer: filterSinger(videoData.ar),
+    name: videoData.name,
+    album: videoData.al.name,
+    duration: utils.formatTime(videoData.dt),
+    image: videoData.al.picUrl,
+    url: `https://music.163.com/song/media/outer/url?id=${videoData.id}.mp3`
   })
 }
 

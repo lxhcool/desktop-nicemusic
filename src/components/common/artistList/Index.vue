@@ -11,15 +11,24 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) of songs" :key="item.id">
+        <tr v-for="(item, index) of songs" :key="item.id" :class="index == 500 ? 'playing' : ''">
           <td>
             <div class="index-container flex-center">
-              <span class="num">{{ index + 1 }}</span>
+              <span class="num">{{ utils.formatZero(index + 1, 2) }}</span>
+              <div class="play-icon">
+                <div class="line" style="animation-delay: -1.2s;"></div>
+                <div class="line"></div>
+                <div class="line" style="animation-delay: -1.5s;"></div>
+                <div class="line" style="animation-delay: -0.9s;"></div>
+                <div class="line" style="animation-delay: -0.6s;"></div>
+              </div>
+              <i class="iconfont nicebofang2 play-btn"></i>
+              <i class="iconfont nicezanting1 pause-btn"></i>
             </div>
           </td>
           <td>
             <div class="name-container">
-              <!-- <div class="avatar">
+              <div class="avatar">
                 <el-image
                   :key="item.image + '?param=100y100'"
                   :src="item.image + '?param=100y100'"
@@ -35,26 +44,29 @@
                     <i class="el-icon-picture-outline"></i>
                   </div>
                 </el-image>
-              </div> -->
-              <p class="name ellipsis">{{ item.name }}</p>
+              </div>
+              <p class="name ellipsis" :title="item.name">{{ item.name }}</p>
             </div>
           </td>
           <td>
             <div class="artist-container">
-              <p class="author ellipsis">{{ item.singer }}</p>
+              <p class="author ellipsis" :title="item.singer">
+                {{ item.singer }}
+              </p>
             </div>
           </td>
           <td>
             <div class="album-container">
-              <p :title="item.album">{{ item.album }}</p>
+              <p :title="item.album" class="ellipsis">{{ item.album }}</p>
             </div>
           </td>
           <td>
             <div class="duration-container">
               <p>{{ item.duration }}</p>
               <div class="song-tools">
-                <i class="iconfont niceicon-heart"></i>
-                <i class="iconfont nicexiazai"></i>
+                <i class="iconfont niceicon-heart" title="喜欢"></i>
+                <i class="iconfont nicexiazai" title="下载"></i>
+                <i class="iconfont nicedot" title="更多"></i>
               </div>
             </div>
           </td>
@@ -83,10 +95,15 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
+.artist-box >>> tbody img {
+  border-radius: 5px;
+}
 .artist-box {
+  width: 100%;
   .artist-table {
     width: 100%;
     thead {
+      width: 100%;
       height: 50px;
       line-height: 50px;
       background: #fafafa;
@@ -120,13 +137,11 @@ export default {
       }
     }
     tbody {
+      width: 100%;
       tr {
         height: 50px;
         line-height: 50px;
         transition: background-color .2s linear;
-        &:&:nth-child(odd) {
-          background: #f5f5f5;
-        }
         td {
           padding: 0 9px;
           white-space: nowrap;
@@ -138,6 +153,48 @@ export default {
           .num {
             color: #4a4a4a;
             font-weight: 500;
+          }
+          .play-icon {
+            display: none;
+            height: 16px;
+            min-width: 18px;
+            overflow: hidden;
+            .line {
+              width: 2px;
+              height: 100%;
+              margin-left: 2px;
+              background-color: #ff410f;
+              animation: play .9s linear infinite alternate;
+            }
+          }
+          .play-btn {
+            color: $color-theme;
+            font-size: 28px;
+            display: none;
+            text-align: left;
+            cursor: pointer;
+          }
+          .pause-btn {
+            color: $color-theme;
+            font-size: 30px;
+            display: none;
+            text-align: left;
+            cursor: pointer;
+          }
+        }
+        .name-container {
+          display: flex;
+          align-items: center;
+          .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 5px;
+            flex-shrink: 0;
+            margin-right: 10px;
+            img {
+              width: 100%;
+              border-radius: 5px;
+            }
           }
         }
         .artist-container {
@@ -162,12 +219,43 @@ export default {
             i {
               flex-shrink: 0;
               cursor: pointer;
-              margin-right: 10px;
+              margin-right: 15px;
               font-size: 20px;
             }
           }
         }
+        &:nth-child(2n) {
+          background: #f7f7f7;
+        }
+        &.playing {
+          p {
+            color: $color-theme;
+          }
+          i {
+            color: $color-theme;
+          }
+          .index-container {
+            .num {
+              display: none;
+            }
+            .play-icon {
+              display: flex;
+            }
+            .play-btn {
+              display: none;
+            }
+          }
+        }
         &:hover {
+          background: #e8e9ed;
+          .index-container {
+            .num {
+              display: none;
+            }
+            .play-btn {
+              display: block;
+            }
+          }
           .duration-container {
             p {
               display: none;
@@ -176,7 +264,23 @@ export default {
               display: flex;
             }
           }
+          &.playing {
+            .index-container {
+              .play-btn {
+                display: none;
+              }
+              .play-icon {
+                display: none;
+              }
+              .pause-btn {
+                display: block;
+              }
+            }
+          }
         }
+      }
+      p {
+        cursor: pointer;
       }
     }
   }

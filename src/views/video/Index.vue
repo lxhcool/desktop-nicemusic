@@ -1,0 +1,221 @@
+<template>
+  <div class="video-wrap container">
+    <div class="filter shadow">
+      <div class="title flex-center" @click="openFilter">
+        {{ currentCat }}
+        <i class="iconfont niceiconfontyoujiantou-copy-copy-copy-copy"></i>
+        <transition name="fade">
+          <div class="filter-box shadow" v-if="showFilter">
+            <ul>
+              <li v-for="item of tags" :key="item.id" :class="currentCat == item.name ? 'active' : ''" @click="chooseCat(item.name)">{{ item.name }}</li>
+            </ul>
+          </div>
+        </transition>
+      </div>
+      <div class="hot-tag flex-row">
+        <p>分类：</p>
+        <ul class="flex-center">
+          <li v-for="item of hotCategories" :key="item.id" :class="currentCat == item.name ? 'active' : ''"  @click="chooseCat(item.name)">{{ item.name }}</li>
+        </ul>
+      </div>
+      <div class="all" :class="currentCat == '全部' ? 'active' : ''">全部</div>
+    </div>
+    <mv-list :mvs="mvs"></mv-list>
+  </div>
+</template>
+
+<script>
+import MvList from 'components/common/mvList/Index'
+export default {
+  data() {
+    return {
+      currentCat: '全部',
+      hotCategories: [],
+      tags: [],
+      mvs: [],
+      offset: 0,
+      showFilter: false
+    }
+  },
+  components: {
+    MvList
+  },
+  computed: {},
+  watch: {},
+  methods: {
+    // 展开视频标签
+    openFilter() {
+      this.showFilter = !this.showFilter
+    },
+    // 获取视频分类列表
+    async getVideoCategory() {
+      try {
+        let res = await this.$api.getVideoCategory()
+        if (res.code === 200) {
+          console.log(res.data)
+          this.hotCategories = res.data
+        }
+      } catch (error) {
+        this.$message.error('error')
+      }
+    },
+    // 获取视频标签列表
+    async getVideoTag() {
+      try {
+        let res = await this.$api.getVideoTag()
+        if (res.code === 200) {
+          console.log(res.data)
+          this.tags = res.data
+        }
+      } catch (error) {
+        this.$message.error('error')
+      }
+    },
+    // 获取全部视频列表
+    async getVideoAll() {
+      try {
+        let res = await this.$api.getVideoAll(this.offset)
+        if (res.code === 200) {
+          console.log(res.data)
+          // this.tags = res.data
+        }
+      } catch (error) {
+        this.$message.error('error')
+      }
+    },
+    // 选择分类
+    chooseCat() {}
+  },
+  created() {},
+  mounted() {
+    this.getVideoCategory()
+    this.getVideoTag()
+    this.getVideoAll()
+  }
+}
+</script>
+<style lang="stylus" scoped>
+.fade-enter {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+}
+
+.fade-enter-active {
+  transition: all 0.5s;
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+}
+
+.fade-leave-active {
+  transition: all 0.5s;
+}
+.video-wrap {
+  .filter {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-right: 20px;
+    border-radius: 5px 0px 5px 5px;
+
+    .title {
+      width: auto;
+      height: 100%;
+      padding: 0 5px 0 15px;
+      background: $color-theme;
+      border-radius: 5px 0px 5px 5px;
+      color: #ffffff;
+      cursor: pointer;
+      position: relative;
+      margin-right: 15px;
+      position: relative;
+      &::after {
+        content: ''
+        width: 1px;
+        height: 20px;
+        margin-left: 12px;
+        background: #e7e7e7;
+        opacity: 0;
+      }
+      > i {
+        transform: rotate(90deg);
+        margin-left: 10px;
+        font-size: 18px;
+      }
+
+      .filter-box {
+        width: 720px;
+        height: 400px;
+        overflow-y: scroll;
+        background: rgba(255, 255, 255, 1);
+        border-radius: 5px;
+        color: #000;
+        position: absolute;
+        right: -631px;
+        top: 50px;
+        z-index: 100;
+        padding: 15px 10px 0 16px;
+        ul {
+          display: flex;
+          flex-wrap: wrap;
+          li {
+            padding: 8px 18px;
+            background: #f7f7f7;
+            border-radius: 16px;
+            margin: 0 10px 10px 0;
+            cursor: pointer;
+            font-size: 12px;
+            color: #161e27;
+            transition: all 0.4s;
+            &:hover {
+              color: #fff;
+              background: $color-theme;
+            }
+            &.active {
+              color: #fff;
+              background: $color-theme;
+            }
+          }
+        }
+      }
+
+      &:hover {
+        // border: 1px solid #cccccc;
+      }
+    }
+    .hot-tag {
+      flex: 1;
+      ul {
+        li {
+          margin: 0 5px;
+          padding-right: 10px;
+          cursor: pointer
+          &:hover {
+            color: #888;
+          }
+          &.active {
+            color: $color-theme;
+          }
+        }
+      }
+    }
+    .all {
+      background: #f7f7f7;
+      color: #161e27;
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 3px;
+      transition: all 0.4s;
+      cursor: pointer;
+      &.active {
+        background: $color-theme;
+        color: #fff;
+      }
+    }
+  }
+}
+</style>

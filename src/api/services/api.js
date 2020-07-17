@@ -84,7 +84,7 @@ export const getPlayListDetail = (id, s) => api.get(`/playlist/detail?id=${id}&s
 /**
  * @method 获取歌曲详情
  */
-export const getSongDetail = ids => api.get(`/song/detail?ids=${ids}`, {})
+export const getSongDetail = (ids, time) => api.post(`/song/detail?timestamp=${time}`, { ids })
 
 /**
  * @method 相关歌单推荐
@@ -112,3 +112,18 @@ export const getCommentPlaylist = params => api.get(`/comment/playlist`, { param
  * @params offset 偏移数量 , 用于分页 , 如 :( 评论页数 -1)*20, 其中 20 为 limit 的值
  */
 export const getSubscribersPlaylist = params => api.get(`/playlist/subscribers`, { params })
+
+/**
+ * @method 获取视频分类列表
+ */
+export const getVideoCategory = () => api.get(`/video/category/list`, {})
+
+/**
+ * @method 获取视频标签列表
+ */
+export const getVideoTag = () => api.get(`/video/group/list`, {})
+
+/**
+ * @method 获取全部视频列表
+ */
+export const getVideoAll = offset => api.get(`/video/timeline/all?offset=${offset}`, {})

@@ -81,6 +81,28 @@ export const appRouter = [
         component: resolve => {
           require(['@/views/playlist/detail/Index.vue'], resolve)
         }
+      },
+      {
+        path: 'video',
+        meta: {
+          title: '视频',
+          keepAlive: true
+        },
+        name: 'video',
+        component: resolve => {
+          require(['@/views/video/Index.vue'], resolve)
+        }
+      },
+      {
+        path: 'mv',
+        meta: {
+          title: 'mv',
+          keepAlive: true
+        },
+        name: 'mv',
+        component: resolve => {
+          require(['@/views/mv/Index.vue'], resolve)
+        }
       }
     ]
   }

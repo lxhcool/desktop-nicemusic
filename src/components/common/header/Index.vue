@@ -17,7 +17,12 @@
         <li>
           <router-link :to="{ name: 'singer' }" tag="a">歌手</router-link>
         </li>
-        <li><a href="###">视频</a></li>
+        <li>
+          <router-link :to="{ name: 'video' }" tag="a">视频</router-link>
+        </li>
+        <li>
+          <router-link :to="{ name: 'mv' }" tag="a">MV</router-link>
+        </li>
       </ul>
       <div class="search" @click="openSearchPop">
         <i class="iconfont nicesearch-o"></i>
@@ -153,7 +158,6 @@ export default {
   width: 100%;
   height: 70px;
   transition: all 400ms ease-in-out;
-  // box-shadow: 0px 5px 60px 0px rgba(17, 58, 93, 0.1);
   background-color: #fff;
   position: fixed;
   top: 0;

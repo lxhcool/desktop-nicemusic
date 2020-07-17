@@ -50,7 +50,7 @@
               <img :src="item.coverImgUrl + '?param=150y150'" :alt="item.nickname" :title="item.nickname">
             </div>
             <div class="info">
-              <h2 class="ellipsis-two">{{ item.name }}</h2>
+              <h2 class="ellipsis">{{ item.name }}</h2>
               <span>By. <small> {{ item.creator.nickname }}</small></span>
             </div>
           </li>
@@ -136,7 +136,7 @@ export default {
       })
       ids = ids.join(',')
       try {
-        let res = await this.$api.getSongDetail(ids)
+        let res = await this.$api.getSongDetail(ids, new Date())
         if (res.code === 200) {
           this.songs = this._normalizeSongs(res.songs)
         }
@@ -388,12 +388,15 @@ export default {
           }
           .info {
             height: 50px;
+            width: calc(100% - 50px);
+            flex: 1;
             display: flex;
             justify-content: center;
             flex-direction: column;
             h2 {
               font-size: 14px;
               margin-bottom: 10px;
+              width: 100%;
             }
             span {
               font-size: 12px;
