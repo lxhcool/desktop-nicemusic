@@ -127,3 +127,13 @@ export const getVideoTag = () => api.get(`/video/group/list`, {})
  * @method 获取全部视频列表
  */
 export const getVideoAll = offset => api.get(`/video/timeline/all?offset=${offset}`, {})
+
+/**
+ * @method 获取视频标签/分类下的视频
+ */
+export const getVideoOther = (id, offset) => api.get(`/video/group?id=${id}&offset=${offset}`, {})
+
+/**
+ * @method 获取全部mv
+ */
+export const getMvAll = params => api.get(`/mv/all`, {params})

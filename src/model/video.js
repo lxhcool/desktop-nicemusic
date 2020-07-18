@@ -3,37 +3,40 @@
 import utils from '../utils/utils'
 
 export default class Video {
-  constructor({ id, singer, name, album, duration, image, url }) {
+  constructor({ id, nickName, name, playCount, duration, image, isLive }) {
     this.id = id
-    this.singer = singer
+    this.nickName = nickName,
     this.name = name
-    this.album = album
+    this.playCount = playCount
     this.duration = duration
-    this.image = image
-    this.url = url
+    this.image = image,
+    this.isLive = isLive
   }
 }
 
 export function createVideo(videoData) {
+  if(videoData.duration > 0) {
+    videoData.duration = utils.formatTime(videoData.duration)
+  }
   return new Video({
     id: videoData.id,
-    singer: filterSinger(videoData.ar),
+    nickName: videoData.nickName,
     name: videoData.name,
-    album: videoData.al.name,
-    duration: utils.formatTime(videoData.dt),
-    image: videoData.al.picUrl,
-    url: `https://music.163.com/song/media/outer/url?id=${videoData.id}.mp3`
+    playCount: videoData.playCount,
+    duration: videoData.duration,
+    image: videoData.image,
+    isLive: videoData.isLive
   })
 }
 
 // 歌手处理
-function filterSinger(singer) {
-  let ret = []
-  if (!singer) {
-    return ''
-  }
-  singer.map(item => {
-    ret.push(item.name)
-  })
-  return ret.join(' / ')
-}
+// function filterSinger(singer) {
+//   let ret = []
+//   if (!singer) {
+//     return ''
+//   }
+//   singer.map(item => {
+//     ret.push(item.name)
+//   })
+//   return ret.join(' / ')
+// }

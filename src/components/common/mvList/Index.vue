@@ -1,12 +1,12 @@
 <template>
   <div class="mv-box">
     <ul class="mv-list">
-      <li v-for="item of mvs" :key="item.id">
+      <li v-for="item of mvs" :key="item.id" :class="item.isLive ? 'live' : ''">
         <div class="cover">
           <div class="image">
             <el-image
-              :key="item.imgurl16v9 + '?param=352y197'"
-              :src="item.imgurl16v9 + '?param=325y197'"
+              :key="item.image + '?param=352y197'"
+              :src="item.image + '?param=325y197'"
               lazy
             >
               <div
@@ -25,21 +25,20 @@
             <span>{{ utils.tranNumber(item.playCount, 0) }}</span>
           </div>
           <div class="action">
-            <button class="play flex-center" title="播放">
+            <button class="play flex-center" title="播放" v-if="!item.isLive">
+              <i class="iconfont nicebofang1"></i>
+            </button>
+            <button class="play flex-center" title="播放" v-else @click="toLive(item.id)">
               <i class="iconfont nicebofang1"></i>
             </button>
           </div>
           <div class="foot">
-            <p>{{ item.artistName }}</p>
-            <p>{{ utils.formatTime(item.duration) }}</p>
+            <p>{{ item.nickName }}</p>
+            <p>{{ item.duration }}</p>
           </div>
         </div>
         <div class="info">
           <h2 class="title ellipsis">{{ item.name }}</h2>
-          <!-- <div class="author">{{ item.artistName }}</div> -->
-          <div class="time author">
-            {{ utils.dateFormat(item.publishTime, 'YYYY-MM-DD') }}
-          </div>
         </div>
       </li>
     </ul>
@@ -75,7 +74,13 @@ export default {
     }
   },
   watch: {},
-  methods: {},
+  methods: {
+    // 直播跳转
+    toLive(id) {
+      let url = `https://iplay.163.com/live?id=${id}`
+      window.open(url,'_blank')
+    }
+  },
   created() {},
   mounted() {}
 }
@@ -87,6 +92,7 @@ export default {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    margin: 0 -15px;
     li {
       padding: 0 15px 30px;
       flex: 0 0 25%;
@@ -196,6 +202,13 @@ export default {
           margin-top: 5px;
           font-size: 12px;
           color: #999;
+        }
+      }
+      &.live {
+        .cover {
+          .foot {
+            background: rgba(250, 40, 0, 0.75);
+          }
         }
       }
     }

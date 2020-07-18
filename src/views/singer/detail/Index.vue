@@ -88,6 +88,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { createSong } from '@/model/song'
+import { createVideo } from '@/model/video'
 import ArtistList from 'components/common/artistList/Index'
 import AlbumList from 'components/common/albumList/Index'
 import MvList from 'components/common/mvList/Index'
@@ -246,7 +247,7 @@ export default {
       try {
         let res = await this.$api.getArtistMv(params)
         if (res.code === 200) {
-          this.mvs = res.mvs
+          this.mvs = this._normalizeVideos(res.mvs)
         }
       } catch (error) {
         this.$message.error('error')
@@ -285,6 +286,23 @@ export default {
       list.map(item => {
         if (item.id) {
           ret.push(createSong(item))
+        }
+      })
+      return ret
+    },
+    // 处理视频
+    _normalizeVideos(list) {
+      let ret = []
+      list.map(item => {
+        if (item.id) {
+          ret.push(createVideo({
+            id: item.id,
+            nickName: item.artistName,
+            name: item.name,
+            playCount: item.playCount,
+            duration: item.duration,
+            image: item.imgurl16v9
+          }))
         }
       })
       return ret
