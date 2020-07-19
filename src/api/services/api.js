@@ -137,3 +137,19 @@ export const getVideoOther = (id, offset) => api.get(`/video/group?id=${id}&offs
  * @method 获取全部mv
  */
 export const getMvAll = params => api.get(`/mv/all`, {params})
+
+
+/**
+ * @method 获取视频播放地址
+ */
+export const getVideoUrl = id => api.get(`/video/url?id=${id}`, {})
+
+/**
+ * @method 获取视频详情
+ */
+export const getVideoDetail = id => api.get(`/video/detail?id=${id}`, {})
+
+/**
+ * @method 获取视频点赞转发评论数数据
+ */
+export const getVideoDetailInfo = id => api.get(`/video/detail/info?vid=${id}`, {})

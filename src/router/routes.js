@@ -94,6 +94,17 @@ export const appRouter = [
         }
       },
       {
+        path: 'video-detail',
+        meta: {
+          title: '详情',
+          keepAlive: true
+        },
+        name: 'videoDetail',
+        component: resolve => {
+          require(['@/views/video/detail/Index.vue'], resolve)
+        }
+      },
+      {
         path: 'mv',
         meta: {
           title: 'mv',
