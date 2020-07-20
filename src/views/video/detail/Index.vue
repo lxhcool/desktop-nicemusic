@@ -1,15 +1,22 @@
 <template>
   <div class="video-detail container">
     <div class="left shadow">
-      <h2 class="title flex-row"> 
-        <!-- <i class="iconfont nicemv24"></i> -->
-        {{ detail.title }}
-      </h2>
       <div class="video-container">
         <video :src="videoUrl" controls="controls" controlslist="nodownload">
         </video>
       </div>
       <div class="video-foot">
+        <h2 class="title flex-row"> 
+          <!-- <i class="iconfont nicemv24"></i> -->
+          {{ detail.title }}
+        </h2>
+        <div class="tag">
+          <a v-for="item of detail.videoGroup" :key="item.id">#{{item.name}}</a>
+        </div>
+        <p class="flex-row">
+          <span>发布：{{utils.dateFormat(detail.publishTime, 'YYYY-MM-DD')}}</span>
+          <span v-if="detail.playTime">播放次数：{{utils.tranNumber(detail.playTime, 1)}}</span>
+        </p>
         <div class="follow">
           <div class="box">
             <i class="iconfont nicexihuan3 icon-like"></i>
@@ -25,48 +32,46 @@
           </div>
         </div>
       </div>
+      <div class="comments">
+        
+      </div>
     </div>
     <div class="right">
-      <div class="like module shadow">
+      <div class="profile module shadow">
         <div class="card-header flex-row">
-          <span>喜欢这个歌单的人</span>
+          <span>视频简介</span>
         </div>
-        <ul>
-          <li v-for="item of subscribers" :key="item.id">
+        <div class="content">
+          <div class="author">
             <div class="avatar">
-              <img :src="item.avatarUrl + '?param=150y150'" :alt="item.nickname" :title="item.nickname">
+              <img :src="creator.avatarUrl" alt="">
             </div>
-          </li>
-        </ul>
+            <p class="name">{{ creator.nickname }}</p>
+            <div class="follow flex-center transition">
+              <i class="iconfont niceIcon_add"></i>关注 
+            </div>
+          </div>
+          <p v-if="detail.description">{{ detail.description }}</p>
+          <p v-else>视频暂无简介</p>
+        </div>
       </div>
       <div class="related module shadow">
         <div class="card-header flex-row">
           <span>相关推荐</span>
         </div>
         <ul>
-          <li v-for="item of relatedList" :key="item.id">
+          <li v-for="item of relatedList" :key="item.vid">
             <div class="avatar">
-              <img :src="item.coverImgUrl + '?param=150y150'" :alt="item.nickname" :title="item.nickname">
+              <img :src="item.coverUrl + '?param=320y180'" :alt="item.title" :title="item.title">
+              <div class="action">
+                <button class="play flex-center" title="播放" v-if="!item.isLive" @click="toDetail(item.vid)">
+                  <i class="iconfont nicebofang1"></i>
+                </button>
+              </div>
             </div>
             <div class="info">
-              <h2 class="ellipsis">{{ item.name }}</h2>
-              <span>By. <small> {{ item.creator.nickname }}</small></span>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <div class="comment module shadow">
-        <div class="card-header flex-row">
-          <span>精彩评论</span>
-        </div>
-        <ul>
-          <li class="item" v-for="item of comments" :key="item.time">
-            <div class="avatar">
-              <img :src="item.user.avatarUrl + '?param=150y150'" :alt="item.user.nickname" :title="item.user.nickname">
-            </div>
-            <div class="info">
-              <h2>{{ item.user.nickname }}<small> · {{utils.formatMsgTime(item.time)}}</small></h2>
-              <p>{{ item.content }}</p>
+              <h2 class="ellipsis">{{ item.title }}</h2>
+              <span v-for="author of item.creator" :key="author.userId">By. <small> {{ author.userName }}</small></span>
             </div>
           </li>
         </ul>
@@ -82,21 +87,14 @@ export default {
     return {
       // 歌单详情
       detail: {},
-      // 歌单创建者信息
       creator: {},
-      // 收藏这个歌单的人
-      subscribers: [],
-      // 相关歌单
+      // 相关视频
       relatedList: [],
-      // 相似歌单
-      simiList: [],
       // 评论
       comments: [],
-      // 歌曲列表
-      songs: [],
-      // 收藏这个歌单的人数量
-      s: 32,
-      videoUrl: ''
+      videoUrl: '',
+      limit: 20,
+      offset: 0
     }
   },
   components: {},
@@ -108,33 +106,75 @@ export default {
       try {
         let res = await this.$api.getVideoUrl(id)
         if (res.code === 200) {
-          console.log(res)
           this.videoUrl = res.urls[0].url
         }
       } catch (error) {
         console.log(error)
       }
     },
-    // 获取视频播放地址
+    // 获取视频详情
     async getVideoDetail(id) {
       try {
         let res = await this.$api.getVideoDetail(id)
         if (res.code === 200) {
-          console.log(res)
+          res.data.videoGroup.map(item => {
+            if(item.name.indexOf('#') != -1) {
+              item.name = item.name.replace(/#/g, "")
+            }
+          })
           this.detail = res.data
+          this.creator = res.data.creator
         }
       } catch (error) {
         console.log(error)
       }
+    },
+    // 获取相关视频
+    async getVideoRelated(id) {
+      try {
+        let res = await this.$api.getVideoRelated(id)
+        if (res.code === 200) {
+          this.relatedList = res.data
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 视频评论
+    async getVideoComments(id) {
+      let params = {
+        id,
+        limit: this.limit,
+        offset: this.offset
+      }
+      try {
+        let res = await this.$api.getVideoComments(params)
+        if (res.code === 200) {
+          // this.relatedList = res.data
+          console.log(res)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 视频详情（相关视频）
+    toDetail(id) {
+      console.log(id)
+      this._initialize(id)
+    },
+    // 初始化
+    _initialize(id) {
+      this.getVideoUrl(id)
+      this.getVideoDetail(id)
+      this.getVideoRelated(id)
+      this.getVideoComments(id)
     }
   },
   created() {},
   mounted() {
     let id = this.$route.query.id
-    console.log(id)
     if (id) {
-      this.getVideoUrl(id)
-      this.getVideoDetail(id)
+      this._initialize(id)
     }
   }
 }
@@ -171,9 +211,23 @@ export default {
       }
     }
     .video-foot {
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
+      margin-top: 8px;
+      .tag {
+        margin-bottom: 8px;
+        a {
+          font-size: 12px;
+          color: $color-theme;
+          margin-right: 10px;
+          cursor: pointer;
+        }
+      }
+      p {
+        span {
+          margin-right: 30px;
+          font-size: 12px;
+          color: #999;
+        }
+      }
       .follow {
         display: flex;
         margin-top: 10px;
@@ -205,23 +259,37 @@ export default {
       border-radius: 8px;
       margin-bottom: 20px;
     }
-    .like {
-      padding-bottom: 5px;
-      ul {
+    .profile {
+      .author {
         display: flex;
-        flex-wrap: wrap;
-        margin: 0 -5px;
-        li {
-          flex: 0 0 14.285714285714%;
-          max-width: 14.285714285714%;
-          padding: 0 5px 10px;
-          .avatar {
-            width: 100%;
-            border-radius: 3px;
-            img {
-              width: 100%;
-              border-radius: 3px;
-            }
+        align-items: center;
+        margin-bottom: 15px;
+        margin-top: 5px;
+        .avatar { 
+          width: 40px;
+          height: 40px;
+          border-radius: 20px;
+          margin-right: 15px;
+          img {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+          }
+        }
+        p {
+          flex: 1;
+        }
+        .follow {
+          padding: 3px 10px;
+          font-size: 12px;
+          background: $color-theme;
+          color: #ffffff;
+          border: 1px solid $color-theme;
+          cursor: pointer;
+          border-radius: 18px;
+          &:hover {
+            background: none;
+            color: $color-theme;
           }
         }
       }
@@ -231,16 +299,37 @@ export default {
       ul {
         li {
           display: flex;
+          flex-direction: column;
           margin-bottom: 15px;
           .avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 3px;
+            width: 100%;
             margin-right: 15px;
             flex-shrink: 0;
+            position: relative;
             img {
               width: 100%;
-              border-radius: 3px;
+            }
+            .action {
+              display: none;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              -webkit-transform: translate(-50%, -50%);
+              -ms-transform: translate(-50%, -50%);
+              transform: translate(-50%, -50%);
+              .play {
+                width: 32px;
+                height: 32px;
+                padding: 0;
+                border: none;
+                border-radius: 50%;
+                color: #fff;
+                cursor: pointer;
+                background-color: $color-theme;
+                i {
+                  font-size: 12px;
+                }
+              }
             }
           }
           .info {
@@ -252,12 +341,18 @@ export default {
             flex-direction: column;
             h2 {
               font-size: 14px;
-              margin-bottom: 10px;
+              margin-bottom: 3px;
+              margin-top: 5px;
               width: 100%;
             }
             span {
               font-size: 12px;
               color: #a5a5c1;
+            }
+          }
+          &:hover {
+            .action {
+              display: flex;
             }
           }
         }

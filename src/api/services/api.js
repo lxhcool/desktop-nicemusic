@@ -153,3 +153,13 @@ export const getVideoDetail = id => api.get(`/video/detail?id=${id}`, {})
  * @method 获取视频点赞转发评论数数据
  */
 export const getVideoDetailInfo = id => api.get(`/video/detail/info?vid=${id}`, {})
+
+/**
+ * @method 相关视频
+ */
+export const getVideoRelated = id => api.get(`/related/allvideo?id=${id}`, {})
+
+/**
+ * @method 视频评论
+ */
+export const getVideoComments = params => api.get(`/comment/video`, { params })
