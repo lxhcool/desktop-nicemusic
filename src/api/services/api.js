@@ -138,7 +138,6 @@ export const getVideoOther = (id, offset) => api.get(`/video/group?id=${id}&offs
  */
 export const getMvAll = params => api.get(`/mv/all`, {params})
 
-
 /**
  * @method 获取视频播放地址
  */
@@ -163,3 +162,16 @@ export const getVideoRelated = id => api.get(`/related/allvideo?id=${id}`, {})
  * @method 视频评论
  */
 export const getVideoComments = params => api.get(`/comment/video`, { params })
+
+/**
+ * @method 发送评论
+ * @params t:1 发送, 2 回复
+ * @params tpye: 0: 歌曲，1: mv，2: 歌单，3: 专辑，4: 电台，5: 视频，6: 动态
+ * @params id:对应资源 id
+ * @params content :要发送的内容
+ * @params commentId :回复的评论id (回复评论时必填)
+ * @调用例子 : /comment?t=1&type=1&id=5436712&content=test (往广岛之恋 mv 发送评论: test)
+ * @注意：如给动态发送评论，则不需要传 id，需要传动态的 threadId,如：/comment?t=1&type=6&threadId=A_EV_2_6559519868_32953014&content=test
+ */
+
+export const sendComment = params => api.get(`/comment`, { params })

@@ -33,7 +33,109 @@
         </div>
       </div>
       <div class="comments">
-        
+        <div class="title flex-row">
+          <i class="iconfont nicepinglun"></i>Comments | <span class="noticom"><a>{{commentTotal}} 条评论</a> </span>
+        </div>
+        <div class="comment-box" v-if="currentCommentId == ''">
+          <p class="flex-row"><i class="iconfont niceuser"></i> &nbsp;&nbsp;游客，你好</p>
+          <div class="comment-form">
+            <div class="avatar">
+              <img :src="creator.avatarUrl" alt="">
+            </div>
+            <div class="comarea">
+              <textarea name="comment" v-model="commentContent" placeholder="你看什么看！" tabindex="4" cols="50" rows="5"></textarea>
+            </div>
+          </div>
+          <div class="comment-foot flex-between">
+            <div class="smile"></div>
+            <button type="button" class="comment-btn transition" @click="commentSubmit">评论</button>
+          </div>
+        </div>
+        <div class="comment-list" v-if="hotComments.length > 0">
+          <h3>精彩评论</h3>
+          <ul>
+            <li class="item" v-for="item of hotComments" :key="item.commentId">
+              <div class="avatar">
+                <img :src="item.user.avatarUrl + '?param=150y150'" :alt="item.user.nickname" :title="item.user.nickname">
+              </div>
+              <div class="info">
+                <h2 class="flex-between">
+                  <span>{{ item.user.nickname }}<small> · {{utils.formatMsgTime(item.time)}}</small></span>
+                  <div class="tool flex-row">
+                    <i class="iconfont nicezan1 icon-zan" :class="item.liked ? 'active' : ''"></i>
+                    <span>({{ item.likedCount }})</span>
+                    <i class="iconfont nicevoice icon-comment" @click="commentHandle(item.commentId)"></i>
+                  </div>
+                </h2>
+                <p class="content">{{ item.content }}</p>
+                <div class="comment-box" v-if="item.commentId == currentCommentId">
+                  <p class="flex-row"><i class="iconfont niceuser"></i> <span>&nbsp;&nbsp;游客，你好</span><button class="cancel-comment" @click="cancelComment">取消回复</button></p>
+                  <div class="comment-form">
+                    <div class="avatar">
+                      <img :src="creator.avatarUrl" alt="" />
+                    </div>
+                    <div class="comarea">
+                      <textarea name="comment" placeholder="你看什么看！" tabindex="4" cols="50" rows="5"></textarea>
+                    </div>
+                  </div>
+                  <div class="comment-foot flex-between">
+                    <div class="smile"></div>
+                    <button type="button" class="comment-btn transition">评论</button>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="comment-list">
+          <h3>最新评论</h3>
+          <ul>
+            <li class="item" v-for="item of comments" :key="item.commentId">
+              <div class="avatar">
+                <img :src="item.user.avatarUrl + '?param=150y150'" :alt="item.user.nickname" :title="item.user.nickname">
+              </div>
+              <div class="info">
+                <h2 class="flex-between">
+                  <span>{{ item.user.nickname }}<small> · {{utils.formatMsgTime(item.time)}}</small></span>
+                  <div class="tool flex-row">
+                    <i class="iconfont nicezan1 icon-zan" :class="item.liked ? 'active' : ''"></i>
+                    <span>({{ item.likedCount }})</span>
+                    <i class="iconfont nicevoice icon-comment" @click="commentHandle(item.commentId)"></i>
+                  </div>
+                </h2>
+                <p class="content">{{ item.content }}</p>
+                <div class="comment-box" v-if="item.commentId == currentCommentId">
+                  <p class="flex-row"><i class="iconfont niceuser"></i> <span>&nbsp;&nbsp;游客，你好</span><button class="cancel-comment" @click="cancelComment">取消回复</button></p>
+                  <div class="comment-form">
+                    <div class="avatar">
+                      <img :src="creator.avatarUrl" alt="" />
+                    </div>
+                    <div class="comarea">
+                      <textarea name="comment" placeholder="你看什么看！" v-model="commentContent" tabindex="4" cols="50" rows="5"></textarea>
+                    </div>
+                  </div>
+                  <div class="comment-foot flex-between">
+                    <div class="smile"></div>
+                    <button type="button" class="comment-btn transition">评论</button>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="page-wrap">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-size="limit"
+            background
+            hide-on-single-page
+            layout="total, prev, pager, next"
+            :total="commentTotal"
+          >
+          </el-pagination>
+        </div>
       </div>
     </div>
     <div class="right">
@@ -81,7 +183,6 @@
 </template>
 
 <script>
-import { createSong } from '@/model/song'
 export default {
   data() {
     return {
@@ -91,16 +192,65 @@ export default {
       // 相关视频
       relatedList: [],
       // 评论
+      hotComments: [],
       comments: [],
+      currentCommentId: '',
       videoUrl: '',
+      currentPage: 0,
       limit: 20,
-      offset: 0
+      offset: 0,
+      videoId: '',
+      commentContent: '',
+      commentTotal: 0
     }
   },
   components: {},
   computed: {},
   watch: {},
   methods: {
+    // 改变页码
+    handleSizeChange(val) {
+      this.limit = val
+      this.offset = this.limit * this.currentPage
+      this.getVideoComments(this.videoId)
+    },
+    // 改变页码
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.offset = (val - 1) * this.limit
+      this.getVideoComments(this.videoId)
+    },
+    // 点击评论
+    commentHandle(id) {
+      this.currentCommentId = id
+    },
+    // 提交评论
+    async commentSubmit() {
+      if (!this.commentContent) {
+        this.$message.error('什么都没写，你点毛')
+        return
+      } else {
+        let params = {
+          t: 1,
+          type: 5,
+          id: this.videoId,
+          content: this.commentContent
+        }
+        let res = await this.$api.sendComment(params)
+        console.log(res)
+        if (res.code === 200) {
+          this.$message({
+            message: '提交成功',
+            type: 'success'
+          })
+          this.getVideoComments(this.videoId)
+        }
+      }
+    },
+    // 取消评论
+    cancelComment() {
+      this.currentCommentId = ''
+    },
     // 获取视频播放地址
     async getVideoUrl(id) {
       try {
@@ -118,7 +268,7 @@ export default {
         let res = await this.$api.getVideoDetail(id)
         if (res.code === 200) {
           res.data.videoGroup.map(item => {
-            if(item.name.indexOf('#') != -1) {
+            if (item.name.indexOf('#') != -1) {
               item.name = item.name.replace(/#/g, "")
             }
           })
@@ -150,8 +300,14 @@ export default {
       try {
         let res = await this.$api.getVideoComments(params)
         if (res.code === 200) {
-          // this.relatedList = res.data
           console.log(res)
+          this.commentTotal = res.total
+          if (res.hotComments) {
+            this.hotComments = res.hotComments
+          } else {
+            this.hotComments = []
+          }
+          this.comments = res.comments
         }
       } catch (error) {
         console.log(error)
@@ -174,6 +330,7 @@ export default {
   mounted() {
     let id = this.$route.query.id
     if (id) {
+      this.videoId = id
       this._initialize(id)
     }
   }
@@ -247,6 +404,173 @@ export default {
             color: #161e27;
           }
         }
+      }
+    }
+    .comments {
+      margin-top: 25px;
+      .title {
+        width: 100%;
+        height: 50px;
+        // background: #f8f8f8;
+        border-radius: 3px;
+        padding: 0 3px;
+        border-bottom: 1px solid #f1f1f1;
+        i {
+          color: #666;
+          font-size: 18px;
+          margin-right: 10px;
+        }
+        span {
+          margin-left: 5px;
+        }
+      }
+      .comment-box {
+        margin-top: 20px;
+        p {
+          i {
+            margin-right: 10px;
+          }
+          span {
+            flex: 1;
+          }
+          .cancel-comment {
+            color: #d9dfff;
+            font-size: 12px;
+            background: none;
+            padding: 6px 10px;
+            border-radius: 2px;
+            border: 1px solid #dee3ff;
+            cursor: pointer;
+          }
+        }
+        .comment-form {
+          display: flex;
+          margin-top: 1.5em;
+          .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 3px;
+            margin-right: 20px;
+            position: relative;
+            flex-shrink: 0;
+            img {
+              width: 100%;
+              border-radius: 3px;
+            }
+          }
+          .comarea {
+            flex: 1;
+            textarea {
+              width: 100%;
+              outline: none;
+              background: #f8f9ff;
+              resize: none;
+              padding: 6px 12px;
+              color: #666;
+              border: 1px solid #eaebff;
+              border-radius: 3px;
+              font-size: 13px;
+              height: 80px;
+            }
+          }
+        }
+      }
+      .comment-foot {
+        margin-top: 15px;
+        .comment-btn {
+          color: #fff;
+          padding: 10px 30px;
+          font-size: .75rem;
+          border-radius: 3px;
+          border: none;
+          cursor: pointer;
+          outline: none;
+          background: #FF416C;  /* fallback for old browsers */
+          background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);  /* Chrome 10-25, Safari 5.1-6 */
+          background: linear-gradient(to right, #FF4B2B, #FF416C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        }
+      }
+      .comment-list {
+        margin-top: 20px;
+        h3 {
+          margin-bottom: 15px;
+          font-size: 16px;
+        }
+        ul {
+          li {
+            padding: 10px 0;
+            width: 100%;
+            display: flex;
+            .avatar {
+              width: 45px;
+              height: 45px;
+              border-radius: 50%;
+              margin-right: 12px;
+              flex-shrink: 0;
+              img {
+                width: 100%;
+                border-radius: 50%;
+              }
+            }
+            .info {
+              flex: 1;
+              h2 {
+                font-size: 15px;
+                margin-right: 5px;
+                margin-bottom: 10px;
+                small {
+                  font-size: 12px;
+                  color: #a5a5c1;
+                  font-weight: 200;
+                }
+                .tool {
+                  i {
+                    font-size: 24px;
+                    font-weight: 100;
+                    margin-left: 20px;
+                    cursor: pointer;
+                    transition: all 0.4s;
+                    &.icon-zan {
+                      &.active {
+                        color: $color-theme;
+                      }
+                    }
+                  }
+                  span {
+                    font-size: 12px;
+                    margin-top: 2px;
+                    color: #666;
+                    font-weight: 200;
+                    position: relative;
+                    &::after {
+                      content: "";
+                      width: 1px;
+                      height: 13px;
+                      background: #4a4a4a;
+                      opacity: 0.7;
+                      position: absolute;
+                      top: 2px;
+                      right: -12px;
+                    }
+                  }
+                }
+              }
+              .content {
+                width: 100%;
+                font-size: 12px;
+                color: #666666;
+                line-height: 1.6;
+                padding: 8px 10px;
+                background: #f5f5f5;
+                margin-top: 5px;
+                border-radius: 3px;
+              }
+            }
+          }
+        }
+      }
+      .page-wrap {
+        margin-top: 20px;
       }
     }
   }

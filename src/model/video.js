@@ -4,11 +4,11 @@ import utils from '../utils/utils'
 
 export default class Video {
   constructor({ id, nickName, name, playCount, duration, image, isLive }) {
-    this.id = id
+    this.id = id,
     this.nickName = nickName,
-    this.name = name
-    this.playCount = playCount
-    this.duration = duration
+    this.name = name,
+    this.playCount = playCount,
+    this.duration = duration,
     this.image = image,
     this.isLive = isLive
   }
@@ -28,15 +28,3 @@ export function createVideo(videoData) {
     isLive: videoData.isLive
   })
 }
-
-// 歌手处理
-// function filterSinger(singer) {
-//   let ret = []
-//   if (!singer) {
-//     return ''
-//   }
-//   singer.map(item => {
-//     ret.push(item.name)
-//   })
-//   return ret.join(' / ')
-// }
