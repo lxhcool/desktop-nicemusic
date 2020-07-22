@@ -67,7 +67,12 @@
                     <i class="iconfont nicevoice icon-comment" @click="commentHandle(item.commentId)"></i>
                   </div>
                 </h2>
-                <p class="content">{{ item.content }}</p>
+                <div class="content">
+                  {{ item.content }}
+                  <div class="beReqlied" v-for="subItem of item.beReplied" :key="subItem.beRepliedCommentId">
+                    <small>@{{subItem.user.nickname}}：</small>{{subItem.content}}
+                  </div>
+                </div>
                 <div class="comment-box" v-if="item.commentId == currentCommentId">
                   <p class="flex-row"><i class="iconfont niceuser"></i> <span>&nbsp;&nbsp;游客，你好</span><button class="cancel-comment" @click="cancelComment">取消回复</button></p>
                   <div class="comment-form">
@@ -103,7 +108,12 @@
                     <i class="iconfont nicevoice icon-comment" @click="commentHandle(item.commentId)"></i>
                   </div>
                 </h2>
-                <p class="content">{{ item.content }}</p>
+                <div class="content">
+                  {{ item.content }}
+                  <div class="beReqlied" v-for="subItem of item.beReplied" :key="subItem.beRepliedCommentId">
+                    <small>@{{subItem.user.nickname}}：</small>{{subItem.content}}
+                  </div>
+                </div>
                 <div class="comment-box" v-if="item.commentId == currentCommentId">
                   <p class="flex-row"><i class="iconfont niceuser"></i> <span>&nbsp;&nbsp;游客，你好</span><button class="cancel-comment" @click="cancelComment">取消回复</button></p>
                   <div class="comment-form">
@@ -558,12 +568,22 @@ export default {
               .content {
                 width: 100%;
                 font-size: 12px;
-                color: #666666;
+                color: #4a4a4a;
                 line-height: 1.6;
                 padding: 8px 10px;
                 background: #f5f5f5;
                 margin-top: 5px;
                 border-radius: 3px;
+                .beReqlied {
+                  margin-top: 10px;
+                  background: #ffffff;
+                  padding: 8px 10px;
+                  border-radius: 3px;
+                  color: #666666;
+                  small {
+                    color: $color-theme;
+                  }
+                }
               }
             }
           }

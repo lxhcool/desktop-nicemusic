@@ -6,6 +6,7 @@ import getApi from '@/api/index'
 import utils from '@/utils/utils'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import infiniteScroll from 'vue-infinite-scroll'
+// import VueMouseParallax from 'vue-mouse-parallax'
 import Loading from '@/components/common/loading/Index.vue'
 import 'swiper/css/swiper.css'
 import '@/assets/styles/reset.styl'
@@ -15,6 +16,10 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
+  Form,
+  FormItem,
+  Input,
+  Button,
   Image,
   Icon,
   InfiniteScroll,
@@ -35,6 +40,10 @@ Vue.use(Avatar)
   .use(Dropdown)
   .use(DropdownMenu)
   .use(DropdownItem)
+  .use(Form)
+  .use(FormItem)
+  .use(Input)
+  .use(Button)
   .use(Table)
   .use(TableColumn)
   .use(Popover)
@@ -43,6 +52,7 @@ Vue.config.productionTip = false
 Vue.prototype.$api = getApi
 Vue.prototype.utils = utils
 Vue.use(VueAwesomeSwiper)
+// Vue.use(VueMouseParallax)
 Vue.use(infiniteScroll)
 
 Vue.prototype.$msgbox = MessageBox

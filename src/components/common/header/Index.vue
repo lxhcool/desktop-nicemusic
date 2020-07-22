@@ -29,11 +29,14 @@
       </div>
       <div class="userbox">
         <div class="line"></div>
-        <el-avatar
+        <div class="no-login flex-row" @click="login">
+          登录
+        </div>
+        <!-- <el-avatar
           class="avatar"
           src="http://p3.music.126.net/CPOCNGKwvMJ7Njt17Lu-Tg==/109951164836393307.jpg?param="
-        ></el-avatar>
-        <el-dropdown trigger="click">
+        ></el-avatar> -->
+        <!-- <el-dropdown trigger="click">
           <span class="el-dropdown-link">
             lxhcool丶<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
@@ -45,7 +48,7 @@
               退出登录
             </el-dropdown-item>
           </el-dropdown-menu>
-        </el-dropdown>
+        </el-dropdown> -->
       </div>
       <div class="search-wrap" :class="[searchOpenClass, searchCloseClass]">
         <div class="overlay" @click="closeSearchPop"></div>
@@ -145,6 +148,12 @@ export default {
     closeSearchPop() {
       this.searchOpenClass = ''
       this.searchCloseClass = 'close'
+    },
+    // 登录
+    login() {
+      this.$router.push({
+        name: 'login'
+      })
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
@@ -215,7 +224,7 @@ export default {
     display: flex;
     align-items: center;
     i {
-      font-size: 24px;
+      font-size: 22px;
       color: #161e27;
       padding: 0 15px;
       cursor: pointer;
@@ -235,6 +244,12 @@ export default {
       left: 0;
       top: 50%;
       margin-top: -11px;
+    }
+    .no-login {
+      font-size: 14px;
+      &:hover {
+        color: $color-theme;
+      }
     }
     .avatar {
       margin-right: 15px;

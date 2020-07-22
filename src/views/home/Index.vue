@@ -21,11 +21,7 @@ export default {
     RecommendMusic
   },
   methods: {},
-  mounted() {
-    this.$api.login().then(res => {
-      window.localStorage.setItem('cookie', res.cookie)
-    })
-  }
+  mounted() {}
 }
 </script>
 
