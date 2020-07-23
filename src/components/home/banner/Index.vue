@@ -37,7 +37,7 @@ export default {
     async getBanner() {
       try {
         let res = await this.$api.getBanner()
-        console.log(res)
+        // console.log(res)
         this.banners = res.banners
         this.bannerBg = res.banners[0].imageUrl
       } catch (error) {

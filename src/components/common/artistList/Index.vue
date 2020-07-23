@@ -11,7 +11,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) of songs" :key="item.id" :class="index == 500 ? 'playing' : ''">
+        <tr
+          v-for="(item, index) of songs"
+          :key="item.id"
+          :class="index == 500 ? 'playing' : ''"
+        >
           <td>
             <div class="index-container flex-center">
               <span class="num">{{ utils.formatZero(index + 1, 2) }}</span>

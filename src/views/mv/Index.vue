@@ -183,21 +183,23 @@ export default {
       let ret = []
       list.map(item => {
         if (item.id) {
-          ret.push(createVideo({
-            id: item.id,
-            nickName: item.artistName,
-            name: item.name,
-            playCount: item.playCount,
-            duration: item.duration,
-            image: item.cover
-          }))
+          ret.push(
+            createVideo({
+              id: item.id,
+              nickName: item.artistName,
+              name: item.name,
+              playCount: item.playCount,
+              duration: item.duration,
+              image: item.cover
+            })
+          )
         }
       })
       return ret
     },
     // 加载更多
     load() {
-      if(this.loadStatus) {
+      if (this.loadStatus) {
         setTimeout(() => {
           this.getMvAll()
         }, 1000)

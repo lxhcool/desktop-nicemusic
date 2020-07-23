@@ -184,7 +184,7 @@ export default {
     },
     // 加载更多
     load() {
-      if(this.loadStatus) {
+      if (this.loadStatus) {
         setTimeout(() => {
           this.getSingerList()
         }, 1000)

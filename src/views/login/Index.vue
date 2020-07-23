@@ -57,6 +57,7 @@
 
 <script>
 import { KinesisContainer, KinesisElement } from 'vue-kinesis'
+import { mapMutations } from 'vuex'
 export default {
   name: 'login',
   data() {
@@ -101,12 +102,18 @@ export default {
           if (res.code === 200) {
             window.localStorage.setItem('cookie', res.cookie)
             window.localStorage.setItem('token', res.token)
-            window.localStorage.setItem('userInfo', res.profile)
-            window.localStorage.setItem('isLogin', true)
+            window.localStorage.setItem('userInfo', JSON.stringify(res.profile))
+            window.localStorage.setItem('loginStatu', true)
+            this.setUserInfo(res.profile)
+            this.setLoginStatu(true)
+            this.$message({
+              message: '登录成功',
+              type: 'success'
+            })
             setTimeout(() => {
               this.loginLoading = false
               this.$router.push({ path: '/' })
-            }, 1000)
+            }, 1500)
           } else {
             this.$message.error(res.msg)
           }
@@ -122,7 +129,11 @@ export default {
         (typeof val === 'object' && Object.keys(val).length === 0) ||
         (typeof val === 'string' && val.trim().length === 0)
       )
-    }
+    },
+    ...mapMutations({
+      setUserInfo: 'SET_USERINFO',
+      setLoginStatu: 'SET_LOGINSTATU'
+    })
   }
 }
 </script>

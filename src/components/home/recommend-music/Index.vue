@@ -26,7 +26,7 @@ export default {
     async getNewSongs() {
       try {
         let res = await this.$api.getNewSongs()
-        console.log(res)
+        // console.log(res)
         this.songs = res.result
       } catch (error) {
         console.log(error)

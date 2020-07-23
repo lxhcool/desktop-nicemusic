@@ -1,6 +1,11 @@
 <template>
   <div class="list">
-    <div class="item" v-for="item of sheetList" :key="item.id" @click="toDetail(item.id)">
+    <div
+      class="item"
+      v-for="item of sheetList"
+      :key="item.id"
+      @click="toDetail(item.id)"
+    >
       <div class="wrapper">
         <a>
           <div class="cover">

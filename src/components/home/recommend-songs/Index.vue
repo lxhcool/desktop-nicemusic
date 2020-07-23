@@ -27,7 +27,7 @@ export default {
     async getPersonalized() {
       try {
         let res = await this.$api.getPersonalized(this.limit)
-        console.log(res)
+        // console.log(res)
         this.personalizeds = res.result
       } catch (error) {
         console.log(error)

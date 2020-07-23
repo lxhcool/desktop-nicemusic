@@ -3,23 +3,32 @@
     <div class="left shadow">
       <div class="top">
         <div class="avatar">
-          <img :src="detail.coverImgUrl + '?param=200y200'" alt="">
+          <img :src="detail.coverImgUrl + '?param=200y200'" alt="" />
         </div>
         <div class="info">
           <div class="title ellipsis-two">{{ detail.name }}</div>
           <div class="user flex-row">
             <div class="avatar">
-              <img :src="creator.avatarUrl + '?param=100y100'" alt="">
+              <img :src="creator.avatarUrl + '?param=100y100'" alt="" />
             </div>
             <p class="nickname">{{ creator.nickname }}</p>
-            <p class="createTime">{{ utils.dateFormat(detail.createTime, 'YYYY-MM-DD') }}创建</p>
+            <p class="createTime">
+              {{ utils.dateFormat(detail.createTime, 'YYYY-MM-DD') }}创建
+            </p>
           </div>
           <div class="tag flex-row">
             标签：<a v-for="item of detail.tags" :key="item">{{ item }}</a>
           </div>
           <div class="desc">
             <p class="ellipsis-two" v-html="detail.description"></p>
-            <span @click="openDesc(detail.name, detail.description)" class="flex-row" v-if="txtLength(detail.description) > 50">全部<i class="iconfont niceiconfontyoujiantou-copy-copy-copy-copy"></i></span>
+            <span
+              @click="openDesc(detail.name, detail.description)"
+              class="flex-row"
+              v-if="txtLength(detail.description) > 50"
+              >全部<i
+                class="iconfont niceiconfontyoujiantou-copy-copy-copy-copy"
+              ></i
+            ></span>
           </div>
         </div>
       </div>
@@ -35,7 +44,11 @@
         <ul>
           <li v-for="item of subscribers" :key="item.id">
             <div class="avatar">
-              <img :src="item.avatarUrl + '?param=150y150'" :alt="item.nickname" :title="item.nickname">
+              <img
+                :src="item.avatarUrl + '?param=150y150'"
+                :alt="item.nickname"
+                :title="item.nickname"
+              />
             </div>
           </li>
         </ul>
@@ -47,11 +60,17 @@
         <ul>
           <li v-for="item of relatedList" :key="item.id">
             <div class="avatar">
-              <img :src="item.coverImgUrl + '?param=150y150'" :alt="item.nickname" :title="item.nickname">
+              <img
+                :src="item.coverImgUrl + '?param=150y150'"
+                :alt="item.nickname"
+                :title="item.nickname"
+              />
             </div>
             <div class="info">
               <h2 class="ellipsis">{{ item.name }}</h2>
-              <span>By. <small> {{ item.creator.nickname }}</small></span>
+              <span
+                >By. <small> {{ item.creator.nickname }}</small></span
+              >
             </div>
           </li>
         </ul>
@@ -63,10 +82,17 @@
         <ul>
           <li class="item" v-for="item of comments" :key="item.time">
             <div class="avatar">
-              <img :src="item.user.avatarUrl + '?param=150y150'" :alt="item.user.nickname" :title="item.user.nickname">
+              <img
+                :src="item.user.avatarUrl + '?param=150y150'"
+                :alt="item.user.nickname"
+                :title="item.user.nickname"
+              />
             </div>
             <div class="info">
-              <h2>{{ item.user.nickname }}<small> · {{utils.formatMsgTime(item.time)}}</small></h2>
+              <h2>
+                {{ item.user.nickname
+                }}<small> · {{ utils.formatMsgTime(item.time) }}</small>
+              </h2>
               <p>{{ item.content }}</p>
             </div>
           </li>
@@ -119,7 +145,10 @@ export default {
       try {
         let res = await this.$api.getPlayListDetail(id, s)
         if (res.code === 200) {
-          res.playlist.description = res.playlist.description.replace(/(\r\n|\n|\r)/gm, '<br />')
+          res.playlist.description = res.playlist.description.replace(
+            /(\r\n|\n|\r)/gm,
+            '<br />'
+          )
           this.detail = res.playlist
           this.creator = res.playlist.creator
           this.getSongDetail(res.playlist.trackIds)
@@ -130,13 +159,14 @@ export default {
     },
     // 获取歌曲列表
     async getSongDetail(trackIds) {
+      let timestamp = new Date().valueOf()
       let ids = []
       trackIds.map(item => {
         ids.push(item.id)
       })
       ids = ids.join(',')
       try {
-        let res = await this.$api.getSongDetail(ids, new Date())
+        let res = await this.$api.getSongDetail(ids, timestamp)
         if (res.code === 200) {
           this.songs = this._normalizeSongs(res.songs)
         }

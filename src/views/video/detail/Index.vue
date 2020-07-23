@@ -2,20 +2,31 @@
   <div class="video-detail container">
     <div class="left shadow">
       <div class="video-container">
-        <video :src="videoUrl" controls="controls" controlslist="nodownload">
-        </video>
+        <video
+          :src="videoUrl"
+          controls="controls"
+          controlslist="nodownload"
+        ></video>
       </div>
       <div class="video-foot">
-        <h2 class="title flex-row"> 
+        <h2 class="title flex-row">
           <!-- <i class="iconfont nicemv24"></i> -->
           {{ detail.title }}
         </h2>
         <div class="tag">
-          <a v-for="item of detail.videoGroup" :key="item.id">#{{item.name}}</a>
+          <a v-for="item of detail.videoGroup" :key="item.id"
+            >#{{ item.name }}</a
+          >
         </div>
         <p class="flex-row">
-          <span>发布：{{utils.dateFormat(detail.publishTime, 'YYYY-MM-DD')}}</span>
-          <span v-if="detail.playTime">播放次数：{{utils.tranNumber(detail.playTime, 1)}}</span>
+          <span
+            >发布：{{
+              utils.dateFormat(detail.publishTime, 'YYYY-MM-DD')
+            }}</span
+          >
+          <span v-if="detail.playTime"
+            >播放次数：{{ utils.tranNumber(detail.playTime, 1) }}</span
+          >
         </p>
         <div class="follow">
           <div class="box">
@@ -34,105 +45,36 @@
       </div>
       <div class="comments">
         <div class="title flex-row">
-          <i class="iconfont nicepinglun"></i>Comments | <span class="noticom"><a>{{commentTotal}} 条评论</a> </span>
+          <i class="iconfont nicepinglun"></i>Comments |
+          <span class="noticom"
+            ><a>{{ commentTotal }} 条评论</a>
+          </span>
         </div>
-        <div class="comment-box" v-if="currentCommentId == ''">
-          <p class="flex-row"><i class="iconfont niceuser"></i> &nbsp;&nbsp;游客，你好</p>
-          <div class="comment-form">
-            <div class="avatar">
-              <img :src="creator.avatarUrl" alt="">
-            </div>
-            <div class="comarea">
-              <textarea name="comment" v-model="commentContent" placeholder="你看什么看！" tabindex="4" cols="50" rows="5"></textarea>
-            </div>
-          </div>
-          <div class="comment-foot flex-between">
-            <div class="smile"></div>
-            <button type="button" class="comment-btn transition" @click="commentSubmit">评论</button>
-          </div>
-        </div>
-        <div class="comment-list" v-if="hotComments.length > 0">
-          <h3>精彩评论</h3>
-          <ul>
-            <li class="item" v-for="item of hotComments" :key="item.commentId">
-              <div class="avatar">
-                <img :src="item.user.avatarUrl + '?param=150y150'" :alt="item.user.nickname" :title="item.user.nickname">
-              </div>
-              <div class="info">
-                <h2 class="flex-between">
-                  <span>{{ item.user.nickname }}<small> · {{utils.formatMsgTime(item.time)}}</small></span>
-                  <div class="tool flex-row">
-                    <i class="iconfont nicezan1 icon-zan" :class="item.liked ? 'active' : ''"></i>
-                    <span>({{ item.likedCount }})</span>
-                    <i class="iconfont nicevoice icon-comment" @click="commentHandle(item.commentId)"></i>
-                  </div>
-                </h2>
-                <div class="content">
-                  {{ item.content }}
-                  <div class="beReqlied" v-for="subItem of item.beReplied" :key="subItem.beRepliedCommentId">
-                    <small>@{{subItem.user.nickname}}：</small>{{subItem.content}}
-                  </div>
-                </div>
-                <div class="comment-box" v-if="item.commentId == currentCommentId">
-                  <p class="flex-row"><i class="iconfont niceuser"></i> <span>&nbsp;&nbsp;游客，你好</span><button class="cancel-comment" @click="cancelComment">取消回复</button></p>
-                  <div class="comment-form">
-                    <div class="avatar">
-                      <img :src="creator.avatarUrl" alt="" />
-                    </div>
-                    <div class="comarea">
-                      <textarea name="comment" placeholder="你看什么看！" tabindex="4" cols="50" rows="5"></textarea>
-                    </div>
-                  </div>
-                  <div class="comment-foot flex-between">
-                    <div class="smile"></div>
-                    <button type="button" class="comment-btn transition">评论</button>
-                  </div>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="comment-list">
-          <h3>最新评论</h3>
-          <ul>
-            <li class="item" v-for="item of comments" :key="item.commentId">
-              <div class="avatar">
-                <img :src="item.user.avatarUrl + '?param=150y150'" :alt="item.user.nickname" :title="item.user.nickname">
-              </div>
-              <div class="info">
-                <h2 class="flex-between">
-                  <span>{{ item.user.nickname }}<small> · {{utils.formatMsgTime(item.time)}}</small></span>
-                  <div class="tool flex-row">
-                    <i class="iconfont nicezan1 icon-zan" :class="item.liked ? 'active' : ''"></i>
-                    <span>({{ item.likedCount }})</span>
-                    <i class="iconfont nicevoice icon-comment" @click="commentHandle(item.commentId)"></i>
-                  </div>
-                </h2>
-                <div class="content">
-                  {{ item.content }}
-                  <div class="beReqlied" v-for="subItem of item.beReplied" :key="subItem.beRepliedCommentId">
-                    <small>@{{subItem.user.nickname}}：</small>{{subItem.content}}
-                  </div>
-                </div>
-                <div class="comment-box" v-if="item.commentId == currentCommentId">
-                  <p class="flex-row"><i class="iconfont niceuser"></i> <span>&nbsp;&nbsp;游客，你好</span><button class="cancel-comment" @click="cancelComment">取消回复</button></p>
-                  <div class="comment-form">
-                    <div class="avatar">
-                      <img :src="creator.avatarUrl" alt="" />
-                    </div>
-                    <div class="comarea">
-                      <textarea name="comment" placeholder="你看什么看！" v-model="commentContent" tabindex="4" cols="50" rows="5"></textarea>
-                    </div>
-                  </div>
-                  <div class="comment-foot flex-between">
-                    <div class="smile"></div>
-                    <button type="button" class="comment-btn transition">评论</button>
-                  </div>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
+        <comment-box
+          :currentCommentId="currentCommentId"
+          @commentSubmit="commentSubmit"
+          :clearContent="clearContent"
+          v-if="currentCommentId == ''"
+        />
+        <comment-list
+          title="精彩评论"
+          :commentList="hotComments"
+          :currentCommentId="currentCommentId"
+          @commentHandle="commentHandle"
+          @cancelComment="cancelComment"
+          @commentSubmit="commentSubmit"
+          @commentLike="commentLike"
+          v-if="hotComments.length > 0"
+        />
+        <comment-list
+          title="最新评论"
+          :commentList="comments"
+          :currentCommentId="currentCommentId"
+          @commentHandle="commentHandle"
+          @cancelComment="cancelComment"
+          @commentSubmit="commentSubmit"
+          @commentLike="commentLike"
+        />
         <div class="page-wrap">
           <el-pagination
             @size-change="handleSizeChange"
@@ -156,11 +98,11 @@
         <div class="content">
           <div class="author">
             <div class="avatar">
-              <img :src="creator.avatarUrl" alt="">
+              <img :src="creator.avatarUrl" alt="" />
             </div>
             <p class="name">{{ creator.nickname }}</p>
             <div class="follow flex-center transition">
-              <i class="iconfont niceIcon_add"></i>关注 
+              <i class="iconfont niceIcon_add"></i>关注
             </div>
           </div>
           <p v-if="detail.description">{{ detail.description }}</p>
@@ -174,16 +116,27 @@
         <ul>
           <li v-for="item of relatedList" :key="item.vid">
             <div class="avatar">
-              <img :src="item.coverUrl + '?param=320y180'" :alt="item.title" :title="item.title">
+              <img
+                :src="item.coverUrl + '?param=320y180'"
+                :alt="item.title"
+                :title="item.title"
+              />
               <div class="action">
-                <button class="play flex-center" title="播放" v-if="!item.isLive" @click="toDetail(item.vid)">
+                <button
+                  class="play flex-center"
+                  title="播放"
+                  v-if="!item.isLive"
+                  @click="toDetail(item.vid)"
+                >
                   <i class="iconfont nicebofang1"></i>
                 </button>
               </div>
             </div>
             <div class="info">
               <h2 class="ellipsis">{{ item.title }}</h2>
-              <span v-for="author of item.creator" :key="author.userId">By. <small> {{ author.userName }}</small></span>
+              <span v-for="author of item.creator" :key="author.userId"
+                >By. <small> {{ author.userName }}</small></span
+              >
             </div>
           </li>
         </ul>
@@ -193,6 +146,9 @@
 </template>
 
 <script>
+import CommentList from 'components/common/commentList/Index.vue'
+import CommentBox from 'components/common/commentBox/Index.vue'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -210,12 +166,18 @@ export default {
       limit: 20,
       offset: 0,
       videoId: '',
-      commentContent: '',
-      commentTotal: 0
+      commentTotal: 0,
+      // 是否清空评论框内容
+      clearContent: false
     }
   },
-  components: {},
-  computed: {},
+  components: {
+    CommentList,
+    CommentBox
+  },
+  computed: {
+    ...mapGetters(['userInfo', 'loginStatu'])
+  },
   watch: {},
   methods: {
     // 改变页码
@@ -235,24 +197,34 @@ export default {
       this.currentCommentId = id
     },
     // 提交评论
-    async commentSubmit() {
-      if (!this.commentContent) {
+    async commentSubmit(content) {
+      if (!content) {
         this.$message.error('什么都没写，你点毛')
         return
       } else {
+        let timestamp = new Date().valueOf()
         let params = {
-          t: 1,
           type: 5,
           id: this.videoId,
-          content: this.commentContent
+          content: content,
+          timestamp
+        }
+        if (this.currentCommentId == '') {
+          // 发布评论
+          params.t = 1
+        } else {
+          // 回复评论
+          params.t = 2
+          params.commentId = this.currentCommentId
         }
         let res = await this.$api.sendComment(params)
-        console.log(res)
         if (res.code === 200) {
           this.$message({
             message: '提交成功',
             type: 'success'
           })
+          this.cancelComment()
+          this.clearContent = true
           this.getVideoComments(this.videoId)
         }
       }
@@ -260,6 +232,29 @@ export default {
     // 取消评论
     cancelComment() {
       this.currentCommentId = ''
+    },
+    // 评论点赞
+    async commentLike(id, liked) {
+      let timestamp = new Date().valueOf()
+      let params = {
+        id: this.videoId,
+        cid: id,
+        type: 5,
+        timestamp
+      }
+      if (liked) {
+        params.t = 0
+      } else {
+        params.t = 1
+      }
+      try {
+        let res = await this.$api.likeComment(params)
+        if (res.code === 200) {
+          this.getVideoComments(this.videoId)
+        }
+      } catch (error) {
+        console.log(error)
+      }
     },
     // 获取视频播放地址
     async getVideoUrl(id) {
@@ -279,7 +274,7 @@ export default {
         if (res.code === 200) {
           res.data.videoGroup.map(item => {
             if (item.name.indexOf('#') != -1) {
-              item.name = item.name.replace(/#/g, "")
+              item.name = item.name.replace(/#/g, '')
             }
           })
           this.detail = res.data
@@ -302,15 +297,16 @@ export default {
     },
     // 视频评论
     async getVideoComments(id) {
+      let timestamp = new Date().valueOf()
       let params = {
         id,
         limit: this.limit,
-        offset: this.offset
+        offset: this.offset,
+        timestamp
       }
       try {
         let res = await this.$api.getVideoComments(params)
         if (res.code === 200) {
-          console.log(res)
           this.commentTotal = res.total
           if (res.hotComments) {
             this.hotComments = res.hotComments
@@ -325,7 +321,6 @@ export default {
     },
     // 视频详情（相关视频）
     toDetail(id) {
-      console.log(id)
       this._initialize(id)
     },
     // 初始化
@@ -500,95 +495,6 @@ export default {
           background: linear-gradient(to right, #FF4B2B, #FF416C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
         }
       }
-      .comment-list {
-        margin-top: 20px;
-        h3 {
-          margin-bottom: 15px;
-          font-size: 16px;
-        }
-        ul {
-          li {
-            padding: 10px 0;
-            width: 100%;
-            display: flex;
-            .avatar {
-              width: 45px;
-              height: 45px;
-              border-radius: 50%;
-              margin-right: 12px;
-              flex-shrink: 0;
-              img {
-                width: 100%;
-                border-radius: 50%;
-              }
-            }
-            .info {
-              flex: 1;
-              h2 {
-                font-size: 15px;
-                margin-right: 5px;
-                margin-bottom: 10px;
-                small {
-                  font-size: 12px;
-                  color: #a5a5c1;
-                  font-weight: 200;
-                }
-                .tool {
-                  i {
-                    font-size: 24px;
-                    font-weight: 100;
-                    margin-left: 20px;
-                    cursor: pointer;
-                    transition: all 0.4s;
-                    &.icon-zan {
-                      &.active {
-                        color: $color-theme;
-                      }
-                    }
-                  }
-                  span {
-                    font-size: 12px;
-                    margin-top: 2px;
-                    color: #666;
-                    font-weight: 200;
-                    position: relative;
-                    &::after {
-                      content: "";
-                      width: 1px;
-                      height: 13px;
-                      background: #4a4a4a;
-                      opacity: 0.7;
-                      position: absolute;
-                      top: 2px;
-                      right: -12px;
-                    }
-                  }
-                }
-              }
-              .content {
-                width: 100%;
-                font-size: 12px;
-                color: #4a4a4a;
-                line-height: 1.6;
-                padding: 8px 10px;
-                background: #f5f5f5;
-                margin-top: 5px;
-                border-radius: 3px;
-                .beReqlied {
-                  margin-top: 10px;
-                  background: #ffffff;
-                  padding: 8px 10px;
-                  border-radius: 3px;
-                  color: #666666;
-                  small {
-                    color: $color-theme;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
       .page-wrap {
         margin-top: 20px;
       }
@@ -609,7 +515,7 @@ export default {
         align-items: center;
         margin-bottom: 15px;
         margin-top: 5px;
-        .avatar { 
+        .avatar {
           width: 40px;
           height: 40px;
           border-radius: 20px;

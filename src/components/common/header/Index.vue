@@ -29,26 +29,28 @@
       </div>
       <div class="userbox">
         <div class="line"></div>
-        <div class="no-login flex-row" @click="login">
+        <div class="is-login flex-row" v-if="loginStatu">
+          <el-avatar class="avatar" :src="userInfo.avatarUrl"></el-avatar>
+          <el-dropdown trigger="click">
+            <span class="el-dropdown-link">
+              {{ userInfo.nickname }}
+              <i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item icon="el-icon-user">个人主页</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-medal">我的等级</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-setting"
+                >个人设置</el-dropdown-item
+              >
+              <el-dropdown-item divided icon="el-icon-switch-button">
+                退出登录
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+        <div class="no-login flex-row" @click="login" v-else>
           登录
         </div>
-        <!-- <el-avatar
-          class="avatar"
-          src="http://p3.music.126.net/CPOCNGKwvMJ7Njt17Lu-Tg==/109951164836393307.jpg?param="
-        ></el-avatar> -->
-        <!-- <el-dropdown trigger="click">
-          <span class="el-dropdown-link">
-            lxhcool丶<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item icon="el-icon-user">个人主页</el-dropdown-item>
-            <el-dropdown-item icon="el-icon-medal">我的等级</el-dropdown-item>
-            <el-dropdown-item icon="el-icon-setting">个人设置</el-dropdown-item>
-            <el-dropdown-item divided icon="el-icon-switch-button">
-              退出登录
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown> -->
       </div>
       <div class="search-wrap" :class="[searchOpenClass, searchCloseClass]">
         <div class="overlay" @click="closeSearchPop"></div>
@@ -124,6 +126,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -134,7 +137,9 @@ export default {
   },
   components: {},
   //监听属性 类似于data概念
-  computed: {},
+  computed: {
+    ...mapGetters(['userInfo', 'loginStatu'])
+  },
   //监控data中的数据变化
   watch: {},
   //方法集合

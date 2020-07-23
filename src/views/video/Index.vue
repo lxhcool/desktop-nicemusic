@@ -7,7 +7,14 @@
         <transition name="fade">
           <div class="filter-box shadow" v-if="showFilter">
             <ul>
-              <li v-for="item of tags" :key="item.id" :class="currentCat == item.name ? 'active' : ''" @click="chooseCat(item.id, item.name)">{{ item.name }}</li>
+              <li
+                v-for="item of tags"
+                :key="item.id"
+                :class="currentCat == item.name ? 'active' : ''"
+                @click="chooseCat(item.id, item.name)"
+              >
+                {{ item.name }}
+              </li>
             </ul>
           </div>
         </transition>
@@ -15,15 +22,40 @@
       <div class="hot-tag flex-row">
         <p>分类：</p>
         <ul class="flex-center">
-          <li v-for="item of hotCategories" :key="item.id" :class="currentCat == item.name ? 'active' : ''"  @click="chooseCat(item.id, item.name)">{{ item.name }}</li>
+          <li
+            v-for="item of hotCategories"
+            :key="item.id"
+            :class="currentCat == item.name ? 'active' : ''"
+            @click="chooseCat(item.id, item.name)"
+          >
+            {{ item.name }}
+          </li>
         </ul>
       </div>
-      <div class="all" :class="currentCat == '全部' ? 'active' : ''" @click="chooseCat('', '全部')">全部</div>
+      <div
+        class="all"
+        :class="currentCat == '全部' ? 'active' : ''"
+        @click="chooseCat('', '全部')"
+      >
+        全部
+      </div>
     </div>
     <mv-list :mvs="videos"></mv-list>
     <div class="page flex-center">
-      <button :disabled="offset == 0" class="btn flex-center trainsition" @click="prev">上一页</button>
-      <button :disabled="!hasmore" class="btn flex-center trainsition" @click="next">下一页</button>
+      <button
+        :disabled="offset == 0"
+        class="btn flex-center trainsition"
+        @click="prev"
+      >
+        上一页
+      </button>
+      <button
+        :disabled="!hasmore"
+        class="btn flex-center trainsition"
+        @click="next"
+      >
+        下一页
+      </button>
     </div>
   </div>
 </template>
@@ -57,17 +89,16 @@ export default {
     // 下一页
     next() {
       this.offset += 1
-      if(this.currentId) {
+      if (this.currentId) {
         this.getVideoOther(this.currentId)
       } else {
         this.getVideoAll()
       }
-      
     },
     // 上一页
     prev() {
       this.offset -= 1
-      if(this.currentId) {
+      if (this.currentId) {
         this.getVideoOther(this.currentId)
       } else {
         this.getVideoAll()
@@ -107,7 +138,7 @@ export default {
         let res = await this.$api.getVideoAll(this.offset)
         if (res.code === 200) {
           this.videos = this._normalizeVideos(res.datas)
-          if(res.hasmore) {
+          if (res.hasmore) {
             this.hasmore = true
           } else {
             this.hasmore = false
@@ -123,7 +154,7 @@ export default {
         let res = await this.$api.getVideoOther(id, this.offset)
         if (res.code === 200) {
           this.videos = this._normalizeVideos(res.datas)
-          if(res.hasmore) {
+          if (res.hasmore) {
             this.hasmore = true
           } else {
             this.hasmore = false
@@ -140,25 +171,30 @@ export default {
         let res = item.data
         let liveRes = item.data.liveData
         if (res.vid) {
-          ret.push(createVideo({
-            id: res.vid,
-            nickName: res.creator.nickname,
-            name: res.title,
-            playCount: res.playTime,
-            duration: res.durationms,
-            image: res.coverUrl,
-            isLive: false
-          }))
+          ret.push(
+            createVideo({
+              id: res.vid,
+              nickName: res.creator.nickname,
+              name: res.title,
+              playCount: res.playTime,
+              duration: res.durationms,
+              image: res.coverUrl,
+              isLive: false
+            })
+          )
         } else {
-          ret.push(createVideo({
-            id: liveRes.liveRoom.liveRoomNo,
-            nickName: liveRes.liveUser.nickName,
-            name: liveRes.liveRoom.title,
-            playCount: liveRes.liveRoom.popularity,
-            duration: liveRes.liveRoom.liveStatus == 1 ? '正在直播' : '直播已关闭',
-            image: liveRes.liveRoom.coverUrl,
-            isLive: true
-          }))
+          ret.push(
+            createVideo({
+              id: liveRes.liveRoom.liveRoomNo,
+              nickName: liveRes.liveUser.nickName,
+              name: liveRes.liveRoom.title,
+              playCount: liveRes.liveRoom.popularity,
+              duration:
+                liveRes.liveRoom.liveStatus == 1 ? '正在直播' : '直播已关闭',
+              image: liveRes.liveRoom.coverUrl,
+              isLive: true
+            })
+          )
         }
       })
       return ret
@@ -168,7 +204,7 @@ export default {
       this.offset = 0
       this.hasmore = true
       this.currentCat = name
-      if(id) {
+      if (id) {
         this.currentId = id
         this.getVideoOther(id)
       } else {

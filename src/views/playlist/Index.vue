@@ -7,9 +7,18 @@
         <transition name="fade">
           <div class="filter-box shadow" v-if="showFilter">
             <div class="item" v-for="item of cateList" :key="item.key">
-              <h2><i class="iconfont" :class="item.icon"></i>{{ item.type }}</h2>
+              <h2>
+                <i class="iconfont" :class="item.icon"></i>{{ item.type }}
+              </h2>
               <ul>
-                <li :class="currentCat == sub.name ? 'active' : ''" v-for="sub of item.list" :key="sub.name" @click="chooseCat(sub.name)">{{ sub.name }}</li>
+                <li
+                  :class="currentCat == sub.name ? 'active' : ''"
+                  v-for="sub of item.list"
+                  :key="sub.name"
+                  @click="chooseCat(sub.name)"
+                >
+                  {{ sub.name }}
+                </li>
               </ul>
             </div>
           </div>
@@ -18,12 +27,31 @@
       <div class="hot-tag flex-row">
         <p>热门标签：</p>
         <ul class="flex-center">
-          <li v-for="item of hotCategories" :key="item.id" :class="currentCat == item.name ? 'active' : ''"  @click="chooseCat(item.name)">{{ item.name }}</li>
+          <li
+            v-for="item of hotCategories"
+            :key="item.id"
+            :class="currentCat == item.name ? 'active' : ''"
+            @click="chooseCat(item.name)"
+          >
+            {{ item.name }}
+          </li>
         </ul>
       </div>
       <div class="type">
-        <div class="item" :class="sortType == 'hot' ? 'active' : ''" @click="chooseType('hot')">热门</div>
-        <div class="item" :class="sortType == 'new' ? 'active' : ''" @click="chooseType('new')">最新</div>
+        <div
+          class="item"
+          :class="sortType == 'hot' ? 'active' : ''"
+          @click="chooseType('hot')"
+        >
+          热门
+        </div>
+        <div
+          class="item"
+          :class="sortType == 'new' ? 'active' : ''"
+          @click="chooseType('new')"
+        >
+          最新
+        </div>
       </div>
     </div>
     <song-sheet :sheetList="playList"></song-sheet>
@@ -36,7 +64,8 @@
         background
         hide-on-single-page
         layout="total, prev, pager, next"
-        :total="pageTotal">
+        :total="pageTotal"
+      >
       </el-pagination>
     </div>
   </div>
@@ -58,27 +87,33 @@ export default {
       offset: 0,
       currentCat: '全部',
       sortType: 'hot',
-      typeList: [{
-        key: 0,
-        value: '语种',
-        icon: 'niceyuyan'
-      },{
-        key: 1,
-        value: '风格',
-        icon: 'nicefengge'
-      },{
-        key: 2,
-        value: '场景',
-        icon: 'nicekafeidengdai'
-      },{
-        key: 3,
-        value: '情感',
-        icon: 'niceqingganqingshu'
-      },{
-        key: 4,
-        value: '主题',
-        icon: 'nicepifugexinghuazhuti-xianxing'
-      }]
+      typeList: [
+        {
+          key: 0,
+          value: '语种',
+          icon: 'niceyuyan'
+        },
+        {
+          key: 1,
+          value: '风格',
+          icon: 'nicefengge'
+        },
+        {
+          key: 2,
+          value: '场景',
+          icon: 'nicekafeidengdai'
+        },
+        {
+          key: 3,
+          value: '情感',
+          icon: 'niceqingganqingshu'
+        },
+        {
+          key: 4,
+          value: '主题',
+          icon: 'nicepifugexinghuazhuti-xianxing'
+        }
+      ]
     }
   },
   components: {
@@ -87,14 +122,14 @@ export default {
   computed: {},
   watch: {},
   methods: {
-    handleSizeChange(val) {  
+    handleSizeChange(val) {
       this.limit = val
       this.offset = this.limit * this.currentPage
       this.getPlayList()
     },
     handleCurrentChange(val) {
       this.currentPage = val
-      this.offset = (val - 1)*this.limit
+      this.offset = (val - 1) * this.limit
       this.getPlayList()
     },
     openFilter() {
@@ -167,13 +202,13 @@ export default {
         obj[list[i][field]].list.push(list[i])
       }
       var att = []
-      
+
       for (let item in obj) {
         let type = ''
         let category = ''
         let icon = ''
         this.typeList.map(jitem => {
-          if(jitem.key == obj[item].list[0].category) {
+          if (jitem.key == obj[item].list[0].category) {
             type = jitem.value
             category = jitem.key
             icon = jitem.icon

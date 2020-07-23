@@ -295,14 +295,16 @@ export default {
       let ret = []
       list.map(item => {
         if (item.id) {
-          ret.push(createVideo({
-            id: item.id,
-            nickName: item.artistName,
-            name: item.name,
-            playCount: item.playCount,
-            duration: item.duration,
-            image: item.imgurl16v9
-          }))
+          ret.push(
+            createVideo({
+              id: item.id,
+              nickName: item.artistName,
+              name: item.name,
+              playCount: item.playCount,
+              duration: item.duration,
+              image: item.imgurl16v9
+            })
+          )
         }
       })
       return ret

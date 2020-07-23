@@ -25,10 +25,20 @@
             <span>{{ utils.tranNumber(item.playCount, 0) }}</span>
           </div>
           <div class="action">
-            <button class="play flex-center" title="播放" v-if="!item.isLive" @click="toDetail(item.id)">
+            <button
+              class="play flex-center"
+              title="播放"
+              v-if="!item.isLive"
+              @click="toDetail(item.id)"
+            >
               <i class="iconfont nicebofang1"></i>
             </button>
-            <button class="play flex-center" title="播放" v-else @click="toLive(item.id)">
+            <button
+              class="play flex-center"
+              title="播放"
+              v-else
+              @click="toLive(item.id)"
+            >
               <i class="iconfont nicebofang1"></i>
             </button>
           </div>
@@ -78,7 +88,7 @@ export default {
     // 直播跳转
     toLive(id) {
       let url = `https://iplay.163.com/live?id=${id}`
-      window.open(url,'_blank')
+      window.open(url, '_blank')
     },
     // 视频详情
     toDetail(id) {

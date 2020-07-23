@@ -79,17 +79,20 @@ export const getPlayList = params => api.get(`/top/playlist`, { params })
 /**
  * @method 获取歌单详情
  */
-export const getPlayListDetail = (id, s) => api.get(`/playlist/detail?id=${id}&s=${s}`, {})
+export const getPlayListDetail = (id, s) =>
+  api.get(`/playlist/detail?id=${id}&s=${s}`, {})
 
 /**
  * @method 获取歌曲详情
  */
-export const getSongDetail = (ids, time) => api.post(`/song/detail?timestamp=${time}`, { ids })
+export const getSongDetail = (ids, time) =>
+  api.post(`/song/detail?timestamp=${time}`, { ids })
 
 /**
  * @method 相关歌单推荐
  */
-export const getRelatedPlaylist = id => api.get(`/related/playlist?id=${id}`, {})
+export const getRelatedPlaylist = id =>
+  api.get(`/related/playlist?id=${id}`, {})
 
 /**
  * @method 获取相似歌单
@@ -103,7 +106,8 @@ export const getSimiPlaylist = id => api.get(`/simi/playlist?id=${id}`, {})
  * @params offset 偏移数量 , 用于分页 , 如 :( 评论页数 -1)*20, 其中 20 为 limit 的值
  * @params before 分页参数,取上一页最后一项的 time 获取下一页数据(获取超过5000条评论的时候需要用到)
  */
-export const getCommentPlaylist = params => api.get(`/comment/playlist`, { params })
+export const getCommentPlaylist = params =>
+  api.get(`/comment/playlist`, { params })
 
 /**
  * @method 歌单收藏者
@@ -111,7 +115,8 @@ export const getCommentPlaylist = params => api.get(`/comment/playlist`, { param
  * @params limit 取出评论数量 默认为 20
  * @params offset 偏移数量 , 用于分页 , 如 :( 评论页数 -1)*20, 其中 20 为 limit 的值
  */
-export const getSubscribersPlaylist = params => api.get(`/playlist/subscribers`, { params })
+export const getSubscribersPlaylist = params =>
+  api.get(`/playlist/subscribers`, { params })
 
 /**
  * @method 获取视频分类列表
@@ -126,17 +131,19 @@ export const getVideoTag = () => api.get(`/video/group/list`, {})
 /**
  * @method 获取全部视频列表
  */
-export const getVideoAll = offset => api.get(`/video/timeline/all?offset=${offset}`, {})
+export const getVideoAll = offset =>
+  api.get(`/video/timeline/all?offset=${offset}`, {})
 
 /**
  * @method 获取视频标签/分类下的视频
  */
-export const getVideoOther = (id, offset) => api.get(`/video/group?id=${id}&offset=${offset}`, {})
+export const getVideoOther = (id, offset) =>
+  api.get(`/video/group?id=${id}&offset=${offset}`, {})
 
 /**
  * @method 获取全部mv
  */
-export const getMvAll = params => api.get(`/mv/all`, {params})
+export const getMvAll = params => api.get(`/mv/all`, { params })
 
 /**
  * @method 获取视频播放地址
@@ -151,7 +158,8 @@ export const getVideoDetail = id => api.get(`/video/detail?id=${id}`, {})
 /**
  * @method 获取视频点赞转发评论数数据
  */
-export const getVideoDetailInfo = id => api.get(`/video/detail/info?vid=${id}`, {})
+export const getVideoDetailInfo = id =>
+  api.get(`/video/detail/info?vid=${id}`, {})
 
 /**
  * @method 相关视频
@@ -175,3 +183,13 @@ export const getVideoComments = params => api.get(`/comment/video`, { params })
  */
 
 export const sendComment = params => api.get(`/comment`, { params })
+
+/**
+ * @method 给评论点赞
+ * @params t:1 点赞, 2 取消点赞
+ * @params tpye: 0: 歌曲，1: mv，2: 歌单，3: 专辑，4: 电台，5: 视频，6: 动态
+ * @params cid: 评论id
+ * @调用例子 : /comment/like?id=29178366&cid=12840183&t=1&type=0 对应给 https://music.163.com/#/song?id=29178366 最热门的评论点赞
+ */
+
+export const likeComment = params => api.get(`/comment/like`, { params })
