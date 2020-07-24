@@ -157,6 +157,17 @@ export const appRouter = [
           require(['@/views/mv/detail/Index.vue'], resolve)
         }
       },
+      {
+        path: 'personal',
+        meta: {
+          title: '个人中心',
+          keepAlive: true
+        },
+        name: 'personal',
+        component: resolve => {
+          require(['@/views/personal/Index.vue'], resolve)
+        }
+      }
     ]
   }
 ]

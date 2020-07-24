@@ -3,7 +3,7 @@
 import utils from '../utils/utils'
 
 export default class Song {
-  constructor({ id, singer, name, album, duration, image, url }) {
+  constructor({ id, singer, name, album, duration, image, url, playCount, score }) {
     this.id = id
     this.singer = singer
     this.name = name
@@ -11,6 +11,8 @@ export default class Song {
     this.duration = duration
     this.image = image
     this.url = url
+    this.playCount = playCount
+    this.score = score
   }
 }
 
@@ -22,7 +24,9 @@ export function createSong(musicData) {
     album: musicData.al.name,
     duration: utils.formatTime(musicData.dt),
     image: musicData.al.picUrl,
-    url: `https://music.163.com/song/media/outer/url?id=${musicData.id}.mp3`
+    url: `https://music.163.com/song/media/outer/url?id=${musicData.id}.mp3`,
+    playCount: musicData.playCount || '',
+    score: musicData.score || ''
   })
 }
 

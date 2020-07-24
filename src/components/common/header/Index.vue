@@ -31,13 +31,15 @@
         <div class="line"></div>
         <div class="is-login flex-row" v-if="loginStatu">
           <el-avatar class="avatar" :src="userInfo.avatarUrl"></el-avatar>
-          <el-dropdown trigger="click">
+          <el-dropdown trigger="click" @command="handleCommand">
             <span class="el-dropdown-link">
               {{ userInfo.nickname }}
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="el-icon-user">个人主页</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-user" command="personal">
+                个人主页
+              </el-dropdown-item>
               <el-dropdown-item icon="el-icon-medal">我的等级</el-dropdown-item>
               <el-dropdown-item icon="el-icon-setting"
                 >个人设置</el-dropdown-item
@@ -159,6 +161,13 @@ export default {
       this.$router.push({
         name: 'login'
       })
+    },
+    handleCommand(command) {
+      if (command == 'personal') {
+        this.$router.push({
+          name: 'personal'
+        })
+      }
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）

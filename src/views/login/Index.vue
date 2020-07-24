@@ -100,20 +100,11 @@ export default {
         .then(res => {
           console.log(res)
           if (res.code === 200) {
+            this.getUserDetail(res.profile.userId)
             window.localStorage.setItem('cookie', res.cookie)
             window.localStorage.setItem('token', res.token)
-            window.localStorage.setItem('userInfo', JSON.stringify(res.profile))
             window.localStorage.setItem('loginStatu', true)
-            this.setUserInfo(res.profile)
             this.setLoginStatu(true)
-            this.$message({
-              message: '登录成功',
-              type: 'success'
-            })
-            setTimeout(() => {
-              this.loginLoading = false
-              this.$router.push({ path: '/' })
-            }, 1500)
           } else {
             this.$message.error(res.msg)
           }
@@ -121,6 +112,31 @@ export default {
         .catch(() => {
           this.$message.error('似乎出了什么问题啊，啧啧啧!!!')
         })
+    },
+    // 获取个人信息
+    async getUserDetail(uid) {
+      try {
+        let res = await this.$api.getUserDetail(uid)
+        if (res.code === 200) {
+          let userInfo = res.profile
+          userInfo.level = res.level
+          userInfo.listenSongs = res.listenSongs
+          userInfo.createTime = res.createTime
+          userInfo.createDays = res.createDays
+          window.localStorage.setItem('userInfo', JSON.stringify(userInfo))
+          this.setUserInfo(res.profile)
+          this.$message({
+            message: '登录成功',
+            type: 'success'
+          })
+          setTimeout(() => {
+            this.loginLoading = false
+            this.$router.push({ path: '/' })
+          }, 1500)
+        }
+      } catch (error) {
+        console.log(error)
+      }
     },
     isEmpty(val) {
       return (

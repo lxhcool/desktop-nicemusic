@@ -14,3 +14,12 @@ export const login = (phone, password) =>
  * @params uid 用户id
  */
 export const getUserDetail = uid => api.get(`/user/detail?uid=${uid}`, {})
+
+/**
+ * @method 获取用户播放记录
+ * @params uid 用户 id
+ * @params type : type=1 时只返回 weekData, type=0 时返回 allData
+ */
+
+export const getUserRecord = (uid, type) =>
+  api.get(`/user/record?uid=${uid}&type=${type}`, {})
