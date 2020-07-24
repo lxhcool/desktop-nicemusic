@@ -72,6 +72,9 @@ export default {
     },
     loading: {
       type: Boolean
+    },
+    type: {
+      type: String
     }
   },
   components: {},
@@ -92,12 +95,22 @@ export default {
     },
     // 视频详情
     toDetail(id) {
-      this.$router.push({
-        name: 'videoDetail',
-        query: {
-          id
-        }
-      })
+      console.log(this.type)
+      if (this.type == 'mv') {
+        this.$router.push({
+          name: 'mvDetail',
+          query: {
+            id
+          }
+        })
+      } else {
+        this.$router.push({
+          name: 'videoDetail',
+          query: {
+            id
+          }
+        })
+      }
     }
   },
   created() {},

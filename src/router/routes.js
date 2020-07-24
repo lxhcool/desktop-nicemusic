@@ -145,7 +145,18 @@ export const appRouter = [
         component: resolve => {
           require(['@/views/mv/Index.vue'], resolve)
         }
-      }
+      },
+      {
+        path: 'mv-detail',
+        meta: {
+          title: '详情',
+          keepAlive: true
+        },
+        name: 'mvDetail',
+        component: resolve => {
+          require(['@/views/mv/detail/Index.vue'], resolve)
+        }
+      },
     ]
   }
 ]

@@ -1,5 +1,5 @@
 <template>
-  <div class="video-detail container">
+  <div class="mv-detail container">
     <div class="left shadow">
       <div class="video-container">
         <video
@@ -10,8 +10,8 @@
       </div>
       <div class="video-foot">
         <h2 class="title flex-row">
-          <!-- <i class="iconfont nicemv24"></i> -->
-          {{ detail.title }}
+          <i class="iconfont nicemv24"></i>
+          {{ detail.name }}
         </h2>
         <div class="tag">
           <a v-for="item of detail.videoGroup" :key="item.id"
@@ -24,18 +24,22 @@
               utils.dateFormat(detail.publishTime, 'YYYY-MM-DD')
             }}</span
           >
-          <span v-if="detail.playTime"
-            >播放次数：{{ utils.tranNumber(detail.playTime, 1) }}</span
+          <span v-if="detail.playCount"
+            >播放次数：{{ utils.tranNumber(detail.playCount, 1) }}</span
           >
         </p>
         <div class="follow">
-          <div class="box" @click="likeResource" :class="videoDetailInfo.isLike ? 'active' : ''">
+          <div
+            class="box"
+            @click="likeResource"
+            :class="videoDetailInfo.isLike ? 'active' : ''"
+          >
             <i class="iconfont nicexihuan3 icon-like"></i>
             {{ videoDetailInfo.likeCount }}
           </div>
           <div class="box">
             <i class="iconfont niceshoucang2 icon-collection"></i>
-            {{ detail.subscribeCount }}
+            {{ detail.subCount }}
           </div>
           <div class="box">
             <i class="iconfont nicefenxiang2 icon-share"></i>
@@ -96,16 +100,7 @@
           <span>视频简介</span>
         </div>
         <div class="content">
-          <div class="author">
-            <div class="avatar">
-              <img :src="creator.avatarUrl" alt="" />
-            </div>
-            <p class="name">{{ creator.nickname }}</p>
-            <div class="follow flex-center transition">
-              <i class="iconfont niceIcon_add"></i>关注
-            </div>
-          </div>
-          <p v-if="detail.description">{{ detail.description }}</p>
+          <p v-if="detail.desc">{{ detail.desc }}</p>
           <p v-else>视频暂无简介</p>
         </div>
       </div>
@@ -133,10 +128,14 @@
               </div>
             </div>
             <div class="info">
-              <h2 class="ellipsis">{{ item.title }}</h2>
-              <span v-for="author of item.creator" :key="author.userId"
-                >By. <small> {{ author.userName }}</small></span
-              >
+              <h2 class="flex-row ellipsis">
+                <i class="iconfont nicemv24"></i> {{ item.title }}
+              </h2>
+              <div class="author">
+                By.<span v-for="author of item.creator" :key="author.userId"
+                  ><small> {{ author.userName }}</small></span
+                >
+              </div>
             </div>
           </li>
         </ul>
@@ -186,27 +185,27 @@ export default {
     handleSizeChange(val) {
       this.limit = val
       this.offset = this.limit * this.currentPage
-      this.getVideoComments(this.videoId)
+      this.getMvComments(this.videoId)
     },
     // 改变页码
     handleCurrentChange(val) {
       this.currentPage = val
       this.offset = (val - 1) * this.limit
-      this.getVideoComments(this.videoId)
+      this.getMvComments(this.videoId)
     },
     // 点击评论
     commentHandle(id) {
       this.currentCommentId = id
     },
     // 提交评论
-    async commentSubmit(content) {
+    commentSubmit(content) {
       if (!content) {
         this.$message.error('什么都没写，你点毛')
         return
       } else {
         let timestamp = new Date().getTime()
         let params = {
-          type: 5,
+          type: 1,
           id: this.videoId,
           content: content,
           timestamp
@@ -219,16 +218,25 @@ export default {
           params.t = 2
           params.commentId = this.currentCommentId
         }
-        let res = await this.$api.sendComment(params)
-        if (res.code === 200) {
-          this.$message({
-            message: '提交成功',
-            type: 'success'
+        this.$api
+          .sendComment(params)
+          .then(res => {
+            if (res.code === 200) {
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              })
+              this.cancelComment()
+              this.clearContent = true
+              this.getMvComments(this.videoId)
+            }
           })
-          this.cancelComment()
-          this.clearContent = true
-          this.getVideoComments(this.videoId)
-        }
+          .catch(err => {
+            this.$notify.error({
+              title: err.data.dialog.title,
+              message: err.data.dialog.subtitle
+            })
+          })
       }
     },
     // 取消评论
@@ -241,7 +249,7 @@ export default {
       let params = {
         id: this.videoId,
         cid: id,
-        type: 5,
+        type: 1,
         timestamp
       }
       if (liked) {
@@ -252,7 +260,7 @@ export default {
       try {
         let res = await this.$api.likeComment(params)
         if (res.code === 200) {
-          this.getVideoComments(this.videoId)
+          this.getMvComments(this.videoId)
         }
       } catch (error) {
         console.log(error)
@@ -260,7 +268,7 @@ export default {
     },
     // 资源点赞
     async likeResource() {
-      let type = 5
+      let type = 1
       let t = 1
       if (this.videoDetailInfo.isLike) {
         t = 2
@@ -271,27 +279,27 @@ export default {
       try {
         let res = await this.$api.likeResource(type, t, id)
         if (res.code === 200) {
-          this.getVideoDetailInfo(this.videoId)
+          this.getMvDetailInfo(this.videoId)
         }
       } catch (error) {
         console.log(error)
       }
     },
-    // 获取视频播放地址
-    async getVideoUrl(id) {
+    // 获取mv播放地址
+    async getMvUrl(id) {
       try {
-        let res = await this.$api.getVideoUrl(id)
+        let res = await this.$api.getMvUrl(id)
         if (res.code === 200) {
-          this.videoUrl = res.urls[0].url
+          this.videoUrl = res.data.url
         }
       } catch (error) {
         console.log(error)
       }
     },
-    // 获取视频详情
-    async getVideoDetail(id) {
+    // 获取mv详情
+    async getMvDetail(id) {
       try {
-        let res = await this.$api.getVideoDetail(id)
+        let res = await this.$api.getMvDetail(id)
         if (res.code === 200) {
           res.data.videoGroup.map(item => {
             if (item.name.indexOf('#') != -1) {
@@ -299,16 +307,15 @@ export default {
             }
           })
           this.detail = res.data
-          this.creator = res.data.creator
         }
       } catch (error) {
         console.log(error)
       }
     },
-    // 获取视频点赞转发评论数数据
-    async getVideoDetailInfo(id) {
+    // 获取mv点赞转发评论数数据
+    async getMvDetailInfo(id) {
       try {
-        let res = await this.$api.getVideoDetailInfo(id, new Date().getTime())
+        let res = await this.$api.getMvDetailInfo(id, new Date().getTime())
         if (res.code === 200) {
           let detail = {
             isLike: res.liked,
@@ -322,7 +329,7 @@ export default {
         console.log(error)
       }
     },
-    // 获取相关视频
+    // 获取相关mv
     async getVideoRelated(id) {
       try {
         let res = await this.$api.getVideoRelated(id)
@@ -333,8 +340,8 @@ export default {
         console.log(error)
       }
     },
-    // 视频评论
-    async getVideoComments(id) {
+    // mv评论
+    async getMvComments(id) {
       let timestamp = new Date().getTime()
       let params = {
         id,
@@ -343,7 +350,7 @@ export default {
         timestamp
       }
       try {
-        let res = await this.$api.getVideoComments(params)
+        let res = await this.$api.getMvComments(params)
         if (res.code === 200) {
           this.commentTotal = res.total
           if (res.hotComments) {
@@ -357,17 +364,17 @@ export default {
         console.log(error)
       }
     },
-    // 视频详情（相关视频）
+    // mv详情（相关mv）
     toDetail(id) {
       this._initialize(id)
     },
     // 初始化
     _initialize(id) {
-      this.getVideoUrl(id)
-      this.getVideoDetail(id)
+      this.getMvUrl(id)
+      this.getMvDetail(id)
       this.getVideoRelated(id)
-      this.getVideoDetailInfo(id)
-      this.getVideoComments(id)
+      this.getMvDetailInfo(id)
+      this.getMvComments(id)
     }
   },
   created() {},
@@ -381,7 +388,7 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
-.video-detail {
+.mv-detail {
   display: flex;
   .left {
     flex: 1;
@@ -641,10 +648,28 @@ export default {
               margin-top: 5px;
               width: 100%;
               min-height: 20px;
+              i {
+                color: $color-theme;
+                font-size: 24px;
+                margin-right: 5px;
+              }
             }
-            span {
+            .author {
               font-size: 12px;
               color: #a5a5c1;
+              span {
+                font-size: 12px;
+                color: #a5a5c1;
+                &::after {
+                  content: '/'
+                  margin-left: 5px;
+                }
+                &:last-child {
+                  &::after {
+                    content: ''
+                  }
+                }
+              }
             }
           }
           &:hover {

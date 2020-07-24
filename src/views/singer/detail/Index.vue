@@ -55,7 +55,7 @@
         <div class="content">
           <artist-list :songs="songs" v-if="active == 1" />
           <album-list :albums="albums" v-if="active == 2" />
-          <mv-list :mvs="mvs" v-if="active == 3" />
+          <mv-list :mvs="mvs" type="mv" v-if="active == 3" />
           <div class="info-box" v-if="active == 4">
             <h2 class="title">{{ detail.name }}简介</h2>
             <div class="profile" v-html="singerDesc.briefDesc"></div>

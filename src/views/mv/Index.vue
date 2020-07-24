@@ -33,7 +33,7 @@
       </ul>
     </div>
     <load-more @scroll-state="load">
-      <mv-list :mvs="mvs"></mv-list>
+      <mv-list :mvs="mvs" type="mv"></mv-list>
     </load-more>
     <div v-if="loading" class="load-bottom">
       <loading />

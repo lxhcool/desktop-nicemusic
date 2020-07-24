@@ -158,8 +158,8 @@ export const getVideoDetail = id => api.get(`/video/detail?id=${id}`, {})
 /**
  * @method 获取视频点赞转发评论数数据
  */
-export const getVideoDetailInfo = id =>
-  api.get(`/video/detail/info?vid=${id}`, {})
+export const getVideoDetailInfo = (id, time) =>
+  api.get(`/video/detail/info?vid=${id}&timestamp=${time}`, {})
 
 /**
  * @method 相关视频
@@ -193,3 +193,34 @@ export const sendComment = params => api.get(`/comment`, { params })
  */
 
 export const likeComment = params => api.get(`/comment/like`, { params })
+
+/**
+ * @method 资源点赞( MV,电台,视频)
+ * @params tpye: 1: mv，4: 电台，5: 视频，6: 动态
+ * @params t:1 点赞, 2 取消点赞
+ * @params id：资源id
+ */
+
+export const likeResource = (type, t, id) => api.get(`/resource/like?type=${type}&t=${t}&id=${id}`, {})
+
+
+/**
+ * @method 获取mv详情
+ */
+export const getMvDetail = id => api.get(`/mv/detail?mvid=${id}`, {})
+
+/**
+ * @method 获取mv点赞转发评论数数据
+ */
+export const getMvDetailInfo = (id, time) =>
+  api.get(`/mv/detail/info?mvid=${id}&timestamp=${time}`, {})
+
+/**
+ * @method 获取mv播放地址
+ */
+export const getMvUrl = id => api.get(`/mv/url?id=${id}`, {})
+
+/**
+ * @method mv评论
+ */
+export const getMvComments = params => api.get(`/comment/mv`, { params })
