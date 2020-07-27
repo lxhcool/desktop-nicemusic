@@ -1,65 +1,173 @@
 <template>
-  <div class="player-bar shadow flex-row">
-    <div class="avatar">
-      <img
-        src="https://p1.music.126.net/AGiGnl2zZy74f1MZQd0aGg==/109951164715107115.jpg"
-        alt="nicemusic"
-      />
-    </div>
-    <div class="info">
-      <h2>星航轨迹</h2>
-      <p>白小白</p>
-    </div>
-    <div class="player-btn">
-      <i class="iconfont icon-prev niceshangyishou"></i>
-      <i class="iconfont icon-play nicebofang2"></i>
-      <i class="iconfont icon-next nicexiayishou"></i>
-    </div>
-    <div class="progress-wrap">
-      <p class="current-time">00:05</p>
-      <div class="progress-bar">
-        <div class="bar-inner">
-          <div class="progress"></div>
-          <div class="progress-btn"></div>
+  <transition name="fade">
+    <div class="player-bar shadow flex-row" v-if="playList.length > 0">
+      <div class="avatar">
+        <img
+          :src="currentSong.image"
+          alt="nicemusic"
+        />
+      </div>
+      <div class="info">
+        <h2>{{ currentSong.name }}</h2>
+        <p>{{ currentSong.singer }}</p>
+      </div>
+      <div class="player-btn">
+        <i class="iconfont icon-prev niceshangyishou" @click="prevSong"></i>
+        <i class="iconfont icon-play nicebofang2" :class="playIcon" @click="togglePlaying"></i>
+        <i class="iconfont icon-next nicexiayishou" @click="nextSong"></i>
+      </div>
+      <div class="progress-wrap">
+        <p class="current-time">{{ formatTime(currentTime) }}</p>
+        <progress-bar :percent="percent"></progress-bar>
+        <p class="duration-time">{{ utils.formatTime(currentSong.duration) }}</p>
+      </div>
+      <div class="volume-wrap">
+        <i class="iconfont volume-icon niceshengyin1"></i>
+        <div class="progress-bar">
+          <div class="bar-inner">
+            <div class="progress"></div>
+            <div class="progress-btn"></div>
+          </div>
         </div>
       </div>
-      <p class="duration-time">04:30</p>
-    </div>
-    <div class="volume-wrap">
-      <i class="iconfont volume-icon niceshengyin1"></i>
-      <div class="progress-bar">
-        <div class="bar-inner">
-          <div class="progress"></div>
-          <div class="progress-btn"></div>
-        </div>
+      <div class="tool">
+        <i class="iconfont icon-like nicecollection"></i>
+        <!-- <i class="iconfont nicebofangqidanquxunhuan"></i> -->
+        <i class="iconfont nicexunhuanbofang24"></i>
+        <!-- <i class="iconfont nicebofangqisuijibofang"></i> -->
+        <i class="iconfont nicegeci32"></i>
+        <i class="iconfont nicebofangliebiao24"></i>
       </div>
+      <audio ref="audio" :src="currentSong.url" @canplay="audioReady" @error="audioError" @timeupdate="updateTime"></audio>
     </div>
-    <div class="tool">
-      <i class="iconfont icon-like nice1_music89"></i>
-      <i class="iconfont icon-download nicexinbaniconshangchuan-"></i>
-      <i class="iconfont nicevoice"></i>
-      <i class="iconfont nicexunhuan4"></i>
-    </div>
-  </div>
+  </transition>
 </template>
 
 <script>
+import progressBar from 'components/common/progressBar/Index'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   data() {
-    return {}
+    return {
+      songReady: false,
+      currentTime: 0,
+    }
   },
-  components: {},
-  computed: {},
-  watch: {},
-  methods: {},
+  components: {
+    progressBar
+  },
+  computed: {
+    // 播放暂停按钮
+    playIcon() {
+      return this.playing ? 'nicezanting1' : 'nicebofang2'
+    },
+    percent() {
+      console.log(this.utils.formatSecond(this.currentSong.duration))
+      return this.currentTime / this.utils.formatSecond(this.currentSong.duration)
+    },
+    ...mapGetters(['playList', 'currentSong', 'playing', 'currentIndex'])
+  },
+  watch: {
+    // 监听歌曲内容变化
+    currentSong() {
+      this.$nextTick(() => {
+        this.$refs.audio.play()
+      })
+    },
+    // 监听播放状态
+    playing(isPlaying) {
+      const audio = this.$refs.audio
+      this.$nextTick(() => {
+        isPlaying ? audio.play() : audio.pause()
+      })
+    }
+  },
+  methods: {
+    // 点击播放暂停
+    togglePlaying() {
+      this.setPlayingState(!this.playing)
+    },
+    // 上一首
+    prevSong() {
+      if(!this.songReady) {
+        return
+      }
+      let index = this.currentIndex - 1
+      if (index === -1) {
+        index = this.playList.length - 1
+      }
+      this.setCurrentIndex(index)
+      if(!this.playing) {
+        this.togglePlaying()
+      }
+      this.songReady = false
+    },
+    // 下一首
+    nextSong() {
+      if(!this.songReady) {
+        return
+      }
+      let index = this.currentIndex + 1
+      if (index === this.playList.length) {
+        index = 0
+      }
+      this.setCurrentIndex(index)
+      if(!this.playing) {
+        this.togglePlaying()
+      }
+      this.songReady = false
+    },
+    // 播放准备完成
+    audioReady() {
+      this.songReady = true
+    },
+    // 歌曲错误
+    audioError() {
+      this.songReady = true
+    },
+    // 监听播放时间改变
+    updateTime(e) {
+      this.currentTime = e.target.currentTime
+    },
+    // 格式化时间
+    formatTime(interval) {
+      interval = interval | 0
+      const m = interval / 60 | 0
+      const s = interval % 60
+      return `${this.utils.formatZero(m, 2)}:${this.utils.formatZero(s, 2)}`
+    },
+    ...mapMutations({
+      setPlayingState: 'SET_PLAYING_STATE',
+      setCurrentIndex: 'SET_CURRENT_INDEX'
+    })
+  },
   created() {},
-  mounted() {}
+  mounted() {
+    console.log(this.playList)
+  }
 }
 </script>
 <style lang="stylus" scoped>
+.fade-enter {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+}
+
+.fade-enter-active {
+  transition: all 0.5s;
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+}
+
+.fade-leave-active {
+  transition: all 0.5s;
+}
 .player-bar {
   width: 100%;
-  height: 100px;
+  height: 72px;
   background: #fff;
   position: fixed;
   bottom: 0;
@@ -69,14 +177,14 @@ export default {
   padding: 0 10px 0 20px;
   justify-content: space-between;
   .avatar {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     border-radius: 5px;
     margin-right: 30px
     flex-shrink: 0;
     img {
-      width: 70px;
-      height: 70px;
+      width: 60px;
+      height: 60px;
       border-radius: 5px;
     }
   }
@@ -115,52 +223,6 @@ export default {
     flex: 1;
     p {
       font-size: 14px;
-    }
-    .progress-bar {
-      position: relative;
-      width: 100%;
-      flex: 1;
-      height: 3px;
-      background: rgba(0,0,0,.05);
-      border-radius: 2px;
-      cursor: pointer;
-      margin: 0 25px;
-      .bar-inner {
-        position: absolute;
-        top: 0;
-        left: 0;
-        display: flex;
-        align-items: center;
-        .progress {
-          width: 100px;
-          background: $color-theme;
-          height: 3px;
-          border-radius: 2px;
-        }
-        .progress-btn {
-          position: absolute;
-          z-index: 100;
-          right: -4px;
-          width: 12px;
-          height: 12px;
-          top: -4.5px;
-          background: $color-theme;
-          box-shadow: 0 0 15px 0 rgba(0,0,0,.15);
-          border-radius: 50%;
-          &::after {
-            position: absolute;
-            content: " ";
-            top: 50%;
-            left: 50%;
-            -webkit-transform: translate(-50%,-50%);
-            transform: translate(-50%,-50%);
-            width: 7px;
-            height: 7px;
-            background: #ffffff;
-            border-radius: 50%;
-          }
-        }
-      }
     }
   }
   .volume-wrap {
@@ -224,10 +286,7 @@ export default {
       font-size: 26px;
       margin: 0 15px;
       &.icon-like {
-        font-size: 24px;
-      }
-      &.icon-download {
-        font-size: 24px;
+        font-size: 26px;
       }
     }
   }

@@ -115,7 +115,7 @@ export default {
 <style scoped lang="stylus">
 .back-to-top {
   position: fixed;
-  bottom: 5%;
+  bottom: 10%;
   right: 100px;
   z-index: 9999;
   cursor: pointer;

@@ -99,6 +99,28 @@ export default {
     }
     return formatTime
   },
+  // 格式化时间毫秒转分秒
+  formatSecond(time) {
+    // 取整
+    time = ~~time
+    var secondTime
+    if (time < 10) {
+      secondTime = '00:0' + time
+    } else if (time < 60) {
+      secondTime = '00:' + time
+    } else {
+      var m = ~~parseInt((time % (1000 * 60 * 60)) / (1000 * 60))
+      if (m < 10) {
+        m = '0' + m
+      }
+      var s = ~~parseInt((time % (1000 * 60)) / 1000)
+      if (s < 10) {
+        s = '0' + s
+      }
+      secondTime = m * 60 + s
+    }
+    return secondTime
+  },
   // 时间戳转换成几分钟前，几小时前，几天前
   formatMsgTime(dateTimeStamp) {
     var result = ''

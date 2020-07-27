@@ -26,7 +26,7 @@
                 <div class="line" style="animation-delay: -0.9s;"></div>
                 <div class="line" style="animation-delay: -0.6s;"></div>
               </div>
-              <i class="iconfont nicebofang2 play-btn"></i>
+              <i class="iconfont nicebofang2 play-btn" @click="playSong(item, index)"></i>
               <i class="iconfont nicezanting1 pause-btn"></i>
             </div>
           </td>
@@ -66,7 +66,7 @@
           </td>
           <td>
             <div class="duration-container">
-              <p>{{ item.duration }}</p>
+              <p>{{ utils.formatTime(item.duration) }}</p>
               <div class="song-tools">
                 <i class="iconfont niceicon-heart" title="喜欢"></i>
                 <i class="iconfont nicexiazai" title="下载"></i>
@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   data() {
     return {}
@@ -93,7 +94,19 @@ export default {
   components: {},
   computed: {},
   watch: {},
-  methods: {},
+  methods: {
+    // 播放歌曲
+    playSong(item, index) {
+      this.selectPlay({
+        list: this.songs,
+        index
+      })
+    },
+    ...mapActions([
+      // 点击选择播放
+      'selectPlay'
+    ])
+  },
   created() {},
   mounted() {}
 }
