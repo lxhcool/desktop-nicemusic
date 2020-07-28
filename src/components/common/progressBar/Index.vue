@@ -1,8 +1,15 @@
 <template>
-  <div class="progress-bar" ref="progressBar">
-    <div class="bar-inner">
-      <div class="progress" ref="progress"></div>
-      <div class="progress-btn" ref="progressBtn" @mousedown.prevent="progressTouchStart" @mousemove.prevent="progressTouchMove" @mouseup.prevent="progressTouchEnd"></div>
+  <div class="progress-bar-wrap" @mouseup.self="progressMouseUp($event)">
+    <div class="progress-bar" ref="progressBar" @click="progressClick">
+      <div class="bar-inner">
+        <div class="progress" ref="progress"></div>
+        <div
+          class="progress-btn"
+          ref="progressBtn"
+          @mousedown.prevent="progressMouseDown($event)"
+          @mouseup="progressMouseUp($event)"
+        ></div>
+      </div>
     </div>
   </div>
 </template>
@@ -11,7 +18,9 @@
 const progressBtnWidth = 12
 export default {
   data() {
-    return {}
+    return {
+      playProcess: 0
+    }
   },
   props: {
     percent: {
@@ -21,35 +30,61 @@ export default {
   },
   watch: {
     percent(newPercent) {
-      if (newPercent >= 0 && !this.touch.initiated) {
-        const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth
-        const offsetWidth = newPercent * barWidth
-        this._offset(offsetWidth)
-      }
+      this.setProgressOffset(newPercent)
     }
   },
   methods: {
-    progressTouchStart(e) {
-      console.log(e)
+    // 鼠标按下
+    progressMouseDown(e) {
+      let that = this
       this.touch.initiated = true
       this.touch.startX = e.pageX
       this.touch.left = this.$refs.progress.clientWidth
-    },
-    progressTouchMove(e) {
-      if(!this.touch.initiated) {
-        return
+      document.onmousemove = function(e) {
+        const deltaX = e.pageX - that.touch.startX
+        const offsetWidth = Math.min(
+          that.$refs.progressBar.clientWidth - progressBtnWidth,
+          Math.max(0, that.touch.left + deltaX)
+        )
+        that._offset(offsetWidth)
       }
-      const deltaX = e.pageX - this.touch.startX
-      const offsetWidth = Math.min(this.$refs.progressBar.clientWidth - progressBtnWidth, Math.max(0, this.touch.left + deltaX))
-      this._offset(offsetWidth)
     },
-    progressTouchEnd(e) {
-      this.touch.initiated = false
-      this.touch.startX = e.pageX
-      this.touch.left = this.$refs.progress.clientWidth
+    // 鼠标放开
+    progressMouseUp(e) {
+      if (e.button === 0) {
+        if (document.onmousemove == null) {
+          return
+        }
+        document.onmousemove = null
+        document.onmouseup = null
+        this.touch.initiated = false
+        this._triggerPercent()
+      }
+    },
+    _triggerPercent() {
+      this.$emit('percentChange', this._getPercent())
     },
     _offset(offsetWidth) {
       this.$refs.progress.style.width = `${offsetWidth}px`
+    },
+    _getPercent() {
+      const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth
+      return this.$refs.progress.clientWidth / barWidth
+    },
+    // 点击控制进度
+    progressClick(e) {
+      const rect = this.$refs.progressBar.getBoundingClientRect()
+      const offsetWidth = e.pageX - rect.left - 6
+      this._offset(offsetWidth)
+      this._triggerPercent()
+    },
+    // 设置进度条位置
+    setProgressOffset(percent) {
+      if (percent >= 0 && !this.touch.initiated) {
+        const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth
+        const offsetWidth = percent * barWidth
+        this._offset(offsetWidth)
+      }
     }
   },
   created() {
@@ -59,6 +94,12 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.progress-bar-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
 .progress-bar {
   position: relative;
   width: 100%;
@@ -106,3 +147,4 @@ export default {
   }
 }
 </style>
+

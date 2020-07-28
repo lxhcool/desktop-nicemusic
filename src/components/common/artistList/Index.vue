@@ -1,5 +1,10 @@
 <template>
   <div class="artist-box">
+    <div class="tool-head">
+      <div class="item" @click="playAllSong">
+        <i class="iconfont niceOutlined_Play"></i> 播放全部
+      </div>
+    </div>
     <table class="artist-table">
       <thead>
         <tr>
@@ -102,9 +107,17 @@ export default {
         index
       })
     },
+    // 播放全部
+    playAllSong() {
+      this.playAll({
+        list: this.songs
+      })
+    },
     ...mapActions([
       // 点击选择播放
-      'selectPlay'
+      'selectPlay',
+      // 点击播放全部
+      'playAll'
     ])
   },
   created() {},
@@ -117,6 +130,19 @@ export default {
 }
 .artist-box {
   width: 100%;
+  .tool-head {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 15px 0;
+    .item {
+      background: $color-theme;
+      color: #fff;
+      padding: 7px 15px;
+      border-radius: 50px;
+      cursor: pointer;
+    }
+  }
   .artist-table {
     width: 100%;
     thead {

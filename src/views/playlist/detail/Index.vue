@@ -211,7 +211,6 @@ export default {
       try {
         let res = await this.$api.getCommentPlaylist(params)
         if (res.code === 200) {
-          console.log(res)
           if (res.hotComments.length > 0) {
             this.comments = res.hotComments
           } else {
@@ -245,7 +244,6 @@ export default {
   created() {},
   mounted() {
     let id = this.$route.query.id
-    console.log(id)
     if (id) {
       this.getPlayListDetail(id, 100)
       this.getRelatedPlaylist(id)

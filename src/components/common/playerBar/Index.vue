@@ -2,10 +2,7 @@
   <transition name="fade">
     <div class="player-bar shadow flex-row" v-if="playList.length > 0">
       <div class="avatar">
-        <img
-          :src="currentSong.image"
-          alt="nicemusic"
-        />
+        <img :src="currentSong.image" alt="nicemusic" />
       </div>
       <div class="info">
         <h2>{{ currentSong.name }}</h2>
@@ -13,13 +10,22 @@
       </div>
       <div class="player-btn">
         <i class="iconfont icon-prev niceshangyishou" @click="prevSong"></i>
-        <i class="iconfont icon-play nicebofang2" :class="playIcon" @click="togglePlaying"></i>
+        <i
+          class="iconfont icon-play nicebofang2"
+          :class="playIcon"
+          @click="togglePlaying"
+        ></i>
         <i class="iconfont icon-next nicexiayishou" @click="nextSong"></i>
       </div>
-      <div class="progress-wrap">
+      <div class="progress-wrap" id="progress-wrap">
         <p class="current-time">{{ formatTime(currentTime) }}</p>
-        <progress-bar :percent="percent"></progress-bar>
-        <p class="duration-time">{{ utils.formatTime(currentSong.duration) }}</p>
+        <progress-bar
+          :percent="percent"
+          @percentChange="onPercentBarChange"
+        ></progress-bar>
+        <p class="duration-time">
+          {{ formatTime(currentSong.duration) }}
+        </p>
       </div>
       <div class="volume-wrap">
         <i class="iconfont volume-icon niceshengyin1"></i>
@@ -32,13 +38,19 @@
       </div>
       <div class="tool">
         <i class="iconfont icon-like nicecollection"></i>
-        <!-- <i class="iconfont nicebofangqidanquxunhuan"></i> -->
-        <i class="iconfont nicexunhuanbofang24"></i>
-        <!-- <i class="iconfont nicebofangqisuijibofang"></i> -->
+        <i class="iconfont" :class="modeIcon" @click="changeMode"></i>
         <i class="iconfont nicegeci32"></i>
         <i class="iconfont nicebofangliebiao24"></i>
       </div>
-      <audio ref="audio" :src="currentSong.url" @canplay="audioReady" @error="audioError" @timeupdate="updateTime"></audio>
+      <audio
+        ref="audio"
+        :src="currentSong.url"
+        @playing="audioReady"
+        @error="audioError"
+        @timeupdate="updateTime"
+        @ended="audioEnd"
+        @pause="audioPaused"
+      ></audio>
     </div>
   </transition>
 </template>
@@ -46,11 +58,12 @@
 <script>
 import progressBar from 'components/common/progressBar/Index'
 import { mapGetters, mapMutations } from 'vuex'
+import { playMode } from '@/common/playConfig'
 export default {
   data() {
     return {
       songReady: false,
-      currentTime: 0,
+      currentTime: 0
     }
   },
   components: {
@@ -61,90 +74,190 @@ export default {
     playIcon() {
       return this.playing ? 'nicezanting1' : 'nicebofang2'
     },
-    percent() {
-      console.log(this.utils.formatSecond(this.currentSong.duration))
-      return this.currentTime / this.utils.formatSecond(this.currentSong.duration)
+    // 播放模式
+    modeIcon() {
+      return this.mode === playMode.sequence
+        ? 'nicexunhuanbofang24'
+        : this.mode === playMode.loop
+        ? 'nicebofangqidanquxunhuan'
+        : 'nicebofangqisuijibofang'
     },
-    ...mapGetters(['playList', 'currentSong', 'playing', 'currentIndex'])
+    // 进度条
+    percent() {
+      return this.currentTime / this.currentSong.duration
+    },
+    ...mapGetters([
+      'playList',
+      'currentSong',
+      'playing',
+      'currentIndex',
+      'mode',
+      'sequenceList'
+    ])
   },
   watch: {
     // 监听歌曲内容变化
-    currentSong() {
+    currentSong(newSong, oldSong) {
+      if (!oldSong) {
+        oldSong = {
+          id: ''
+        }
+      }
+      if (!newSong.id || !newSong.url || newSong.id === oldSong.id) {
+        return
+      }
+      this.songReady = false
       this.$nextTick(() => {
-        this.$refs.audio.play()
+        const audio = this.$refs.audio
+        if (audio) {
+          audio.src = newSong.url
+          audio.play()
+        }
       })
+      // 若歌曲 5s 未播放，则认为超时，修改状态确保可以切换歌曲。
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        this.songReady = true
+      }, 5000)
     },
     // 监听播放状态
     playing(isPlaying) {
-      const audio = this.$refs.audio
+      if (!this.songReady) {
+        return
+      }
       this.$nextTick(() => {
-        isPlaying ? audio.play() : audio.pause()
+        const audio = this.$refs.audio
+        if (audio) {
+          isPlaying ? audio.play() : audio.pause()
+        }
       })
     }
   },
   methods: {
     // 点击播放暂停
     togglePlaying() {
+      if (!this.songReady) {
+        return
+      }
       this.setPlayingState(!this.playing)
     },
     // 上一首
     prevSong() {
-      if(!this.songReady) {
+      if (!this.songReady) {
         return
       }
-      let index = this.currentIndex - 1
-      if (index === -1) {
-        index = this.playList.length - 1
+      if (this.playList.length === 1) {
+        this.loopSong()
+        return
+      } else {
+        let index = this.currentIndex - 1
+        if (index === -1) {
+          index = this.playList.length - 1
+        }
+        this.setCurrentIndex(index)
+        if (!this.playing) {
+          this.togglePlaying()
+        }
       }
-      this.setCurrentIndex(index)
-      if(!this.playing) {
-        this.togglePlaying()
-      }
-      this.songReady = false
+      // this.songReady = false
     },
     // 下一首
     nextSong() {
-      if(!this.songReady) {
+      if (!this.songReady) {
         return
       }
-      let index = this.currentIndex + 1
-      if (index === this.playList.length) {
-        index = 0
+      if (this.playList.length === 1) {
+        this.loopSong()
+        return
+      } else {
+        let index = this.currentIndex + 1
+        if (index === this.playList.length) {
+          index = 0
+        }
+        this.setCurrentIndex(index)
+        if (!this.playing) {
+          this.togglePlaying()
+        }
       }
-      this.setCurrentIndex(index)
-      if(!this.playing) {
-        this.togglePlaying()
-      }
-      this.songReady = false
+      // this.songReady = false
+    },
+    // 单曲循环播放
+    loopSong() {
+      this.$refs.audio.currentTime = 0
+      this.$refs.audio.play()
+      this.setPlayingState(true)
     },
     // 播放准备完成
     audioReady() {
+      clearTimeout(this.timer)
       this.songReady = true
     },
     // 歌曲错误
     audioError() {
+      clearTimeout(this.timer)
       this.songReady = true
+    },
+    // 歌曲暂停
+    audioPaused() {
+      this.setPlayingState(false)
+    },
+    // 歌曲播放完成
+    audioEnd() {
+      this.currentTime = 0
+      if (this.mode === playMode.loop) {
+        this.loopSong()
+      } else {
+        this.nextSong()
+      }
     },
     // 监听播放时间改变
     updateTime(e) {
       this.currentTime = e.target.currentTime
     },
+    // 进度条拖动改变播放进度
+    onPercentBarChange(percent) {
+      const currentTime = this.currentSong.duration * percent
+      this.currentTime = this.$refs.audio.currentTime = currentTime
+      if (!this.playing) {
+        this.togglePlaying()
+      }
+    },
+    // 切换播放模式
+    changeMode() {
+      const mode = (this.mode + 1) % 3
+      this.setPlayMode(mode)
+      let list = null
+      if (mode === playMode.random) {
+        list = this.utils.shuffle(this.sequenceList)
+      } else {
+        list = this.sequenceList
+      }
+      this.resetCurrentIndex(list)
+      this.setPlayList(list)
+    },
+    // 重置当前播放歌曲序号
+    resetCurrentIndex(list) {
+      let index = list.findIndex(item => {
+        return item.id === this.currentSong.id
+      })
+      this.setCurrentIndex(index)
+    },
     // 格式化时间
     formatTime(interval) {
       interval = interval | 0
-      const m = interval / 60 | 0
+      const m = (interval / 60) | 0
       const s = interval % 60
       return `${this.utils.formatZero(m, 2)}:${this.utils.formatZero(s, 2)}`
     },
     ...mapMutations({
       setPlayingState: 'SET_PLAYING_STATE',
-      setCurrentIndex: 'SET_CURRENT_INDEX'
+      setCurrentIndex: 'SET_CURRENT_INDEX',
+      setPlayMode: 'SET_PLAY_MODE',
+      setPlayList: 'SET_PLAYLIST'
     })
   },
   created() {},
-  mounted() {
-    console.log(this.playList)
-  }
+  mounted() {}
 }
 </script>
 <style lang="stylus" scoped>
@@ -204,6 +317,12 @@ export default {
   .player-btn {
     display: flex;
     align-items: center;
+    i {
+      cursor: pointer;
+      &:active {
+        opacity: 0.8;
+      }
+    }
     .icon-prev {
       font-size: 40px;
     }
@@ -217,6 +336,7 @@ export default {
   }
   .progress-wrap {
     width: 650px;
+    height: 100%;
     display: flex;
     align-items: center;
     margin-left: 80px;
@@ -234,6 +354,7 @@ export default {
     .volume-icon {
       font-size: 26px;
       font-weight: bold;
+      cursor: pointer;
     }
     .progress-bar {
       position: relative;
@@ -285,6 +406,10 @@ export default {
     .iconfont {
       font-size: 26px;
       margin: 0 15px;
+      cursor: pointer
+      &:active {
+        opacity: 0.7;
+      }
       &.icon-like {
         font-size: 26px;
       }

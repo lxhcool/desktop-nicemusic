@@ -30,7 +30,8 @@ import {
   Table,
   TableColumn,
   Popover,
-  Tooltip
+  Tooltip,
+  Slider
 } from 'element-ui'
 Vue.use(Avatar)
   .use(Image)
@@ -48,11 +49,11 @@ Vue.use(Avatar)
   .use(TableColumn)
   .use(Popover)
   .use(Tooltip)
+  .use(Slider)
 Vue.config.productionTip = false
 Vue.prototype.$api = getApi
 Vue.prototype.utils = utils
 Vue.use(VueAwesomeSwiper)
-// Vue.use(VueMouseParallax)
 Vue.use(infiniteScroll)
 
 Vue.prototype.$msgbox = MessageBox

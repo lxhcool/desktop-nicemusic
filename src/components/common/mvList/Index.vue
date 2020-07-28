@@ -95,7 +95,6 @@ export default {
     },
     // 视频详情
     toDetail(id) {
-      console.log(this.type)
       if (this.type == 'mv') {
         this.$router.push({
           name: 'mvDetail',

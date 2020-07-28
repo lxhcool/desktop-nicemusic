@@ -16,7 +16,7 @@ const state = {
   // 播放模式(循环，单曲，随机)
   mode: playMode.sequence,
   // 播放索引
-  currentIndex: -1,
+  currentIndex: -1
 }
 
 export default state

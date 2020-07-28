@@ -22,7 +22,7 @@ export function createSong(musicData) {
     singer: filterSinger(musicData.ar),
     name: musicData.name,
     album: musicData.al.name,
-    duration: musicData.dt,
+    duration: utils.formatSecond(musicData.dt),
     image: musicData.al.picUrl,
     url: `https://music.163.com/song/media/outer/url?id=${musicData.id}.mp3`,
     playCount: musicData.playCount || '',

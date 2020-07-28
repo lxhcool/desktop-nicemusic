@@ -150,10 +150,8 @@ export default {
       try {
         let res = await this.$api.getCatList()
         if (res.code === 200) {
-          console.log(res)
           this.categories = res.categories
           this.cateList = this.categoryGroup(res.sub, 'category')
-          console.log(this.cateList)
         }
       } catch (error) {
         this.$message.error('error')

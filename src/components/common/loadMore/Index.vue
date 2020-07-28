@@ -54,7 +54,6 @@ export default {
         self.getScrollTop() + self.getClientHeight() >=
         self.getScrollHeight()
       ) {
-        console.log('到底部了')
         self.$emit('scroll-state', true)
       }
     }

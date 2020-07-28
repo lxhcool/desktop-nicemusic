@@ -1,0 +1,101 @@
+<template>
+  <div class="progress-bar" ref="progressBar">
+    <el-slider
+      v-model="playProcess"
+      style="width: 100%;"
+      class="bar-inner"
+      @change="changeProcress"
+      :show-tooltip="false"
+    ></el-slider>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      playProcess: 0,
+      percentOld: 0
+    }
+  },
+  props: {
+    percent: {
+      type: Number,
+      default: 0
+    }
+  },
+  watch: {
+    percent(newPercent) {
+      this.setProgressOffset(newPercent)
+    }
+  },
+  methods: {
+    changeProcress() {
+      this._triggerPercent()
+    },
+    _triggerPercent() {
+      console.log(this.playProcess, this.percentOld)
+      this.$emit('percentChange', this.percentOld)
+    },
+    // 设置进度条位置
+    setProgressOffset(percent) {
+      if (percent >= 0) {
+        this.playProcess = percent * 100
+        this.percentOld = percent
+      }
+    }
+  },
+  created() {
+    this.touch = {}
+  }
+}
+</script>
+
+<style lang="stylus" scoped>
+.progress-bar {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  height: 3px;
+  background: rgba(0,0,0,.05);
+  border-radius: 2px;
+  cursor: pointer;
+  margin: 0 25px;
+  .bar-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    .progress {
+      width: 0px;
+      background: $color-theme;
+      height: 3px;
+      border-radius: 2px;
+    }
+    .progress-btn {
+      position: absolute;
+      z-index: 100;
+      right: -12px;
+      width: 12px;
+      height: 12px;
+      top: -4.5px;
+      background: $color-theme;
+      box-shadow: 0 0 15px 0 rgba(0,0,0,.15);
+      border-radius: 50%;
+      &::after {
+        position: absolute;
+        content: " ";
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%,-50%);
+        transform: translate(-50%,-50%);
+        width: 7px;
+        height: 7px;
+        background: #ffffff;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+</style>

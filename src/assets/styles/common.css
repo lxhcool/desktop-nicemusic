@@ -119,6 +119,31 @@
   color: #fa2800;
 }
 
+/* element slider */
+.el-slider__runway {
+  height: 3px;
+  margin: 0;
+}
+
+.el-slider__bar {
+  height: 3px;
+  border-radius: 3px;
+  background-color: #fa2800;
+}
+
+.el-slider__button-wrapper {
+  width: 12px;
+  height: 12px;
+  top: -9px;
+}
+
+.el-slider__button {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #fa2800;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.35);
+}
+
 .image-slot {
   position: absolute;
   top: 50%;
