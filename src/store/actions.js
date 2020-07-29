@@ -31,3 +31,8 @@ export const playAll = function({ commit }, { list }) {
   commit(types.SET_CURRENT_INDEX, 0)
   commit(types.SET_PLAYING_STATE, true)
 }
+
+// 暂停播放
+export const pausePlay = function({ commit }) {
+  commit(types.SET_PLAYING_STATE, false)
+}

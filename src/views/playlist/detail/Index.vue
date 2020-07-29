@@ -151,24 +151,46 @@ export default {
           )
           this.detail = res.playlist
           this.creator = res.playlist.creator
-          this.getSongDetail(res.playlist.trackIds)
+          let trackIds = res.playlist.trackIds
+          // 数量超过一千，进行分割
+          let arrLength = 1000
+          let sliceArr = []
+          for (let i = 0; i < trackIds.length; i += arrLength) {
+            sliceArr.push(trackIds.slice(i, i + arrLength))
+          }
+          this.getSongDetail(sliceArr)
         }
       } catch (error) {
         this.$message.error('error')
       }
     },
     // 获取歌曲列表
-    async getSongDetail(trackIds) {
+    async getSongDetail(sliceArr) {
+      let before = sliceArr[0]
+      let after = sliceArr[1]
       let timestamp = new Date().valueOf()
-      let ids = []
-      trackIds.map(item => {
-        ids.push(item.id)
+      let beforeIds = []
+      let afterIds = []
+      before.map(item => {
+        beforeIds.push(item.id)
       })
-      ids = ids.join(',')
+      beforeIds = beforeIds.join(',')
+      if (after) {
+        after.map(item => {
+          afterIds.push(item.id)
+        })
+        afterIds = afterIds.join(',')
+      }
       try {
-        let res = await this.$api.getSongDetail(ids, timestamp)
-        if (res.code === 200) {
-          this.songs = this._normalizeSongs(res.songs)
+        if (after) {
+          let beforeRes = await this.$api.getSongDetail(beforeIds, timestamp)
+          let afterRes = await this.$api.getSongDetail(afterIds, timestamp + 1)
+          let res = beforeRes.songs.concat(afterRes.songs)
+          this.songs = this._normalizeSongs(res)
+        } else {
+          let beforeRes = await this.$api.getSongDetail(beforeIds, timestamp)
+          let res = beforeRes.songs
+          this.songs = this._normalizeSongs(res)
         }
       } catch (error) {
         this.$message.error('error')

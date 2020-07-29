@@ -99,7 +99,7 @@ export default {
     }
     return formatTime
   },
-  // 格式化时间毫秒转分秒
+  // 转换成秒
   formatSecond(time) {
     // 取整
     time = ~~time
@@ -110,16 +110,17 @@ export default {
       secondTime = '00:' + time
     } else {
       var m = ~~parseInt((time % (1000 * 60 * 60)) / (1000 * 60))
-      if (m < 10) {
-        m = '0' + m
-      }
       var s = ~~parseInt((time % (1000 * 60)) / 1000)
-      if (s < 10) {
-        s = '0' + s
-      }
-      secondTime = m * 60 + s
+      secondTime = Number(m * 60 + s)
     }
     return secondTime
+  },
+  // 秒转00:00
+  formatSecondTime(interval) {
+    interval = interval | 0
+    const m = (interval / 60) | 0
+    const s = interval % 60
+    return `${this.formatZero(m, 2)}:${this.formatZero(s, 2)}`
   },
   // 时间戳转换成几分钟前，几小时前，几天前
   formatMsgTime(dateTimeStamp) {

@@ -46,6 +46,9 @@ export default {
           that.$refs.progressBar.clientWidth - progressBtnWidth,
           Math.max(0, that.touch.left + deltaX)
         )
+        if (offsetWidth > that.$refs.progressBar.clientWidth) {
+          console.log('xxxx')
+        }
         that._offset(offsetWidth)
       }
     },
@@ -147,4 +150,3 @@ export default {
   }
 }
 </style>
-

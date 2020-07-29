@@ -19,7 +19,7 @@
         <tr
           v-for="(item, index) of songs"
           :key="item.id"
-          :class="index == 500 ? 'playing' : ''"
+          :class="index == currentIndex && playing ? 'playing' : ''"
         >
           <td>
             <div class="index-container flex-center">
@@ -32,7 +32,7 @@
                 <div class="line" style="animation-delay: -0.6s;"></div>
               </div>
               <i class="iconfont nicebofang2 play-btn" @click="playSong(item, index)"></i>
-              <i class="iconfont nicezanting1 pause-btn"></i>
+              <i class="iconfont nicezanting1 pause-btn" @click="pauseSong(item, index)"></i>
             </div>
           </td>
           <td>
@@ -71,7 +71,7 @@
           </td>
           <td>
             <div class="duration-container">
-              <p>{{ utils.formatTime(item.duration) }}</p>
+              <p>{{ utils.formatSecondTime(item.duration) }}</p>
               <div class="song-tools">
                 <i class="iconfont niceicon-heart" title="喜欢"></i>
                 <i class="iconfont nicexiazai" title="下载"></i>
@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {}
@@ -97,7 +97,9 @@ export default {
     }
   },
   components: {},
-  computed: {},
+  computed: {
+    ...mapGetters(['currentIndex', 'playing'])
+  },
   watch: {},
   methods: {
     // 播放歌曲
@@ -106,6 +108,10 @@ export default {
         list: this.songs,
         index
       })
+    },
+    // 停止播放歌曲
+    pauseSong(item, index) {
+      this.pausePlay()
     },
     // 播放全部
     playAllSong() {
@@ -117,7 +123,8 @@ export default {
       // 点击选择播放
       'selectPlay',
       // 点击播放全部
-      'playAll'
+      'playAll',
+      'pausePlay'
     ])
   },
   created() {},

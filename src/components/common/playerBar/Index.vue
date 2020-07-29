@@ -51,6 +51,22 @@
         @ended="audioEnd"
         @pause="audioPaused"
       ></audio>
+      <transition name="fade">
+        <div class="lyric shadow" v-if="currentLyric">
+          <div class="title">歌词</div>
+          <div class="lyric-list">
+            <p
+              ref="lyricLine"
+              class="lyric-text"
+              :class="currentLyricNum === index ? 'active' : ''"
+              v-for="(item, index) of currentLyric.lines"
+              :key="index"
+            >
+              {{ item.txt }}
+            </p>
+          </div>
+        </div>
+      </transition>
     </div>
   </transition>
 </template>
@@ -59,11 +75,14 @@
 import progressBar from 'components/common/progressBar/Index'
 import { mapGetters, mapMutations } from 'vuex'
 import { playMode } from '@/common/playConfig'
+import Lyric from 'lyric-parser'
 export default {
   data() {
     return {
       songReady: false,
-      currentTime: 0
+      currentTime: 0,
+      currentLyric: null,
+      currentLyricNum: 0
     }
   },
   components: {
@@ -112,6 +131,7 @@ export default {
         if (audio) {
           audio.src = newSong.url
           audio.play()
+          this.getLyric(newSong.id)
         }
       })
       // 若歌曲 5s 未播放，则认为超时，修改状态确保可以切换歌曲。
@@ -134,6 +154,26 @@ export default {
     }
   },
   methods: {
+    // 获取歌词
+    async getLyric(id) {
+      try {
+        let res = await this.$api.getLyric(id)
+        if (res.code === 200) {
+          let lyric = res.lrc.lyric
+          this.currentLyric = new Lyric(lyric, this.lyricHandle)
+          if (this.playing) {
+            this.currentLyric.play()
+          }
+          console.log(this.currentLyric)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 歌词回调
+    lyricHandle({lineNum, txt}) {
+      this.currentLyricNum = lineNum
+    },
     // 点击播放暂停
     togglePlaying() {
       if (!this.songReady) {
@@ -159,7 +199,6 @@ export default {
           this.togglePlaying()
         }
       }
-      // this.songReady = false
     },
     // 下一首
     nextSong() {
@@ -179,7 +218,6 @@ export default {
           this.togglePlaying()
         }
       }
-      // this.songReady = false
     },
     // 单曲循环播放
     loopSong() {
@@ -412,6 +450,32 @@ export default {
       }
       &.icon-like {
         font-size: 26px;
+      }
+    }
+  }
+  .lyric {
+    width: 500px;
+    height: 580px;
+    position: absolute;
+    right: 0;
+    bottom: 80px;
+    padding: 30px;
+    .title {
+      margin: 10px 0 40px;
+      font-weight: 500;
+      font-size: 16px;
+    }
+    .lyric-list {
+      height: 399px;
+      overflow-y: auto;
+      .lyric-text {
+        margin: 5px 0;
+        line-height: 24px;
+        font-size: 14px;
+        font-weight: 300;
+        &.active {
+          color: $color-theme;
+        }
       }
     }
   }

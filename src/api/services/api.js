@@ -224,3 +224,8 @@ export const getMvUrl = id => api.get(`/mv/url?id=${id}`, {})
  * @method mv评论
  */
 export const getMvComments = params => api.get(`/comment/mv`, { params })
+
+/**
+ * @method 获取歌词
+ */
+export const getLyric = id => api.get(`/lyric?id=${id}`, {})
