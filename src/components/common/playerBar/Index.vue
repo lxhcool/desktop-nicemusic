@@ -51,7 +51,29 @@
         @ended="audioEnd"
         @pause="audioPaused"
       ></audio>
-      <transition name="fade">
+      <div class="lyric-box shadow">
+        <div class="title">歌词</div>
+        <scroll
+          class="lyric"
+          ref="lyricList"
+          :data="currentLyric && currentLyric.lines"
+        >
+          <div class="lyric-wrapper">
+            <div v-if="currentLyric">
+              <p
+                ref="lyricLine"
+                class="lyric-text"
+                :class="currentLyricNum === index ? 'active' : ''"
+                v-for="(item, index) of currentLyric.lines"
+                :key="index"
+              >
+                {{ item.txt }}
+              </p>
+            </div>
+          </div>
+        </scroll>
+      </div>
+      <!-- <transition name="fade">
         <div class="lyric shadow" v-if="currentLyric">
           <div class="title">歌词</div>
           <div class="lyric-list">
@@ -66,7 +88,7 @@
             </p>
           </div>
         </div>
-      </transition>
+      </transition> -->
     </div>
   </transition>
 </template>
@@ -75,6 +97,7 @@
 import progressBar from 'components/common/progressBar/Index'
 import { mapGetters, mapMutations } from 'vuex'
 import { playMode } from '@/common/playConfig'
+import Scroll from 'components/common/scroll/Index'
 import Lyric from 'lyric-parser'
 export default {
   data() {
@@ -86,7 +109,8 @@ export default {
     }
   },
   components: {
-    progressBar
+    progressBar,
+    Scroll
   },
   computed: {
     // 播放暂停按钮
@@ -171,8 +195,15 @@ export default {
       }
     },
     // 歌词回调
-    lyricHandle({lineNum, txt}) {
+    lyricHandle({ lineNum, txt }) {
+      console.log(txt)
       this.currentLyricNum = lineNum
+      if (lineNum > 5) {
+        let lineEl = this.$refs.lyricLine[lineNum - 5]
+        this.$refs.lyricList.scrollToElement(lineEl, 1000)
+      } else {
+        this.$refs.lyricList.scrollTo(0, 0, 1000)
+      }
     },
     // 点击播放暂停
     togglePlaying() {
@@ -453,28 +484,38 @@ export default {
       }
     }
   }
-  .lyric {
-    width: 500px;
+  .lyric-box {
+    width: 360px;
     height: 580px;
     position: absolute;
     right: 0;
     bottom: 80px;
     padding: 30px;
+    overflow: hidden
     .title {
       margin: 10px 0 40px;
       font-weight: 500;
       font-size: 16px;
     }
-    .lyric-list {
-      height: 399px;
-      overflow-y: auto;
-      .lyric-text {
-        margin: 5px 0;
-        line-height: 24px;
-        font-size: 14px;
-        font-weight: 300;
-        &.active {
-          color: $color-theme;
+    .lyric {
+      display: inline-block
+      vertical-align: top
+      width: 100%
+      height: 100%
+      overflow: hidden
+      padding: 30px 0;
+      .lyric-wrapper {
+        width: 100%
+        margin: 0 auto
+        overflow: hidden
+        .lyric-text {
+          margin: 5px 0;
+          line-height: 24px;
+          font-size: 14px;
+          font-weight: 300;
+          &.active {
+            color: $color-theme;
+          }
         }
       }
     }
