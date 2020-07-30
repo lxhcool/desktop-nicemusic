@@ -133,6 +133,7 @@ export default {
       top: -4.5px;
       background: $color-theme;
       box-shadow: 0 0 15px 0 rgba(0,0,0,.15);
+      transition: all 0.3s;
       border-radius: 50%;
       &::after {
         position: absolute;
@@ -141,10 +142,13 @@ export default {
         left: 50%;
         -webkit-transform: translate(-50%,-50%);
         transform: translate(-50%,-50%);
-        width: 7px;
-        height: 7px;
+        width: 8px;
+        height: 8px;
         background: #ffffff;
         border-radius: 50%;
+      }
+      &:hover {
+        transform: scale(1.2);
       }
     }
   }

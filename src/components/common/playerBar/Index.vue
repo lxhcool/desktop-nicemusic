@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="player-bar shadow flex-row" v-if="playList.length > 0">
+    <div class="player-bar shadow flex-row" v-show="playList.length > 0">
       <div class="avatar">
         <img :src="currentSong.image" alt="nicemusic" />
       </div>
@@ -28,18 +28,21 @@
         </p>
       </div>
       <div class="volume-wrap">
-        <i class="iconfont volume-icon niceshengyin1"></i>
+        <i class="iconfont volume-icon" @click="changeMuted" :class="mutedIcon"></i>
         <div class="progress-bar">
-          <div class="bar-inner">
-            <div class="progress"></div>
-            <div class="progress-btn"></div>
-          </div>
+          <el-slider
+            v-model="volumeNum"
+            style="width: 100%;"
+            class="bar-inner"
+            @change="changeVolume"
+            :show-tooltip="false"
+          ></el-slider>
         </div>
       </div>
       <div class="tool">
         <i class="iconfont icon-like nicecollection"></i>
         <i class="iconfont" :class="modeIcon" @click="changeMode"></i>
-        <i class="iconfont nicegeci32"></i>
+        <i class="iconfont nicegeci32" @click="openLyric"></i>
         <i class="iconfont nicebofangliebiao24"></i>
       </div>
       <audio
@@ -50,45 +53,33 @@
         @timeupdate="updateTime"
         @ended="audioEnd"
         @pause="audioPaused"
+        :muted="isMuted"
       ></audio>
-      <div class="lyric-box shadow">
-        <div class="title">歌词</div>
-        <scroll
-          class="lyric"
-          ref="lyricList"
-          :data="currentLyric && currentLyric.lines"
-        >
-          <div class="lyric-wrapper">
-            <div v-if="currentLyric">
-              <p
-                ref="lyricLine"
-                class="lyric-text"
-                :class="currentLyricNum === index ? 'active' : ''"
-                v-for="(item, index) of currentLyric.lines"
-                :key="index"
-              >
-                {{ item.txt }}
-              </p>
+      <transition name="fade">
+        <div class="lyric-box shadow" v-if="showLyric">
+          <div class="title flex-between">歌词</div>
+          <scroll
+            class="lyric"
+            ref="lyricList"
+            :data="currentLyric && currentLyric.lines"
+          >
+            <div class="lyric-wrapper">
+              <div v-if="currentLyric">
+                <p
+                  ref="lyricLine"
+                  class="lyric-text"
+                  :class="currentLyricNum === index ? 'active' : ''"
+                  v-for="(item, index) of currentLyric.lines"
+                  :key="index"
+                >
+                  {{ item.txt }}
+                </p>
+              </div>
             </div>
-          </div>
-        </scroll>
-      </div>
-      <!-- <transition name="fade">
-        <div class="lyric shadow" v-if="currentLyric">
-          <div class="title">歌词</div>
-          <div class="lyric-list">
-            <p
-              ref="lyricLine"
-              class="lyric-text"
-              :class="currentLyricNum === index ? 'active' : ''"
-              v-for="(item, index) of currentLyric.lines"
-              :key="index"
-            >
-              {{ item.txt }}
-            </p>
-          </div>
+          </scroll>
+          <div class="foot"></div>
         </div>
-      </transition> -->
+      </transition>
     </div>
   </transition>
 </template>
@@ -105,7 +96,15 @@ export default {
       songReady: false,
       currentTime: 0,
       currentLyric: null,
-      currentLyricNum: 0
+      currentLyricNum: 0,
+      showLyric: false,
+      id: '',
+      playingLyric: '',
+      isPureMusic: false,
+      pureMusicLyric: '',
+      isMuted: false,
+      volume: 0.5,
+      volumeNum: 50
     }
   },
   components: {
@@ -125,6 +124,10 @@ export default {
         ? 'nicebofangqidanquxunhuan'
         : 'nicebofangqisuijibofang'
     },
+    // 是否静音
+    mutedIcon() {
+      return this.isMuted ? 'nicejingyin1' : 'niceshengyin1'
+    },
     // 进度条
     percent() {
       return this.currentTime / this.currentSong.duration
@@ -141,21 +144,26 @@ export default {
   watch: {
     // 监听歌曲内容变化
     currentSong(newSong, oldSong) {
-      if (!oldSong) {
-        oldSong = {
-          id: ''
-        }
-      }
       if (!newSong.id || !newSong.url || newSong.id === oldSong.id) {
         return
       }
       this.songReady = false
+      this.canLyricPlay = false
+      if (this.currentLyric) {
+        this.currentLyric.stop()
+        // 重置为null
+        this.currentLyric = null
+        this.currentTime = 0
+        this.playingLyric = ''
+        this.currentLyricNum = 0
+      }
       this.$nextTick(() => {
         const audio = this.$refs.audio
         if (audio) {
           audio.src = newSong.url
+          audio.volume = this.volume
           audio.play()
-          this.getLyric(newSong.id)
+          this.id = newSong.id
         }
       })
       // 若歌曲 5s 未播放，则认为超时，修改状态确保可以切换歌曲。
@@ -163,6 +171,7 @@ export default {
       this.timer = setTimeout(() => {
         this.songReady = true
       }, 5000)
+      this.getLyric(newSong.id)
     },
     // 监听播放状态
     playing(isPlaying) {
@@ -178,6 +187,29 @@ export default {
     }
   },
   methods: {
+    // 控制静音
+    changeMuted() {
+      if (this.isMuted) {
+        this.isMuted = false
+        this.$refs.audio.muted = false
+      } else {
+        this.isMuted = true
+        this.$refs.audio.muted = true
+      }
+    },
+    // 改变音量
+    changeVolume(e) {
+      this.volume = e / 100
+      this.$refs.audio.volume = e / 100
+    },
+    // 展开歌词
+    openLyric() {
+      if (this.showLyric) {
+        this.showLyric = false
+      } else {
+        this.showLyric = true
+      }
+    },
     // 获取歌词
     async getLyric(id) {
       try {
@@ -185,25 +217,44 @@ export default {
         if (res.code === 200) {
           let lyric = res.lrc.lyric
           this.currentLyric = new Lyric(lyric, this.lyricHandle)
-          if (this.playing) {
-            this.currentLyric.play()
+          if (this.isPureMusic) {
+            const timeExp = /\[(\d{2}):(\d{2}):(\d{2})]/g
+            this.pureMusicLyric = this.currentLyric.lrc.replace(timeExp, '').trim()
+            this.playingLyric = this.pureMusicLyric
+          } else {
+            if (this.playing && this.canLyricPlay) {
+              this.currentLyric.seek(this.currentTime * 1000)
+            }
+            console.log(this.currentLyric)
           }
-          console.log(this.currentLyric)
         }
       } catch (error) {
-        console.log(error)
+        this.currentLyric = null
+        this.playingLyric = ''
+        this.currentLyricNum = 0
       }
     },
     // 歌词回调
     lyricHandle({ lineNum, txt }) {
-      console.log(txt)
-      this.currentLyricNum = lineNum
-      if (lineNum > 5) {
-        let lineEl = this.$refs.lyricLine[lineNum - 5]
-        this.$refs.lyricList.scrollToElement(lineEl, 1000)
-      } else {
-        this.$refs.lyricList.scrollTo(0, 0, 1000)
+      if (!this.$refs.lyricLine) {
+        return
       }
+      this.currentLyricNum = lineNum
+      if (lineNum > 10) {
+        let lineEl = this.$refs.lyricLine[lineNum - 10]
+        if (this.$refs.lyricList) {
+          this.$nextTick(() => {
+            this.$refs.lyricList.scrollToElement(lineEl, 1000)
+          })
+        }
+      } else {
+        if (this.$refs.lyricList) {
+          this.$nextTick(() => {
+            this.$refs.lyricList.scrollTo(0, 0, 1000)
+          })
+        }
+      }
+      this.playingLyric = txt
     },
     // 点击播放暂停
     togglePlaying() {
@@ -211,6 +262,9 @@ export default {
         return
       }
       this.setPlayingState(!this.playing)
+      if (this.currentLyric) {
+        this.currentLyric.togglePlay()
+      }
     },
     // 上一首
     prevSong() {
@@ -255,11 +309,18 @@ export default {
       this.$refs.audio.currentTime = 0
       this.$refs.audio.play()
       this.setPlayingState(true)
+      if (this.currentLyric) {
+        this.currentLyric.seek(0)
+      }
     },
     // 播放准备完成
     audioReady() {
       clearTimeout(this.timer)
       this.songReady = true
+      this.canLyricPlay = true
+      if (this.currentLyric && !this.isPureMusic) {
+        this.currentLyric.seek(this.currentTime * 1000)
+      }
     },
     // 歌曲错误
     audioError() {
@@ -269,6 +330,9 @@ export default {
     // 歌曲暂停
     audioPaused() {
       this.setPlayingState(false)
+      if (this.currentLyric) {
+        this.currentLyric.stop()
+      }
     },
     // 歌曲播放完成
     audioEnd() {
@@ -287,6 +351,9 @@ export default {
     onPercentBarChange(percent) {
       const currentTime = this.currentSong.duration * percent
       this.currentTime = this.$refs.audio.currentTime = currentTime
+      if (this.currentLyric) {
+        this.currentLyric.seek(currentTime * 1000)
+      }
       if (!this.playing) {
         this.togglePlaying()
       }
@@ -490,20 +557,20 @@ export default {
     position: absolute;
     right: 0;
     bottom: 80px;
+    border-radius: 3px;
     padding: 30px;
     overflow: hidden
     .title {
-      margin: 10px 0 40px;
+      margin: 10px 0 30px;
       font-weight: 500;
       font-size: 16px;
     }
     .lyric {
-      display: inline-block
-      vertical-align: top
-      width: 100%
-      height: 100%
+      display: inline-block;
+      vertical-align: top;
+      width: 100%;
+      height: 430px;
       overflow: hidden
-      padding: 30px 0;
       .lyric-wrapper {
         width: 100%
         margin: 0 auto

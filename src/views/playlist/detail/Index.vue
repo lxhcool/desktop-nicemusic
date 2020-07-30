@@ -17,7 +17,7 @@
             </p>
           </div>
           <div class="tag flex-row">
-            标签：<a v-for="item of detail.tags" :key="item">{{ item }}</a>
+            标签：<a v-for="item of detail.tags" :key="item" @click="tag(item)">{{ item }}</a>
           </div>
           <div class="desc">
             <p class="ellipsis-two" v-html="detail.description"></p>
@@ -140,6 +140,15 @@ export default {
   },
   watch: {},
   methods: {
+    // 标签跳转
+    tag(cat) {
+      this.$router.push({
+        name: 'playlist',
+        query: {
+          cat
+        }
+      })
+    },
     // 获取歌单详情
     async getPlayListDetail(id, s) {
       try {
@@ -278,6 +287,7 @@ export default {
 <style lang="stylus" scoped>
 .playlist-detail {
   display: flex;
+  align-items: flex-start;
   .left {
     flex: 1;
     width: 950px;

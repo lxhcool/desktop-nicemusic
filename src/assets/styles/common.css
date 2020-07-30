@@ -123,6 +123,7 @@
 .el-slider__runway {
   height: 3px;
   margin: 0;
+  background: rgba(0,0,0,0.05);
 }
 
 .el-slider__bar {
@@ -134,14 +135,17 @@
 .el-slider__button-wrapper {
   width: 12px;
   height: 12px;
-  top: -9px;
+  top: -9.5px;
 }
 
 .el-slider__button {
   width: 12px;
   height: 12px;
   border: 2px solid #fa2800;
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.35);
+}
+
+.el-slider__button:hover {
+  cursor: pointer;
 }
 
 .image-slot {

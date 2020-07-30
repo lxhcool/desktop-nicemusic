@@ -224,6 +224,11 @@ export default {
   },
   created() {},
   mounted() {
+    let cat = this.$route.query.cat
+    console.log(cat)
+    if (cat) {
+      this.currentCat = cat
+    }
     this.getHotlist()
     this.getCatList()
     this.getPlayList()

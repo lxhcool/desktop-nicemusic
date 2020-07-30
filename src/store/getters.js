@@ -30,5 +30,5 @@ export const currentIndex = state => state.currentIndex
 
 // 当前播放歌曲
 export const currentSong = state => {
-  return state.playList[state.currentIndex]
+  return state.playList[state.currentIndex] || {}
 }
