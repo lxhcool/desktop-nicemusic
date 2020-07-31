@@ -31,8 +31,14 @@
                 <div class="line" style="animation-delay: -0.9s;"></div>
                 <div class="line" style="animation-delay: -0.6s;"></div>
               </div>
-              <i class="iconfont nicebofang2 play-btn" @click="playSong(item, index)"></i>
-              <i class="iconfont nicezanting1 pause-btn" @click="pauseSong(item, index)"></i>
+              <i
+                class="iconfont nicebofang2 play-btn"
+                @click="playSong(item, index)"
+              ></i>
+              <i
+                class="iconfont nicezanting1 pause-btn"
+                @click="pauseSong(item, index)"
+              ></i>
             </div>
           </td>
           <td>

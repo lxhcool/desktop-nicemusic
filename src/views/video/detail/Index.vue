@@ -29,7 +29,11 @@
           >
         </p>
         <div class="follow">
-          <div class="box" @click="likeResource" :class="videoDetailInfo.isLike ? 'active' : ''">
+          <div
+            class="box"
+            @click="likeResource"
+            :class="videoDetailInfo.isLike ? 'active' : ''"
+          >
             <i class="iconfont nicexihuan3 icon-like"></i>
             {{ videoDetailInfo.likeCount }}
           </div>

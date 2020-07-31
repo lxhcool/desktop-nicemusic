@@ -201,8 +201,8 @@ export const likeComment = params => api.get(`/comment/like`, { params })
  * @params id：资源id
  */
 
-export const likeResource = (type, t, id) => api.get(`/resource/like?type=${type}&t=${t}&id=${id}`, {})
-
+export const likeResource = (type, t, id) =>
+  api.get(`/resource/like?type=${type}&t=${t}&id=${id}`, {})
 
 /**
  * @method 获取mv详情

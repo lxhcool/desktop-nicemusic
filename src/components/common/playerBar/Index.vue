@@ -28,7 +28,11 @@
         </p>
       </div>
       <div class="volume-wrap">
-        <i class="iconfont volume-icon" @click="changeMuted" :class="mutedIcon"></i>
+        <i
+          class="iconfont volume-icon"
+          @click="changeMuted"
+          :class="mutedIcon"
+        ></i>
         <div class="progress-bar">
           <el-slider
             v-model="volumeNum"
@@ -219,7 +223,9 @@ export default {
           this.currentLyric = new Lyric(lyric, this.lyricHandle)
           if (this.isPureMusic) {
             const timeExp = /\[(\d{2}):(\d{2}):(\d{2})]/g
-            this.pureMusicLyric = this.currentLyric.lrc.replace(timeExp, '').trim()
+            this.pureMusicLyric = this.currentLyric.lrc
+              .replace(timeExp, '')
+              .trim()
             this.playingLyric = this.pureMusicLyric
           } else {
             if (this.playing && this.canLyricPlay) {

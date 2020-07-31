@@ -3,7 +3,17 @@
 import utils from '../utils/utils'
 
 export default class Song {
-  constructor({ id, singer, name, album, duration, image, url, playCount, score }) {
+  constructor({
+    id,
+    singer,
+    name,
+    album,
+    duration,
+    image,
+    url,
+    playCount,
+    score
+  }) {
     this.id = id
     this.singer = singer
     this.name = name

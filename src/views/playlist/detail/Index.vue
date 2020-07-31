@@ -17,7 +17,12 @@
             </p>
           </div>
           <div class="tag flex-row">
-            标签：<a v-for="item of detail.tags" :key="item" @click="tag(item)">{{ item }}</a>
+            标签：<a
+              v-for="item of detail.tags"
+              :key="item"
+              @click="tag(item)"
+              >{{ item }}</a
+            >
           </div>
           <div class="desc">
             <p class="ellipsis-two" v-html="detail.description"></p>
