@@ -55,9 +55,30 @@
         </div>
       </div>
       <div class="center shadow">
+        <div class="card-header flex-between">
+          <p class="flex-row">听歌排行 <span>（累积听歌{{ userInfo.listenSongs }}首）</span></p>
+          <div class="tab flex-row">
+            <span :class="type == 1 ? 'active' : ''" @click="changeType(1)">最近一周</span>
+            <span class="line"></span>
+            <span :class="type == 0 ? 'active' : ''" @click="changeType(0)">所有时间</span>
+          </div>
+        </div>
         <artist-list :songs="songs" />
       </div>
-      <div class="right shadow"></div>
+      <div class="right">
+        <div class="my module shadow">
+          <div class="card-header flex-row">
+            <span>我创建的歌单</span>
+          </div>
+          <song-sheet :sheetList="myList" :num="num"></song-sheet>
+        </div>
+        <div class="my collect module shadow">
+          <div class="card-header flex-row">
+            <span>我收藏的歌单</span>
+          </div>
+          <song-sheet :sheetList="collectList" :num="num"></song-sheet>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -66,17 +87,23 @@
 import { mapGetters } from 'vuex'
 import { createSong } from '@/model/song'
 import ArtistList from 'components/common/artistList/Index'
+import songSheet from 'components/common/songSheet/Index'
 import axios from 'axios'
 export default {
   data() {
     return {
       provinceName: '',
       cityName: '',
-      songs: []
+      myList: [],
+      collectList: [],
+      songs: [],
+      num: 2,
+      type: 1
     }
   },
   components: {
-    ArtistList
+    ArtistList,
+    songSheet
   },
   computed: {
     ...mapGetters(['userInfo']),
@@ -113,13 +140,44 @@ export default {
           console.log(error)
         })
     },
+    // 修改一周数据或者全部
+    changeType(type) {
+      this.type = type
+      this.getUserRecord()
+    },
     // 获取用户播放记录
     async getUserRecord() {
       try {
-        let res = await this.$api.getUserRecord(this.userInfo.userId, 0)
+        let res = await this.$api.getUserRecord(this.userInfo.userId, this.type)
         if (res.code === 200) {
-          console.log(this._normalizeSongs(res.allData))
-          this.songs = this._normalizeSongs(res.allData)
+          if(this.type == 1) {
+            this.songs = this._normalizeSongs(res.weekData)
+          } else {
+            this.songs = this._normalizeSongs(res.allData)
+          }
+          
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 获取用户歌单
+    async getUserArtist() {
+      try {
+        let res = await this.$api.getUserArtist(this.userInfo.userId)
+        if (res.code === 200) {
+          let list = res.playlist
+          let myList = []
+          let collectList = []
+          list.map(item => {
+            if (!item.subscribed) {
+              myList.push(item)
+            } else {
+              collectList.push(item)
+            }
+          })
+          this.myList = myList
+          this.collectList = collectList
         }
       } catch (error) {
         console.log(error)
@@ -143,6 +201,7 @@ export default {
     console.log(this.userInfo)
     this.getArea()
     this.getUserRecord()
+    this.getUserArtist()
   }
 }
 </script>
@@ -160,10 +219,10 @@ export default {
   .personal-main {
     display: flex;
     .left {
-      width: 360px;
+      width: 350px;
       position: relative;
       top: -60px;
-      margin-right: 30px;
+      margin-right: 20px;
       .user-box {
         background: #fff;
         border-radius: 5px;
@@ -302,19 +361,87 @@ export default {
       }
     }
     .center {
-      width: 675px;
+      width: 640px;
       background: #fff;
       position: relative;
-      padding-bottom: 30px;
       margin-top: 40px;
-      margin-right: 30px;
+      margin-right: 20px;
+      border-radius: 5px;
+      padding: 15px;
+      .card-header {
+        border-left: 3px solid $color-theme;
+        height: 20px;
+        padding-left: 1rem;
+        margin-bottom: 15px;
+        font-weight: bold;
+        span {
+          font-weight: 100;
+          color: #666666;
+          font-size: 12px;
+        }
+        .tab {
+          span {
+            font-size: 12px;
+            cursor: pointer;
+            &.active {
+              color: $color-theme;
+            }
+          }
+          .line {
+            width: 1px;
+            height: 13px;
+            background: #999;
+            display: block;
+            margin: 0 10px;
+          }
+        }
+      }
     }
     .right {
-      width: 285px;
+      width: 350px;
+      flex-shrink: 0;
+      border-radius: 5px;
       background: #fff;
       position: relative;
       padding-bottom: 30px;
       margin-top: 40px;
+      .card-header {
+        border-left: 3px solid $color-theme;
+        height: 20px;
+        padding-left: 1rem;
+        margin-bottom: 15px;
+        font-weight: bold;
+        .icon-like {
+          font-size: 20px;
+        }
+      }
+      .module {
+        padding: 15px;
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .my {
+        padding-bottom: 5px;
+        ul {
+          display: flex;
+          flex-wrap: wrap;
+          margin: 0 -5px;
+          li {
+            flex: 0 0 14.285714285714%;
+            max-width: 14.285714285714%;
+            padding: 0 5px 10px;
+            .avatar {
+              width: 100%;
+              border-radius: 3px;
+              img {
+                width: 100%;
+                border-radius: 3px;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

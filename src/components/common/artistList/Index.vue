@@ -19,7 +19,7 @@
         <tr
           v-for="(item, index) of songs"
           :key="item.id"
-          :class="index == currentIndex && playing ? 'playing' : ''"
+          :class="index == currentIndex && currentSong.id == item.id && playing ? 'playing' : ''"
         >
           <td>
             <div class="index-container flex-center">
@@ -104,7 +104,7 @@ export default {
   },
   components: {},
   computed: {
-    ...mapGetters(['currentIndex', 'playing'])
+    ...mapGetters(['currentIndex', 'playing', 'currentSong'])
   },
   watch: {},
   methods: {

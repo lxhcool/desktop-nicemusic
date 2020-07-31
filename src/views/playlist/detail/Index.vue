@@ -63,7 +63,11 @@
           <span>相关推荐</span>
         </div>
         <ul>
-          <li v-for="item of relatedList" :key="item.id">
+          <li
+            v-for="item of relatedList"
+            :key="item.id"
+            @click="toDetail(item.id)"
+          >
             <div class="avatar">
               <img
                 :src="item.coverImgUrl + '?param=150y150'"
@@ -72,7 +76,7 @@
               />
             </div>
             <div class="info">
-              <h2 class="ellipsis">{{ item.name }}</h2>
+              <h2 class="ellipsis" :title="item.name">{{ item.name }}</h2>
               <span
                 >By. <small> {{ item.creator.nickname }}</small></span
               >
@@ -143,7 +147,15 @@ export default {
       }
     }
   },
-  watch: {},
+  watch: {
+    $route(newId, oldId) {
+      console.log(newId, oldId)
+      let id = this.$route.query.id || this.singer.id
+      if (id) {
+        this._initialize(id)
+      }
+    }
+  },
   methods: {
     // 标签跳转
     tag(cat) {
@@ -275,16 +287,29 @@ export default {
         showConfirmButton: false,
         dangerouslyUseHTMLString: true
       })
+    },
+    // 相关推荐详情
+    toDetail(id) {
+      this.$router.push({
+        name: 'playlistDetail',
+        query: {
+          id
+        }
+      })
+    },
+    // 初始化
+    _initialize(id) {
+      this.getPlayListDetail(id, 100)
+      this.getRelatedPlaylist(id)
+      this.getSubscribersPlaylist(id)
+      this.getCommentPlaylist(id)
     }
   },
   created() {},
   mounted() {
     let id = this.$route.query.id
     if (id) {
-      this.getPlayListDetail(id, 100)
-      this.getRelatedPlaylist(id)
-      this.getSubscribersPlaylist(id)
-      this.getCommentPlaylist(id)
+      this._initialize(id)
     }
   }
 }
@@ -440,6 +465,7 @@ export default {
         li {
           display: flex;
           margin-bottom: 15px;
+          cursor: pointer;
           .avatar {
             width: 50px;
             height: 50px;
@@ -453,7 +479,7 @@ export default {
           }
           .info {
             height: 50px;
-            width: calc(100% - 50px);
+            width: calc(100% - 60px);
             flex: 1;
             display: flex;
             justify-content: center;
@@ -466,6 +492,11 @@ export default {
             span {
               font-size: 12px;
               color: #a5a5c1;
+            }
+            &:hover {
+              h2 {
+                color: $color-theme;
+              }
             }
           }
         }

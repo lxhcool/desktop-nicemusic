@@ -2,6 +2,7 @@
   <div class="list">
     <div
       class="item"
+      :class="numClass"
       v-for="item of sheetList"
       :key="item.id"
       @click="toDetail(item.id)"
@@ -52,10 +53,18 @@ export default {
   props: {
     sheetList: {
       type: Array
+    },
+    num: {
+      type: Number,
+      default: 8
     }
   },
   components: {},
-  computed: {},
+  computed: {
+    numClass() {
+      return this.num == 2 ? 'two' : 'eight'
+    }
+  },
   watch: {},
   methods: {
     toDetail(id) {
@@ -81,6 +90,10 @@ export default {
     max-width: 12.5%;
     padding: 0 15px 30px;
     cursor: pointer;
+    &.two {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
     .wrapper {
       position: relative;
       padding-right: 10px;

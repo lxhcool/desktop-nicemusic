@@ -23,3 +23,10 @@ export const getUserDetail = uid => api.get(`/user/detail?uid=${uid}`, {})
 
 export const getUserRecord = (uid, type) =>
   api.get(`/user/record?uid=${uid}&type=${type}`, {})
+
+/**
+ * @method 获取用户歌单
+ * @params uid 用户 id
+ */
+
+export const getUserArtist = uid => api.get(`/user/playlist?uid=${uid}`, {})

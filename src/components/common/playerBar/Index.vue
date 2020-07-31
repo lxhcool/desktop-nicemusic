@@ -79,6 +79,7 @@
                   {{ item.txt }}
                 </p>
               </div>
+              <div class="no-lyric" v-else>暂无歌词，请您欣赏</div>
             </div>
           </scroll>
           <div class="foot"></div>
