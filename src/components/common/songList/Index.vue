@@ -1,12 +1,33 @@
 <template>
   <div class="list">
-    <div class="item" v-for="(item, index) of songList" :key="item.id">
+    <div class="item" v-for="(item, index) of songList" :key="item.id" :class="
+            index == currentIndex && currentSong.id == item.id && playing
+              ? 'playing'
+              : ''
+          ">
       <div class="wrapper flex-center shadow">
-        <h2 class="number">{{ utils.formatZero(index + 1, 2) }}</h2>
+        <div class="index-container flex-center">
+          <span class="num">{{ utils.formatZero(index + 1, 2) }}</span>
+          <div class="play-icon">
+            <div class="line" style="animation-delay: -1.2s;"></div>
+            <div class="line"></div>
+            <div class="line" style="animation-delay: -1.5s;"></div>
+            <div class="line" style="animation-delay: -0.9s;"></div>
+            <div class="line" style="animation-delay: -0.6s;"></div>
+          </div>
+          <i
+            class="iconfont nicebofang2 play-btn"
+            @click="playSong(item, index)"
+          ></i>
+          <i
+            class="iconfont nicezanting1 pause-btn"
+            @click="pauseSong(item, index)"
+          ></i>
+        </div>
         <div class="avatar">
           <el-image
-            :key="item.picUrl + '?param=300y300'"
-            :src="item.picUrl + '?param=300y300'"
+            :key="item.image + '?param=150y150'"
+            :src="item.image + '?param=150y150'"
             lazy
           >
             <div slot="placeholder" class="image-slot flex-center flex-column">
@@ -24,31 +45,20 @@
         <div class="info">
           <p class="name ellipsis">{{ item.name }}</p>
           <p class="flex-row ellipsis">
-            <span
-              class="author"
-              v-for="artist of item.song.artists"
-              :key="artist.id"
-            >
-              {{ artist.name }}
-            </span>
+            <span>{{ item.singer }}</span>
           </p>
         </div>
-        <p class="album">《{{ item.song.album.name }}》</p>
+        <p class="album">《{{ item.album }}》</p>
         <p class="duration transition">
-          {{ utils.formatTime(item.song.duration) }}
+          {{ utils.formatSecondTime(item.duration) }}
         </p>
-        <div class="tools transition">
-          <i class="iconfont niceOutlined_Play"></i>
-          <i class="iconfont niceadd"></i>
-          <i class="iconfont niceicon-heart"></i>
-          <i class="iconfont nicexiazai"></i>
-        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 // 歌单列表组件
 export default {
   data() {
@@ -60,9 +70,30 @@ export default {
     }
   },
   components: {},
-  computed: {},
+  computed: {
+    ...mapGetters(['currentIndex', 'playing', 'currentSong']),
+  },
   watch: {},
-  methods: {},
+  methods: {
+    // 播放歌曲
+    playSong(item, index) {
+      this.selectPlay({
+        list: this.songList,
+        index
+      })
+    },
+    // 停止播放歌曲
+    pauseSong() {
+      this.pausePlay()
+    },
+    ...mapActions([
+      // 点击选择播放
+      'selectPlay',
+      // 点击播放全部
+      'playAll',
+      'pausePlay'
+    ])
+  },
   created() {},
   mounted() {}
 }
@@ -99,10 +130,41 @@ export default {
         filter: blur(10px);
         z-index: -1;
       }
-      .number {
-        font-size: 15px;
-        color: #000000;
-        margin-right: 30px;
+      .index-container {
+        width: 30px;
+        margin-right: 20px;
+        .num {
+          font-size: 15px;
+          color: #4a4a4a;
+          font-weight: bold;
+        }
+        .play-icon {
+          display: none;
+          height: 16px;
+          min-width: 18px;
+          overflow: hidden;
+          .line {
+            width: 2px;
+            height: 100%;
+            margin-left: 2px;
+            background-color: #ff410f;
+            animation: play .9s linear infinite alternate;
+          }
+        }
+        .play-btn {
+          color: $color-theme;
+          font-size: 28px;
+          display: none;
+          text-align: left;
+          cursor: pointer;
+        }
+        .pause-btn {
+          color: $color-theme;
+          font-size: 30px;
+          display: none;
+          text-align: left;
+          cursor: pointer;
+        }
       }
       .avatar {
         width: 55px;
@@ -185,12 +247,46 @@ export default {
           color: #666666;
         }
       }
-      &:hover {
-        .duration {
-          opacity: 0;
+    }
+    &.playing {
+      p {
+        color: $color-theme;
+      }
+      i {
+        color: $color-theme;
+      }
+      .index-container {
+        .num {
+          display: none;
         }
-        .tools {
-          opacity: 1;
+        .play-icon {
+          display: flex;
+        }
+        .play-btn {
+          display: none;
+        }
+      }
+    }
+    &:hover {
+      .index-container {
+        .num {
+          display: none;
+        }
+        .play-btn {
+          display: block;
+        }
+      }
+      &.playing {
+        .index-container {
+          .play-btn {
+            display: none;
+          }
+          .play-icon {
+            display: none;
+          }
+          .pause-btn {
+            display: block;
+          }
         }
       }
     }

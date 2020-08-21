@@ -51,7 +51,6 @@ ajaxMethod.forEach(method => {
           if (response.code === 200) {
             resolve(response)
           }
-          resolve(response)
         })
         .catch(error => {
           reject(error)

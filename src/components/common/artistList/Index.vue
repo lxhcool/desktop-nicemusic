@@ -1,9 +1,21 @@
 <template>
   <div class="artist-box">
     <div class="tool-head">
-      <div class="item" @click="playAllSong">
+      <div class="item play-item" @click="playAllSong">
         <i class="iconfont niceOutlined_Play"></i> 播放全部
       </div>
+      <div
+        class="item"
+        @click="collect()"
+        :class="subscribed ? 'active' : ''"
+        v-if="!isPerson"
+      >
+        <i class="iconfont niceicon-heart"></i>
+        {{ collectText }}
+      </div>
+      <!-- <div class="item" v-if="!isPerson">
+        <i class="iconfont nicefenxiang1"></i> 分享
+      </div> -->
     </div>
     <table class="artist-table">
       <thead>
@@ -19,7 +31,10 @@
         <tr
           v-for="(item, index) of songs"
           :key="item.id"
-          :class="index == currentIndex && currentSong.id == item.id && playing ? 'playing' : ''"
+          :class="currentSong.id == item.id && playing
+              ? 'playing'
+              : ''
+          "
         >
           <td>
             <div class="index-container flex-center">
@@ -100,11 +115,21 @@ export default {
   props: {
     songs: {
       type: Array
+    },
+    subscribed: {
+      type: Boolean
+    },
+    isPerson: {
+      type: Boolean,
+      default: false
     }
   },
   components: {},
   computed: {
-    ...mapGetters(['currentIndex', 'playing', 'currentSong'])
+    ...mapGetters(['currentIndex', 'playing', 'currentSong']),
+    collectText() {
+      return this.subscribed ? '已收藏' : '收藏'
+    }
   },
   watch: {},
   methods: {
@@ -116,7 +141,7 @@ export default {
       })
     },
     // 停止播放歌曲
-    pauseSong(item, index) {
+    pauseSong() {
       this.pausePlay()
     },
     // 播放全部
@@ -124,6 +149,10 @@ export default {
       this.playAll({
         list: this.songs
       })
+    },
+    // 收藏歌单
+    async collect() {
+      this.$emit('collectArtist')
     },
     ...mapActions([
       // 点击选择播放
@@ -149,11 +178,30 @@ export default {
     justify-content: flex-end;
     margin: 15px 0;
     .item {
-      background: $color-theme;
-      color: #fff;
+      background: #f2f2f2;
+      color: #333333;
       padding: 7px 15px;
       border-radius: 50px;
       cursor: pointer;
+      margin-left: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s;
+      i {
+        margin-right: 5px;
+      }
+      .nicefenxiang1 {
+        font-size: 18px;
+      }
+      &.active {
+        background: $color-theme;
+        color: #fff;
+      }
+    }
+    .play-item {
+      background: $color-theme;
+      color: #fff;
     }
   }
   .artist-table {
@@ -312,14 +360,14 @@ export default {
               display: block;
             }
           }
-          .duration-container {
-            p {
-              display: none;
-            }
-            .song-tools {
-              display: flex;
-            }
-          }
+          // .duration-container {
+          //   p {
+          //     display: none;
+          //   }
+          //   .song-tools {
+          //     display: flex;
+          //   }
+          // }
           &.playing {
             .index-container {
               .play-btn {

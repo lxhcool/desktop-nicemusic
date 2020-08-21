@@ -19,7 +19,7 @@
     </div>
     <div class="info">
       <p class="name">{{ item.name }}</p>
-      <p class="count">单曲数{{ item.musicSize }}</p>
+      <p class="count" v-if="item.musicSize">单曲数{{ item.musicSize }}</p>
     </div>
   </li>
 </template>

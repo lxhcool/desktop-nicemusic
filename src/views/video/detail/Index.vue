@@ -5,12 +5,12 @@
         <video
           :src="videoUrl"
           controls="controls"
+          autoplay
           controlslist="nodownload"
         ></video>
       </div>
       <div class="video-foot">
         <h2 class="title flex-row">
-          <!-- <i class="iconfont nicemv24"></i> -->
           {{ detail.title }}
         </h2>
         <div class="tag">
@@ -101,13 +101,13 @@
         </div>
         <div class="content">
           <div class="author">
-            <div class="avatar">
+            <div class="avatar" @click="toUser(creator.userId)">
               <img :src="creator.avatarUrl" alt="" />
             </div>
-            <p class="name">{{ creator.nickname }}</p>
-            <div class="follow flex-center transition">
+            <p class="name" @click="toUser(creator.userId)">{{ creator.nickname }}</p>
+            <!-- <div class="follow flex-center transition">
               <i class="iconfont niceIcon_add"></i>关注
-            </div>
+            </div> -->
           </div>
           <p v-if="detail.description">{{ detail.description }}</p>
           <p v-else>视频暂无简介</p>
@@ -184,7 +184,14 @@ export default {
   computed: {
     ...mapGetters(['userInfo', 'loginStatu'])
   },
-  watch: {},
+  watch: {
+    $route() {
+      let id = this.$route.query.id || this.videoId
+      if (id) {
+        this._initialize(id)
+      }
+    }
+  },
   methods: {
     // 改变页码
     handleSizeChange(val) {
@@ -363,7 +370,20 @@ export default {
     },
     // 视频详情（相关视频）
     toDetail(id) {
-      this._initialize(id)
+      this.$router.push({
+        name: 'videoDetail',
+        query: {
+          id
+        }
+      })
+    },
+    toUser(id) {
+      this.$router.push({
+        name: 'personal',
+        query: {
+          id
+        }
+      })
     },
     // 初始化
     _initialize(id) {
@@ -570,6 +590,7 @@ export default {
           height: 40px;
           border-radius: 20px;
           margin-right: 15px;
+          cursor: pointer;
           img {
             width: 40px;
             height: 40px;
@@ -578,6 +599,7 @@ export default {
         }
         p {
           flex: 1;
+          cursor: pointer;
         }
         .follow {
           padding: 3px 10px;

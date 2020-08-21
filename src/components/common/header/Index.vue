@@ -2,7 +2,7 @@
   <div class="header shadow">
     <div class="container flex-row">
       <div class="logo">
-        <a href="index.html"></a>
+        <router-link :to="{ name: 'home' }" tag="a"></router-link>
       </div>
       <ul class="nav flex-row">
         <li>
@@ -66,54 +66,32 @@
                 <input
                   class="text"
                   type="text"
+                  v-model="keyword"
                   placeholder="请输入搜索关键词并按回车键…"
+                  v-on:keyup.enter="search"
                 />
               </div>
+            </div>
+            <div class="search-hot" v-show="searchHistory.length">
+              <div class="title flex-row">
+                <i class="iconfont nicelishi"></i>
+                <span>历史搜索</span>
+                <p @click="clearSearch">清空</p>
+              </div>
+              <ul class="tags">
+                <li v-for="item of searchHistory" :key="item">
+                  <a class="btn flex-row" @click="tag(item)">{{ item }} <span class="close-dark" @click.stop="deleteItem(item)"></span></a>
+                </li>
+              </ul>
             </div>
             <div class="search-hot">
               <div class="title flex-row">
                 <i class="iconfont niceremensousuo"></i>
                 <span>热门搜索</span>
               </div>
-              <ul class="tags">
-                <li>
-                  <a class="btn">Apple</a>
-                </li>
-                <li>
-                  <a class="btn">Aripods</a>
-                </li>
-                <li>
-                  <a class="btn">Cupertino</a>
-                </li>
-                <li>
-                  <a class="btn">亚洲市场</a>
-                </li>
-                <li>
-                  <a class="btn">人人车</a>
-                </li>
-                <li>
-                  <a class="btn">区块链</a>
-                </li>
-                <li>
-                  <a class="btn">华为</a>
-                </li>
-                <li>
-                  <a class="btn">合作伙伴</a>
-                </li>
-                <li>
-                  <a class="btn">巨头企业</a>
-                </li>
-                <li>
-                  <a class="btn">特殊工具</a>
-                </li>
-                <li>
-                  <a class="btn">纽约时报</a>
-                </li>
-                <li>
-                  <a class="btn">苹果</a>
-                </li>
-                <li>
-                  <a class="btn">资金链</a>
+              <ul class="tags" v-if="hots.length > 0">
+                <li v-for="item of hots" :key="item.first">
+                  <a class="btn" @click="tag(item.first)">{{ item.first }}</a>
                 </li>
               </ul>
             </div>
@@ -128,11 +106,13 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      keyword: [],
+      keyword: '',
+      hots: [],
+      historys: [],
       searchOpenClass: '',
       searchCloseClass: ''
     }
@@ -140,7 +120,7 @@ export default {
   components: {},
   //监听属性 类似于data概念
   computed: {
-    ...mapGetters(['userInfo', 'loginStatu'])
+    ...mapGetters(['userInfo', 'loginStatu', 'searchHistory'])
   },
   //监控data中的数据变化
   watch: {},
@@ -156,6 +136,49 @@ export default {
       this.searchOpenClass = ''
       this.searchCloseClass = 'close'
     },
+    // 搜索
+    search() {
+      if (this.keyword.split(' ').join('').length !== 0) {
+        this.closeSearchPop()
+        this.$router.push({
+          name: 'search',
+          query: {
+            keyword: this.keyword
+          }
+        })
+        this.saveSearchHistory(this.keyword)
+      }
+    },
+    // 点击标签搜索
+    tag(keyword) {
+      this.saveSearchHistory(keyword)
+      this.closeSearchPop()
+      this.$router.push({
+        name: 'search',
+        query: {
+          keyword
+        }
+      })
+    },
+    // 删除历史搜索单个
+    deleteItem(item) {
+      this.deleteSearchHistory(item)
+    },
+    // 清空搜索历史
+    clearSearch() {
+      this.clearSearchHistory()
+    },
+    // 获取热搜列表
+    async getSearchHot() {
+      try {
+        let res = await this.$api.getSearchHot()
+        if (res.code === 200) {
+          this.hots = res.result.hots
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
     // 登录
     login() {
       this.$router.push({
@@ -168,12 +191,19 @@ export default {
           name: 'personal'
         })
       }
-    }
+    },
+    ...mapActions([
+      'saveSearchHistory',
+      'deleteSearchHistory',
+      'clearSearchHistory'
+    ])
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {}
+  mounted() {
+    this.getSearchHot()
+  }
 }
 </script>
 <style lang="stylus" scoped>
@@ -315,7 +345,7 @@ export default {
           overflow: hidden;
           padding: 3rem;
           .bg-effect {
-            background-image: url(../../../assets/images/ad.jpg);
+            background-image: url(../../../assets/images/personal.jpg);
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
@@ -324,15 +354,15 @@ export default {
             left: 0;
             right: 0;
             bottom: 0;
-            filter: blur(5px);
+            filter: blur(8px);
             transform: scale(1.05);
             background-position: center;
             .layer {
               width: 100%;
               height: 100%;
-              background-color: rgba(22, 29, 39, .66);
+              background-color: rgba(0, 0, 0, .3);
               position: absolute;
-              opacity: 0;
+              opacity: 1;
               top: 0;
               left: 0;
               transition: opacity 0.3s ease-in-out;
@@ -382,8 +412,16 @@ export default {
               font-size: 1.625rem;
               margin-right: 8px;
             }
+            .nicelishi {
+              font-size: 1.425rem;
+            }
             span {
               font-size: 15px;
+              flex: 1;
+            }
+            p {
+              color: $color-theme;
+              cursor: pointer;
             }
           }
           .tags {
@@ -394,8 +432,9 @@ export default {
             align-items: center;
             li {
               padding: 0.25rem;
+              cursor: pointer;
               .btn {
-                display: block;
+                display: flex;
                 font-weight: 400;
                 color: #6D7685;
                 background-color: #f4f4f5;
@@ -409,8 +448,23 @@ export default {
                 border-radius: .25rem;
                 transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
                 border-radius: 4px;
+                .close-dark {
+                  display: inline-block;
+                  background-image: url('../../../assets/images/close-dark.svg');
+                  background-size: contain;
+                  background-position: center;
+                  background-repeat: no-repeat;
+                  vertical-align: middle;
+                  width: 14px;
+                  height: 14px;
+                  margin-left: 8px;
+                  opacity: 0.7;
+                }
                 &:hover {
                   color: #161E27;
+                  .close-dark {
+                    opacity: 1;
+                  }
                 }
               }
             }

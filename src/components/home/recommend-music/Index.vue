@@ -7,6 +7,7 @@
 
 <script>
 import songList from 'components/common/songList/Index'
+import { createSong } from '@/model/song'
 export default {
   data() {
     return {
@@ -26,11 +27,37 @@ export default {
     async getNewSongs() {
       try {
         let res = await this.$api.getNewSongs()
-        // console.log(res)
-        this.songs = res.result
+        let list = []
+        if(res.code === 200) {
+          res.result.map(item => {
+            list.push(item.id)
+          })
+          this.getSongDetail(list)
+        }
       } catch (error) {
         console.log(error)
       }
+    },
+    // 获取歌曲列表
+    async getSongDetail(sliceArr) {
+      let timestamp = new Date().valueOf()
+      sliceArr = sliceArr.join(',')
+      try {
+        let res = await this.$api.getSongDetail(sliceArr, timestamp)
+        this.songs = this._normalizeSongs(res.songs)
+        console.log(this.songs)
+      } catch (error) {
+      }
+    },
+    // 处理歌曲
+    _normalizeSongs(list) {
+      let ret = []
+      list.map(item => {
+        if (item.id) {
+          ret.push(createSong(item))
+        }
+      })
+      return ret
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）

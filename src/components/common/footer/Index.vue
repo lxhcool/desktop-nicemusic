@@ -3,10 +3,7 @@
     <div class="container">
       <p class="title">nicemusic</p>
       <p class="desc">
-        nicetheme
-        坚持原创和保持创新的用户体验设计，提供专业与创新的网站解决方案，6
-        年网站设计开发经验，专注界面设计、WordPress
-        主题开发、网站设计开发、小程序开发，并提供有保障的维护及售后。
+        nicemusic
       </p>
       <div class="social flex-row">
         <a href="">

@@ -1,9 +1,9 @@
 <template>
-  <div class="playlist-detail container">
+  <div class="album-detail container">
     <div class="left shadow">
       <div class="top">
         <div class="avatar">
-          <img :src="detail.coverImgUrl + '?param=200y200'" alt="" />
+          <img :src="detail.picUrl + '?param=200y200'" alt="" />
         </div>
         <div class="info">
           <div class="title flex-between">
@@ -11,25 +11,15 @@
             <div></div>
           </div>
           <div class="user flex-row">
-            <div class="avatar" @click="toUser(creator.userId)">
-              <img :src="creator.avatarUrl + '?param=100y100'" alt="" />
+            <div class="avatar">
+              <img :src="creator.picUrl + '?param=100y100'" alt="" />
             </div>
-            <p class="nickname" @click="toUser(creator.userId)">{{ creator.nickname }}</p>
-            <p class="createTime" v-if="detail.createTime"> 
-              {{ utils.dateFormat(detail.createTime, 'YYYY-MM-DD') }}创建
+            <p class="nickname">{{ creator.name }}</p>
+            <p class="createTime">
+              {{ utils.dateFormat(detail.publishTime, 'YYYY-MM-DD') }}创建
             </p>
           </div>
-          <div
-            class="tag flex-row"
-            v-if="detail.tags && detail.tags.length > 0"
-          >
-            标签：<a
-              v-for="item of detail.tags"
-              :key="item"
-              @click="tag(item)"
-              >{{ item }}</a
-            >
-          </div>
+          <div class="tag flex-row">发行公司：{{ detail.company }}</div>
           <div class="desc">
             <p class="ellipsis-two" v-html="detail.description"></p>
             <span
@@ -43,23 +33,18 @@
           </div>
         </div>
       </div>
-      <div class="content" v-loading="loading">
-        <artist-list
-          :songs="songs"
-          :isPerson="ordered ? true : false"
-          @collectArtist="collectArtist"
-          :subscribed="detail.subscribed"
-        />
+      <div class="content">
+        <artist-list :songs="songs" :isPerson="true" />
       </div>
     </div>
     <div class="right">
-      <div class="like module shadow">
+      <!-- <div class="like module shadow">
         <div class="card-header flex-row">
-          <span>喜欢这个歌单的人</span>
+          <span>喜欢这张专辑的人</span>
         </div>
-        <ul v-if="subscribers.length > 0">
-          <li v-for="item of subscribers" :key="item.userId">
-            <div class="avatar" @click="toUser(item.userId)">
+        <ul>
+          <li v-for="item of subscribers" :key="item.id">
+            <div class="avatar">
               <img
                 :src="item.avatarUrl + '?param=150y150'"
                 :alt="item.nickname"
@@ -68,29 +53,28 @@
             </div>
           </li>
         </ul>
-        <p class="no-data-text" v-else style="padding-bottom: 10px;">还没有人喜欢</p>
-      </div>
+      </div> -->
       <div class="related module shadow">
         <div class="card-header flex-row">
-          <span>相关推荐</span>
+          <span>热门专辑</span>
         </div>
         <ul>
           <li
-            v-for="item of relatedList"
+            v-for="item of hotAlbums"
             :key="item.id"
             @click="toDetail(item.id)"
           >
             <div class="avatar">
               <img
-                :src="item.coverImgUrl + '?param=150y150'"
-                :alt="item.nickname"
-                :title="item.nickname"
+                :src="item.picUrl + '?param=150y150'"
+                :alt="item.name"
+                :title="item.name"
               />
             </div>
             <div class="info">
               <h2 class="ellipsis" :title="item.name">{{ item.name }}</h2>
               <span
-                >By. <small> {{ item.creator.nickname }}</small></span
+                >By. <small> {{ item.artist.name }}</small></span
               >
             </div>
           </li>
@@ -100,9 +84,9 @@
         <div class="card-header flex-row">
           <span>精彩评论</span>
         </div>
-        <ul v-if="comments.length > 0">
+        <ul>
           <li class="item" v-for="item of comments" :key="item.time">
-            <div class="avatar" @click="toUser(item.user.userId)">
+            <div class="avatar">
               <img
                 :src="item.user.avatarUrl + '?param=150y150'"
                 :alt="item.user.nickname"
@@ -110,7 +94,7 @@
               />
             </div>
             <div class="info">
-              <h2 @click="toUser(item.user.userId)">
+              <h2>
                 {{ item.user.nickname
                 }}<small> · {{ utils.formatMsgTime(item.time) }}</small>
               </h2>
@@ -118,7 +102,6 @@
             </div>
           </li>
         </ul>
-        <p class="no-data-text" v-else style="padding-bottom: 10px;">还没有人评论</p>
       </div>
     </div>
   </div>
@@ -130,26 +113,12 @@ import ArtistList from 'components/common/artistList/Index'
 export default {
   data() {
     return {
-      // 歌单详情
       detail: {},
-      // 歌单创建者信息
       creator: {},
-      // 收藏这个歌单的人
-      subscribers: [],
-      // 相关歌单
-      relatedList: [],
-      // 相似歌单
-      simiList: [],
-      // 评论
-      comments: [],
-      // 歌曲列表
       songs: [],
-      // 收藏这个歌单的人数量
-      s: 32,
-      artistId: '',
-      loading: false,
-      // 是否是我喜欢的歌单
-      ordered: false
+      subscribers: [],
+      comments: [],
+      hotAlbums: []
     }
   },
   components: {
@@ -167,120 +136,52 @@ export default {
   watch: {
     $route(newId, oldId) {
       console.log(newId, oldId)
-      let id = this.$route.query.id || this.singer.id
+      let id = this.$route.query.id
       if (id) {
         this._initialize(id)
       }
     }
   },
   methods: {
-    // 标签跳转
-    tag(cat) {
-      this.$router.push({
-        name: 'playlist',
-        query: {
-          cat
-        }
-      })
-    },
     // 获取歌单详情
-    async getPlayListDetail(id, s) {
-      let timestamp = new Date().valueOf()
+    async getAlbumData(id) {
       try {
-        let res = await this.$api.getPlayListDetail(id, s, timestamp)
-        console.log(res)
+        let res = await this.$api.getAlbumData(id)
         if (res.code === 200) {
-          if(res.playlist.description !== null) {
-            res.playlist.description = res.playlist.description.replace(
-              /(\r\n|\n|\r)/gm,
-              '<br />'
-            )
-          }
-          this.detail = res.playlist
-          this.creator = res.playlist.creator
-          let trackIds = res.playlist.trackIds
-          // 数量超过一千，进行分割
-          let arrLength = 1000
-          let sliceArr = []
-          for (let i = 0; i < trackIds.length; i += arrLength) {
-            sliceArr.push(trackIds.slice(i, i + arrLength))
-          }
-          this.getSongDetail(sliceArr)
+          this.detail = res.album
+          this.creator = res.album.artist
+          this.songs = this._normalizeSongs(res.songs)
+          this.getArtistAlbum()
         }
       } catch (error) {
-        // this.$message.error(error)
+        this.$message.error(error)
       }
     },
-    // 获取歌曲列表
-    async getSongDetail(sliceArr) {
-      this.loading = true
-      let before = sliceArr[0]
-      let after = sliceArr[1]
-      let timestamp = new Date().valueOf()
-      let beforeIds = []
-      let afterIds = []
-      before.map(item => {
-        beforeIds.push(item.id)
-      })
-      beforeIds = beforeIds.join(',')
-      if (after) {
-        after.map(item => {
-          afterIds.push(item.id)
-        })
-        afterIds = afterIds.join(',')
-      }
-      try {
-        if (after) {
-          let beforeRes = await this.$api.getSongDetail(beforeIds, timestamp)
-          let afterRes = await this.$api.getSongDetail(afterIds, timestamp + 1)
-          let res = beforeRes.songs.concat(afterRes.songs)
-          this.songs = this._normalizeSongs(res)
-        } else {
-          let beforeRes = await this.$api.getSongDetail(beforeIds, timestamp)
-          let res = beforeRes.songs
-          this.songs = this._normalizeSongs(res)
-        }
-        this.loading = false
-      } catch (error) {
-        // this.$message.error(error)
-      }
-    },
-    // 获取相关歌单推荐
-    async getRelatedPlaylist(id) {
-      try {
-        let res = await this.$api.getRelatedPlaylist(id)
-        if (res.code === 200) {
-          this.relatedList = res.playlists
-        }
-      } catch (error) {
-        // this.$message.error(error)
-      }
-    },
-    // 获取歌单收藏者
-    async getSubscribersPlaylist(id) {
+    // 获取歌手专辑
+    async getArtistAlbum() {
       let params = {
-        id,
-        limit: 28,
+        id: this.creator.id,
+        limit: 5,
         offset: 0
       }
       try {
-        let res = await this.$api.getSubscribersPlaylist(params)
+        let res = await this.$api.getArtistAlbum(params)
         if (res.code === 200) {
-          this.subscribers = res.subscribers
+          this.hotAlbums = res.hotAlbums
         }
       } catch (error) {
-        // this.$message.error(error)
+        this.$message.error('error')
       }
     },
     // 获取评论
-    async getCommentPlaylist(id) {
+    async getAlbumComment(id) {
       let params = {
         id,
         limit: 28,
         offset: 0
       }
       try {
-        let res = await this.$api.getCommentPlaylist(params)
+        let res = await this.$api.getAlbumComment(params)
         if (res.code === 200) {
           if (res.hotComments.length > 0) {
             this.comments = res.hotComments
@@ -289,7 +190,7 @@ export default {
           }
         }
       } catch (error) {
-        // this.$message.error(error)
+        this.$message.error('error')
       }
     },
     // 处理歌曲
@@ -311,38 +212,10 @@ export default {
         dangerouslyUseHTMLString: true
       })
     },
-    // 收藏歌单
-    async collectArtist() {
-      let t = this.detail.subscribed ? 2 : 1
-      let message = this.detail.subscribed ? '已取消收藏' : '收藏成功'
-      try {
-        let res = await this.$api.collectPlaylist(t, this.artistId)
-        if (res.code === 200) {
-          this.$message({
-            message,
-            type: 'success'
-          })
-
-          setTimeout(() => {
-            this.getPlayListDetail(this.artistId, 100)
-          }, 300)
-        }
-      } catch (error) {
-        // this.$message.error(error)
-      }
-    },
     // 相关推荐详情
     toDetail(id) {
       this.$router.push({
-        name: 'playlistDetail',
-        query: {
-          id
-        }
-      })
-    },
-    toUser(id) {
-      this.$router.push({
-        name: 'personal',
+        name: 'albumDetail',
         query: {
           id
         }
@@ -350,16 +223,15 @@ export default {
     },
     // 初始化
     _initialize(id) {
-      this.getPlayListDetail(id, 100)
-      this.getRelatedPlaylist(id)
-      this.getSubscribersPlaylist(id)
-      this.getCommentPlaylist(id)
+      this.getAlbumData(id)
+      this.getAlbumComment(id)
     }
   },
   created() {},
   mounted() {
     let id = this.$route.query.id
-    this.artistId = id
+    console.log(id)
+    this.albumId = id
     if (id) {
       this._initialize(id)
     }
@@ -367,7 +239,7 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
-.playlist-detail {
+.album-detail {
   display: flex;
   align-items: flex-start;
   .left {
@@ -448,7 +320,6 @@ export default {
             border-radius: 50%;
             position: relative;
             margin-right: 15px;
-            cursor: pointer;
             img {
               width: 100%;
               height: 100%;
@@ -459,10 +330,7 @@ export default {
           .nickname {
             font-size: 14px;
             margin-right: 30px;
-            cursor: pointer;
-            &:hover {
-              color: $color-theme;
-            }
+            color: $color-theme;
           }
           .createTime {
             font-size: 14px;
@@ -577,7 +445,6 @@ export default {
             border-radius: 50%;
             margin-right: 12px;
             flex-shrink: 0;
-            cursor: pointer;
             img {
               width: 100%;
               border-radius: 50%;
@@ -589,7 +456,6 @@ export default {
               font-size: 15px;
               margin-right: 5px;
               margin-bottom: 10px;
-              cursor: pointer;
               small {
                 font-size: 12px;
                 color: #a5a5c1;

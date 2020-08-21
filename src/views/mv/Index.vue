@@ -36,7 +36,7 @@
       <mv-list :mvs="mvs" type="mv"></mv-list>
     </load-more>
     <div v-if="loading" class="load-bottom">
-      <loading />
+      <nice-loading />
     </div>
   </div>
 </template>
@@ -160,6 +160,7 @@ export default {
     },
     // 获取mv列表
     async getMvAll() {
+      this.fullscreenLoading = true
       try {
         this.loadStatus = false
         let res = await this.$api.getMvAll(this.params)

@@ -10,7 +10,7 @@ import songSheet from 'components/common/songSheet/Index'
 export default {
   data() {
     return {
-      limit: 16,
+      limit: 24,
       personalizeds: []
     }
   },

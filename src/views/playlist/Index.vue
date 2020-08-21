@@ -54,7 +54,7 @@
         </div>
       </div>
     </div>
-    <song-sheet :sheetList="playList"></song-sheet>
+    <song-sheet :sheetList="playList" v-loading="fullscreenLoading"></song-sheet>
     <div class="page-wrap">
       <el-pagination
         @size-change="handleSizeChange"
@@ -113,7 +113,8 @@ export default {
           value: '主题',
           icon: 'nicepifugexinghuazhuti-xianxing'
         }
-      ]
+      ],
+      fullscreenLoading: false
     }
   },
   components: {
@@ -170,6 +171,7 @@ export default {
     },
     // 获取歌单 默认全部
     async getPlayList() {
+      this.fullscreenLoading = true
       let param = {
         order: this.sortType,
         cat: this.currentCat,
@@ -181,6 +183,7 @@ export default {
         if (res.code === 200) {
           this.playList = res.playlists
           this.pageTotal = res.total
+          this.fullscreenLoading = false
         }
       } catch (error) {
         this.$message.error('error')

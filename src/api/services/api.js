@@ -5,6 +5,31 @@ import api from './instance'
 export const getBanner = () => api.get('/banner', {})
 
 /**
+ * @method 获取热搜列表
+ */
+export const getSearchHot = () => api.get('/search/hot', {})
+
+/**
+ * @method 搜索
+ * @param {String} keywords 关键词
+ * @param {Number} limit 返回数量 , 默认为 30
+ * @param {Number} offset 偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
+ * @param {Number} type 1: 单曲, 10: 专辑, 100: 歌手, 1000: 歌单, 1002: 用户, 1004: MV, 1006: 歌词, 1009: 电台, 1014: 视频, 1018:综合
+ */
+export const search = (keywords, limit, offset, type) =>
+  api.get(
+    `/search?keywords=${keywords}&limit=${limit}&offset=${offset}&type=${type}`,
+    {}
+  )
+
+/**
+ * @method 搜索建议
+ * @param {String} keywords 关键词
+ */
+export const searchSuggest = keywords =>
+  api.get(`/search/suggest?keywords=${keywords}`, {})
+
+/**
  * @method 获取推荐歌单
  * @params limit 取出数量默认为 30
  */
@@ -15,6 +40,12 @@ export const getPersonalized = limit =>
  * @method 获取推荐歌单
  */
 export const getNewSongs = () => api.get(`/personalized/newsong`, {})
+
+/**
+ * @method 获取热门歌手
+ */
+export const getHotSinger = () => api.get(`/top/artists?offset=0&limit=30`, {})
+
 
 /**
  * @method 获取歌手分类列表
@@ -79,8 +110,8 @@ export const getPlayList = params => api.get(`/top/playlist`, { params })
 /**
  * @method 获取歌单详情
  */
-export const getPlayListDetail = (id, s) =>
-  api.get(`/playlist/detail?id=${id}&s=${s}`, {})
+export const getPlayListDetail = (id, s, time) =>
+  api.get(`/playlist/detail?id=${id}&s=${s}&timestamp=${time}`, {})
 
 /**
  * @method 获取歌曲详情
@@ -226,6 +257,28 @@ export const getMvUrl = id => api.get(`/mv/url?id=${id}`, {})
 export const getMvComments = params => api.get(`/comment/mv`, { params })
 
 /**
+ * @method 相似mv
+ */
+export const getMvRelated = id => api.get(`/simi/mv?mvid=${id}`, {})
+
+
+/**
  * @method 获取歌词
  */
 export const getLyric = id => api.get(`/lyric?id=${id}`, {})
+
+/**
+ * @method 收藏/取消收藏歌单
+ */
+export const collectPlaylist = (t, id) =>
+  api.get(`/playlist/subscribe?t=${t}&id=${id}`, {})
+
+/**
+ * @method 获取专辑内容
+ */
+export const getAlbumData = id => api.get(`/album?id=${id}`, {})
+
+/**
+ * @method 获取专辑评论
+ */
+export const getAlbumComment = params => api.get(`/comment/album`, { params })

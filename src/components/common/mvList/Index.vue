@@ -1,6 +1,6 @@
 <template>
   <div class="mv-box">
-    <ul class="mv-list">
+    <ul class="mv-list" v-if="mvs.length > 0">
       <li v-for="item of mvs" :key="item.id" :class="item.isLive ? 'live' : ''">
         <div class="cover">
           <div class="image">
@@ -29,7 +29,7 @@
               class="play flex-center"
               title="播放"
               v-if="!item.isLive"
-              @click="toDetail(item.id)"
+              @click="toDetail(item.id, item.type)"
             >
               <i class="iconfont nicebofang1"></i>
             </button>
@@ -52,13 +52,15 @@
         </div>
       </li>
     </ul>
+    <nice-empty v-else></nice-empty>
     <div v-if="loadStatus" class="load-bottom">
-      <loading />
+      <nice-loading />
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   data() {
     return {}
@@ -95,7 +97,8 @@ export default {
     },
     // 视频详情
     toDetail(id) {
-      if (this.type == 'mv') {
+      this.stopPlay()
+      if (typeof id == 'number' || id.length < 10) {
         this.$router.push({
           name: 'mvDetail',
           query: {
@@ -110,7 +113,11 @@ export default {
           }
         })
       }
-    }
+    },
+    ...mapActions([
+      // 播放视频移除播放
+      'stopPlay'
+    ])
   },
   created() {},
   mounted() {}

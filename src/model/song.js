@@ -29,11 +29,13 @@ export default class Song {
 export function createSong(musicData) {
   return new Song({
     id: musicData.id,
-    singer: filterSinger(musicData.ar),
+    singer: filterSinger(musicData.ar || musicData.artists),
     name: musicData.name,
-    album: musicData.al.name,
-    duration: utils.formatSecond(musicData.dt),
-    image: musicData.al.picUrl,
+    album: musicData.al ? musicData.al.name : musicData.album.name,
+    duration: utils.formatSecond(musicData.dt || musicData.duration),
+    image: musicData.al
+      ? musicData.al.picUrl
+      : musicData.album.artist.img1v1Url,
     url: `https://music.163.com/song/media/outer/url?id=${musicData.id}.mp3`,
     playCount: musicData.playCount || '',
     score: musicData.score || ''

@@ -1,5 +1,8 @@
 <template>
-  <div class="rank-wrap container">
+  <div
+    class="rank-wrap container"
+    v-loading="fullscreenLoading"
+  >
     <div class="module">
       <h2 class="title flex-row">云音乐特色榜</h2>
       <song-sheet :sheetList="featureList" />
@@ -16,7 +19,8 @@ import songSheet from 'components/common/songSheet/Index'
 export default {
   data() {
     return {
-      ranks: []
+      ranks: [],
+      fullscreenLoading: false
     }
   },
   components: {
@@ -34,11 +38,12 @@ export default {
   methods: {
     // 获取排行榜数据
     async getToplist() {
+      this.fullscreenLoading = true
       try {
         let res = await this.$api.getToplist()
         if (res.code === 200) {
           this.ranks = res.list
-          console.log(this.ranks.slice(3, this.ranks.length - 1))
+          this.fullscreenLoading = false
         }
       } catch (error) {
         this.$message.error('error')

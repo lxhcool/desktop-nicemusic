@@ -38,7 +38,7 @@
       </ul>
     </load-more>
     <div v-if="loading" class="load-bottom">
-      <loading />
+      <nice-loading />
     </div>
   </div>
 </template>

@@ -40,7 +40,7 @@
         全部
       </div>
     </div>
-    <mv-list :mvs="videos"></mv-list>
+    <mv-list :mvs="videos" v-loading="fullscreenLoading"></mv-list>
     <div class="page flex-center">
       <button
         :disabled="offset == 0"
@@ -73,7 +73,8 @@ export default {
       videos: [],
       offset: 0,
       hasmore: true,
-      showFilter: false
+      showFilter: false,
+      fullscreenLoading: false
     }
   },
   components: {
@@ -134,10 +135,12 @@ export default {
     },
     // 获取全部视频列表
     async getVideoAll() {
+      this.fullscreenLoading = true
       try {
         let res = await this.$api.getVideoAll(this.offset)
         if (res.code === 200) {
           this.videos = this._normalizeVideos(res.datas)
+          this.fullscreenLoading = false
           if (res.hasmore) {
             this.hasmore = true
           } else {

@@ -5,6 +5,7 @@
         <video
           :src="videoUrl"
           controls="controls"
+          autoplay
           controlslist="nodownload"
         ></video>
       </div>
@@ -112,16 +113,16 @@
           <li v-for="item of relatedList" :key="item.vid">
             <div class="avatar">
               <img
-                :src="item.coverUrl + '?param=320y180'"
-                :alt="item.title"
-                :title="item.title"
+                :src="item.cover + '?param=320y180'"
+                :alt="item.name"
+                :title="item.name"
               />
               <div class="action">
                 <button
                   class="play flex-center"
                   title="播放"
                   v-if="!item.isLive"
-                  @click="toDetail(item.vid)"
+                  @click="toDetail(item.id)"
                 >
                   <i class="iconfont nicebofang1"></i>
                 </button>
@@ -129,11 +130,11 @@
             </div>
             <div class="info">
               <h2 class="flex-row ellipsis">
-                <i class="iconfont nicemv24"></i> {{ item.title }}
+                <i class="iconfont nicemv24"></i> {{ item.name }}
               </h2>
               <div class="author">
-                By.<span v-for="author of item.creator" :key="author.userId"
-                  ><small> {{ author.userName }}</small></span
+                By.<span v-for="author of item.artists" :key="author.id"
+                  ><small> {{ author.name }}</small></span
                 >
               </div>
             </div>
@@ -179,7 +180,14 @@ export default {
   computed: {
     ...mapGetters(['userInfo', 'loginStatu'])
   },
-  watch: {},
+  watch: {
+    $route() {
+      let id = this.$route.query.id || this.videoId
+      if (id) {
+        this._initialize(id)
+      }
+    }
+  },
   methods: {
     // 改变页码
     handleSizeChange(val) {
@@ -330,11 +338,11 @@ export default {
       }
     },
     // 获取相关mv
-    async getVideoRelated(id) {
+    async getMvRelated(id) {
       try {
-        let res = await this.$api.getVideoRelated(id)
+        let res = await this.$api.getMvRelated(id)
         if (res.code === 200) {
-          this.relatedList = res.data
+          this.relatedList = res.mvs
         }
       } catch (error) {
         console.log(error)
@@ -366,13 +374,18 @@ export default {
     },
     // mv详情（相关mv）
     toDetail(id) {
-      this._initialize(id)
+      this.$router.push({
+        name: 'mvDetail',
+        query: {
+          id
+        }
+      })
     },
     // 初始化
     _initialize(id) {
       this.getMvUrl(id)
       this.getMvDetail(id)
-      this.getVideoRelated(id)
+      this.getMvRelated(id)
       this.getMvDetailInfo(id)
       this.getMvComments(id)
     }

@@ -32,3 +32,16 @@ export const currentIndex = state => state.currentIndex
 export const currentSong = state => {
   return state.playList[state.currentIndex] || {}
 }
+
+// 搜索历史
+export const searchHistory = state => {
+  return state.searchHistory
+}
+
+// 收藏列表
+export const historyList = (state) => {
+  // return state.historyList.map(song => {
+  //   return new song(song)
+  // })
+  return state.historyList
+}

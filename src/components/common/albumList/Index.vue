@@ -1,7 +1,7 @@
 <template>
   <div class="album-box">
     <ul class="album-list flex-row">
-      <li v-for="item of albums" :key="item.id">
+      <li v-for="item of albums" :key="item.id" @click="toDetail(item.id)">
         <div class="wrapper">
           <div class="cover">
             <div class="image">
@@ -23,7 +23,7 @@
             </div>
             <div class="count">
               <i class="arrow"></i>
-              <span>{{ item.subType }}</span>
+              <span>{{ item.subType || item.type }}</span>
             </div>
             <div class="action">
               <button class="play flex-center" title="播放">
@@ -42,7 +42,7 @@
       </li>
     </ul>
     <div v-if="loadStatus" class="load-bottom">
-      <loading />
+      <nice-loading />
     </div>
   </div>
 </template>
@@ -73,7 +73,16 @@ export default {
     }
   },
   watch: {},
-  methods: {},
+  methods: {
+    toDetail(id) {
+      this.$router.push({
+        name: 'albumDetail',
+        query: {
+          id
+        }
+      })
+    }
+  },
   created() {},
   mounted() {}
 }
@@ -87,6 +96,7 @@ export default {
       padding: 0 15px 30px;
       flex: 0 0 16.666667%;
       max-width: 16.666667%;
+      cursor: pointer;
       .wrapper {
         position: relative;
         padding-right: 10px;
@@ -172,11 +182,11 @@ export default {
               }
             }
           }
-          &:hover {
-            .action {
-              display: flex;
-            }
-          }
+          // &:hover {
+          //   .action {
+          //     display: flex;
+          //   }
+          // }
         }
         &::after {
           content: '';
