@@ -7,16 +7,16 @@
 [vue-desktop-nicemusic](http://nicenav.cn/desktop-music)
 
 ##### 登录
-![Image text](https://image-static.segmentfault.com/186/150/1861508309-5f2a2058d2596)
+![image](https://image-static.segmentfault.com/186/150/1861508309-5f2a2058d2596)
 
 ##### 首页
-![Image text](https://image-static.segmentfault.com/120/045/1200451576-5f2a20094e36d)
+![image](https://image-static.segmentfault.com/120/045/1200451576-5f2a20094e36d)
 
 ##### 个人中心
-![Image text](https://image-static.segmentfault.com/138/073/138073350-5f2a20fc510e5)
+![image](https://image-static.segmentfault.com/138/073/138073350-5f2a20fc510e5)
 
 ##### 歌单
-![Image text](https://image-static.segmentfault.com/196/651/1966510659-5f2a211b3038e)
+![image](https://image-static.segmentfault.com/196/651/1966510659-5f2a211b3038e)
 
 ## 目录结构
 ##### | --dist 生成打包后的文件
@@ -43,7 +43,7 @@
 
 ## 安装运行
 ```shell
-$ git clone git@gitee.com:lxhcool/desktop-nicemusic.git
+$ git clone https://github.com/lxhcool/desktop-nicemusic.git
 $ cd desktop-nicemusic
 $ npm install
 $ npm run serve
