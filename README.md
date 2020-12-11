@@ -1,5 +1,8 @@
 # vue-desktop-nicemusic 仿网易云音乐
 
+后续更新的放在gitee了，https://gitee.com/lxhcool/desktop-nicemusic
+
+
 ## 感谢
 [Binaryify/NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
 
@@ -48,3 +51,7 @@ $ cd desktop-nicemusic
 $ npm install
 $ npm run serve
 ```
+
+## react开发新版中.........
+## react开发新版中.........
+## react开发新版中.........
