@@ -14,7 +14,7 @@
     "core-js": "^3.6.4",
     "element-ui": "^2.13.2",
     "lyric-parser": "^1.0.1",
-    "swiper": "^5.4.5",
+    "swiper": "^6.5.1",
     "vue": "^2.6.11",
     "vue-awesome-swiper": "^2.6.7",
     "vue-infinite-scroll": "^2.0.2",
