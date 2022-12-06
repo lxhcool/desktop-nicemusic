@@ -41,7 +41,7 @@
     "good-storage": "^1.1.1",
     "page-skeleton-webpack-plugin": "^0.10.12",
     "prettier": "^1.19.1",
-    "qs": "^6.9.4",
+    "qs": "^6.9.7",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
     "vue-kinesis": "^1.1.5",
